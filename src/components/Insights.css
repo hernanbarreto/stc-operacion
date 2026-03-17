@@ -1,0 +1,288 @@
+.insights-section {
+    padding: 20px 0;
+}
+
+.insights-section h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 12px;
+}
+
+/* Badges */
+.insights-badges {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.ins-badge {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(30, 41, 59, 0.7);
+    color: #cbd5e1;
+}
+
+/* Table */
+.insights-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 16px;
+}
+
+.insights-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.insights-table th {
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    font-weight: 600;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.3);
+}
+
+.insights-table td {
+    padding: 7px 12px;
+    text-align: center;
+    color: #e2e8f0;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.insights-table .td-period {
+    text-align: left;
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.insights-table .td-ok {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.insights-table .td-warn {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.insights-table .td-alert {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+.insights-table tbody tr {
+    transition: background 0.15s;
+}
+
+.insights-table tbody tr:hover {
+    background: rgba(51, 65, 85, 0.3);
+}
+
+.insights-table tbody tr.row-critical {
+    background: rgba(239, 68, 68, 0.06);
+}
+
+.insights-table tbody tr.row-warning {
+    background: rgba(245, 158, 11, 0.04);
+}
+
+/* Findings */
+.insights-findings {
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+    padding: 14px 18px;
+    border-left: 3px solid #6366f1;
+}
+
+.insights-findings h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #a5b4fc;
+    margin-bottom: 8px;
+}
+
+.insights-findings ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.insights-findings li {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    padding: 4px 0;
+    line-height: 1.5;
+}
+
+.insights-findings li.finding-critical {
+    color: #fca5a5;
+}
+
+.insights-findings li.finding-warning {
+    color: #fcd34d;
+}
+
+.insights-findings li.finding-ok {
+    color: #6ee7b7;
+}
+
+/* Marcha Tipo Analysis */
+.insights-marcha {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    border-left: 3px solid #fbbf24;
+}
+
+.insights-marcha h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fbbf24;
+    margin-bottom: 8px;
+}
+
+.insights-marcha h4 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin: 0 0 6px;
+}
+
+.marcha-summary {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 12px;
+}
+
+.marcha-summary strong {
+    color: #e2e8f0;
+}
+
+.marcha-best-worst {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.marcha-card {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.marcha-best {
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.marcha-worst {
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.marcha-card-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.marcha-card-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #f1f5f9;
+}
+
+.marcha-card-detail {
+    font-size: 0.72rem;
+    color: #a5b4fc;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.marcha-subsection {
+    margin-bottom: 12px;
+}
+
+.insights-table-sm {
+    font-size: 0.75rem;
+}
+
+.insights-table-sm th {
+    padding: 5px 8px;
+    font-size: 0.65rem;
+}
+
+.insights-table-sm td {
+    padding: 4px 8px;
+}
+
+/* Severity dots (replace emojis) */
+.sev-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.sev-ok {
+    background: #10b981;
+}
+
+.sev-warning {
+    background: #f59e0b;
+}
+
+.sev-critical {
+    background: #ef4444;
+}
+
+.sev-info {
+    background: #6366f1;
+}
+
+/* Status labels in table */
+.td-sev {
+    font-weight: 700;
+    font-size: 0.72rem;
+}
+
+.td-sev-ok {
+    color: #10b981;
+}
+
+.td-sev-warning {
+    color: #f59e0b;
+}
+
+.td-sev-critical {
+    color: #ef4444;
+}
+
+.td-sev-info {
+    color: #6366f1;
+}
+
+/* Badge variants */
+.ins-badge-dbo {
+    border-left: 2px solid #ef4444;
+}
+
+.ins-badge-alarm {
+    border-left: 2px solid #f59e0b;
+}

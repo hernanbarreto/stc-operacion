@@ -1,0 +1,386 @@
+/* ─── Single page layout ─── */
+
+.main-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* Top navbar */
+.main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.nav-brand h1 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.nav-subtitle {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-logo-metro {
+  height: 32px;
+  object-fit: contain;
+}
+
+.nav-logo-ingerop {
+  height: 24px;
+  object-fit: contain;
+  opacity: 0.8;
+  margin-left: 8px;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-user {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.nav-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.nav-btn-logout:hover {
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.nav-btn-pdf {
+  background: var(--accent);
+  color: white !important;
+  border-color: var(--accent) !important;
+}
+
+.nav-btn-pdf:hover {
+  background: var(--accent-hover);
+}
+
+.nav-btn-pdf:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Scrollable content area */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Upload section (embedded) */
+.section-upload {
+  padding: 20px;
+}
+
+.upload-embedded {
+  min-height: auto !important;
+}
+
+.upload-embedded .upload-content {
+  padding: 0;
+}
+
+/* Day chips bar */
+.section-days {
+  padding: 0 20px;
+}
+
+.days-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.days-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.days-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.day-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.day-chip:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.day-chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.chip-count {
+  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.day-chip.active .chip-count {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Diagram section */
+/* Diagram section inherits from component CSS */
+
+/* Reports section */
+.section-reports {
+  border-top: 2px solid var(--border);
+}
+
+.scroll-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+}
+
+/* App loader */
+.app-loader {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--text-muted);
+}
+
+.app-loader-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Mobile Responsive ─── */
+@media (max-width: 768px) {
+  .main-nav {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+
+  .nav-logo-metro {
+    height: 24px;
+  }
+
+  .nav-logo-ingerop {
+    height: 18px;
+    margin-left: 4px;
+  }
+
+  .nav-brand h1 {
+    font-size: 0.75rem;
+  }
+
+  .nav-subtitle {
+    font-size: 0.55rem;
+  }
+
+  .nav-left {
+    gap: 8px;
+  }
+
+  .nav-actions {
+    gap: 4px;
+  }
+
+  .nav-user {
+    display: none;
+  }
+
+  .nav-btn span {
+    display: none;
+  }
+
+  .nav-btn {
+    padding: 6px;
+  }
+
+  .section-days {
+    padding: 0 10px;
+  }
+
+  .days-bar {
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .days-chips {
+    gap: 4px;
+  }
+
+  .day-chip {
+    padding: 5px 10px;
+    font-size: 0.62rem;
+  }
+
+  .chip-count {
+    font-size: 0.5rem;
+    padding: 1px 4px;
+  }
+
+  .section-upload {
+    padding: 10px;
+  }
+
+  .section-reports {
+    padding: 0;
+  }
+
+  .scroll-hint {
+    font-size: 0.6rem;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-nav {
+    flex-wrap: wrap;
+    padding: 6px 8px;
+  }
+
+  .nav-left {
+    gap: 6px;
+  }
+
+  .nav-logo-metro {
+    height: 20px;
+  }
+
+  .nav-logo-ingerop {
+    height: 14px;
+  }
+
+  .nav-brand h1 {
+    font-size: 0.7rem;
+  }
+
+  .day-chip {
+    padding: 4px 8px;
+    font-size: 0.58rem;
+  }
+}
+
+/* Loading overlay when selecting a day */
+.day-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.day-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.day-loading-content .spin {
+  color: var(--accent);
+}
+
+.day-loading-hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  opacity: 0;
+  animation: fadeInHint 1s ease-in 2s forwards;
+}
+
+@keyframes fadeInHint {
+  to {
+    opacity: 0.7;
+  }
+}
+
+/* App footer */
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}

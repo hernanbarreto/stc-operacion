@@ -1,0 +1,211 @@
+/* ─── Maniobras en Cabeceras ─── */
+.maniobras-section {
+    padding: 24px 0 8px;
+}
+
+.maniobras-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin: 0 0 4px;
+    letter-spacing: 0.02em;
+}
+
+.maniobras-subtitle {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin: 0 0 20px;
+}
+
+.maniobras-panels {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+/* ─── Per-terminal block ─── */
+.maniobra-terminal {
+    flex: 1 1 380px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.maniobra-terminal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.maniobra-total-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 20px;
+    padding: 2px 8px;
+}
+
+.maniobra-no-data {
+    color: #475569;
+    font-size: 0.82rem;
+    padding: 8px 0;
+}
+
+.maniobra-legend {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 6px;
+    border: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+.maniobra-legend-item {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+.maniobra-legend-item strong {
+    color: #818cf8;
+}
+
+.maniobra-legend-item em {
+    color: #64748b;
+    font-style: normal;
+}
+
+/* ─── Frequency table ─── */
+.maniobra-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 16px;
+}
+
+.maniobra-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+}
+
+.maniobra-table th {
+    background: rgba(30, 41, 59, 0.8);
+    color: #94a3b8;
+    padding: 6px 10px;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.4);
+    white-space: nowrap;
+}
+
+.maniobra-table td {
+    padding: 5px 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+    color: #cbd5e1;
+}
+
+.maniobra-td-period {
+    text-align: left !important;
+    color: #94a3b8;
+    white-space: nowrap;
+    font-size: 0.73rem;
+}
+
+.maniobra-td-count {
+    color: #818cf8;
+    font-weight: 700;
+}
+
+.maniobra-td-zero {
+    color: #334155;
+}
+
+.maniobra-td-total {
+    color: #e2e8f0;
+    font-weight: 600;
+    border-left: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.maniobra-totals-row {
+    background: rgba(30, 41, 59, 0.6);
+    font-weight: 700;
+}
+
+.maniobra-totals-row td {
+    color: #e2e8f0;
+    border-top: 1px solid rgba(71, 85, 105, 0.5);
+}
+
+/* ─── Boxplot grid ─── */
+.maniobra-boxplots-section {
+    margin-top: 4px;
+}
+
+.maniobra-boxplot-title {
+    font-size: 0.77rem;
+    font-weight: 600;
+    color: #64748b;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.maniobra-boxplots-grid {
+    display: grid;
+    gap: 6px 8px;
+    align-items: center;
+}
+
+.maniobra-bp-corner {
+    min-width: 80px;
+}
+
+.maniobra-bp-header {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #818cf8;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.maniobra-bp-header small {
+    font-weight: 400;
+    color: #475569;
+    font-size: 0.65rem;
+}
+
+.maniobra-bp-period {
+    font-size: 0.72rem;
+    color: #64748b;
+    white-space: nowrap;
+    padding-right: 4px;
+}
+
+.maniobra-bp-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.maniobra-boxplot {
+    display: block;
+    border-radius: 4px;
+}
+
+.maniobra-bp-empty {
+    color: #334155;
+    font-size: 0.75rem;
+}
+
+.maniobra-bp-median {
+    font-size: 0.68rem;
+    color: #475569;
+    text-align: center;
+}

@@ -1,0 +1,94 @@
+/* Reports (embedded section) */
+.reports-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.reports-header {
+    display: none;
+}
+
+.reports-title-bar {
+    padding: 16px 20px 8px;
+}
+
+.reports-title-bar h2 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Content */
+.reports-content {
+    padding: 20px;
+}
+
+.reports-section {
+    margin-bottom: 36px;
+}
+
+.reports-section h2 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.sub-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 14px 0 8px 0;
+}
+
+.reports-desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.boxplot-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.boxplot-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.boxplot-summary {
+    display: flex;
+    gap: 12px;
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+}
+
+.boxplot-summary strong {
+    color: var(--text-primary);
+}
+
+.boxplot-summary .muted {
+    color: var(--text-muted);
+}
+
+.no-data {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 30px 0;
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .boxplot-row {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,763 @@
+/* Diagram Page */
+.diagram-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+  height: 80vh;
+}
+
+.diagram-page.diagram-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  height: 100vh;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* ─── Header ─── */
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.diagram-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.diagram-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+  white-space: nowrap;
+}
+
+.diagram-back-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.diagram-title-group h1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.diagram-date {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.diagram-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.diagram-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.stat-item strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--border);
+}
+
+.diagram-clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--error);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.diagram-clear-btn:hover {
+  background: var(--error-bg);
+}
+
+.diagram-reports-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.diagram-reports-btn:hover {
+  color: #fff;
+  background: var(--accent);
+}
+
+/* Zoom Controls */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.zoom-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.zoom-level {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 36px;
+  text-align: center;
+}
+
+/* ─── Body ─── */
+.diagram-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Canvas area: station labels + scrollable canvas */
+.diagram-canvas-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fixed station column */
+.station-column {
+  flex-shrink: 0;
+  position: relative;
+  background: var(--bg-primary);
+  border-right: 1px solid var(--border);
+  z-index: 2;
+}
+
+.station-label {
+  position: absolute;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+  pointer-events: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Scrollable canvas */
+.canvas-scroll {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--bg-primary);
+  overscroll-behavior-x: none;
+  touch-action: pan-x pinch-zoom;
+}
+
+.canvas-stack {
+  position: relative;
+}
+
+.canvas-stack canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+}
+
+/* ─── Sidebar ─── */
+.diagram-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-section:last-child {
+  border-bottom: none;
+}
+
+.sidebar-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.sidebar-hint {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
+
+/* Period stats */
+.period-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 0.7rem;
+}
+
+.period-label {
+  flex: 1;
+  color: var(--text-secondary);
+}
+
+.period-count {
+  color: var(--text-primary);
+  font-size: 0.68rem;
+}
+
+/* Cursor cards */
+.cursor-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.cursor-color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cursor-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cursor-card-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cursor-card-time {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.cursor-remove-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.cursor-remove-btn:hover {
+  color: var(--error);
+  background: var(--error-bg);
+}
+
+/* Calc cards */
+.calc-card {
+  padding: 10px;
+  margin-top: 6px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.calc-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.calc-card-route {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.calc-copy-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.calc-copy-btn:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.calc-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calc-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+}
+
+.calc-metric span {
+  color: var(--text-muted);
+}
+
+.calc-metric strong {
+  color: var(--text-primary);
+}
+
+/* References — compact */
+.sidebar-refs-compact {
+  flex-shrink: 0;
+}
+
+.ref-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 10px;
+}
+
+.ref-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+}
+
+.period-list-compact {
+  margin-top: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Train legend */
+.sidebar-trains {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.train-legend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+}
+
+.train-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  padding: 2px 0;
+}
+
+.train-color-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.train-legend-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* DBO toggle */
+.dbo-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 0;
+  margin-top: 2px;
+}
+
+.dbo-toggle input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+  accent-color: #ef4444;
+  cursor: pointer;
+  margin: 0;
+}
+
+.dbo-toggle span {
+  white-space: nowrap;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .diagram-body {
+    flex-direction: column;
+  }
+
+  .diagram-sidebar {
+    width: 100%;
+    max-height: 220px;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .sidebar-section {
+    min-width: 220px;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+  }
+
+  .diagram-stats {
+    display: none;
+  }
+}
+
+/* ─── Control Panel ─── */
+.diagram-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+}
+
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ctrl-label {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.ctrl-time-inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ctrl-time {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.ctrl-time span {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.time-select {
+  padding: 2px 1px;
+  text-align: center;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.72rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.time-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.ctrl-sep {
+  color: var(--text-muted);
+  margin: 0 2px;
+}
+
+.ctrl-reset-btn {
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.ctrl-reset-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+/* Period buttons */
+.ctrl-periods {
+  display: flex;
+  gap: 3px;
+}
+
+.ctrl-period-btn {
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: 1px solid;
+  border-radius: 4px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.ctrl-period-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* DBO / Alarm toggles */
+.ctrl-check {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ctrl-check input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 13px;
+  height: 13px;
+}
+
+/* Train filter dropdown */
+.ctrl-train-filter {
+  position: relative;
+}
+
+.ctrl-train-btn {
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.ctrl-train-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+.ctrl-train-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  margin-top: 4px;
+  min-width: 200px;
+  max-height: 300px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.ctrl-train-actions {
+  display: flex;
+  gap: 4px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ctrl-train-actions button {
+  flex: 1;
+  padding: 3px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.ctrl-train-actions button:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.ctrl-train-list {
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.ctrl-train-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+
+.ctrl-train-item:hover {
+  background: var(--bg-hover);
+}
+
+.ctrl-train-item input {
+  accent-color: var(--accent);
+  width: 12px;
+  height: 12px;
+}
+
+/* Hidden trains in legend */
+.train-legend-item.train-hidden {
+  opacity: 0.3;
+}
+
+/* ─── Fullscreen ─── */
+.diagram-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  height: 100vh !important;
+  background: var(--bg-primary);
+}
+
+.diagram-fullscreen .diagram-body {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+@media (max-width: 600px) {
+  .diagram-page {
+    height: auto;
+    min-height: 400px;
+  }
+
+  .diagram-header {
+    flex-wrap: wrap;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .diagram-title h2 {
+    font-size: 0.8rem;
+  }
+
+  .diagram-title p {
+    font-size: 0.6rem;
+  }
+
+  .diagram-controls {
+    gap: 4px;
+    font-size: 0.55rem;
+  }
+
+  .diagram-sidebar {
+    max-height: 180px;
+  }
+
+  .train-legend-item {
+    font-size: 0.55rem;
+    padding: 1px 3px;
+  }
+}

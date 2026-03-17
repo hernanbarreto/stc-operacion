@@ -1,0 +1,204 @@
+/* Marcha Tipo Config Modal */
+.marcha-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.marcha-modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.marcha-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.marcha-header h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.marcha-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.marcha-total {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.marcha-total strong {
+    color: #fbbf24;
+}
+
+.marcha-save-btn {
+    padding: 4px 14px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.marcha-save-btn:hover {
+    opacity: 0.85;
+}
+
+.marcha-reset-btn {
+    padding: 4px 10px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.marcha-reset-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.marcha-close-btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.marcha-close-btn:hover {
+    color: var(--text-primary);
+}
+
+.marcha-body {
+    overflow-y: auto;
+    padding: 14px 18px;
+    display: flex;
+    gap: 18px;
+}
+
+.marcha-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.marcha-section h4 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Speed table */
+.marcha-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.68rem;
+}
+
+.marcha-table th {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+}
+
+.marcha-table td {
+    padding: 3px 6px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+}
+
+.marcha-seg-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.marcha-seg-dist {
+    color: var(--text-muted);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.62rem;
+}
+
+.marcha-seg-time {
+    color: #fbbf24;
+    font-weight: 600;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.62rem;
+}
+
+.marcha-input {
+    width: 52px;
+    padding: 2px 4px;
+    text-align: center;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 0.7rem;
+    font-family: inherit;
+}
+
+.marcha-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.marcha-input-sm {
+    width: 42px;
+}
+
+/* Dwell grid */
+.marcha-dwell-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+.marcha-dwell-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.marcha-dwell-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 32px;
+}

@@ -1,0 +1,93 @@
+.boxplot-canvas {
+    display: block;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.grouped-boxplot-wrapper {
+    margin-bottom: 24px;
+}
+
+.grouped-boxplot-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.grouped-canvas-stack {
+    position: relative;
+}
+
+.grouped-canvas-stack canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.grouped-canvas-stack canvas:first-child {
+    position: relative;
+}
+
+/* Summary table */
+.summary-table-scroll {
+    overflow-x: auto;
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.68rem;
+    white-space: nowrap;
+}
+
+.summary-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+}
+
+.summary-table thead th.sub {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.62rem;
+    padding: 3px 5px;
+}
+
+.summary-table tbody td {
+    padding: 4px 6px;
+    color: var(--text-secondary);
+    text-align: center;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+}
+
+.summary-table tbody tr:hover td {
+    background: var(--bg-hover);
+}
+
+.summary-table .st-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: left;
+    position: sticky;
+    left: 0;
+    background: var(--bg-primary);
+    z-index: 1;
+}
+
+.summary-table .val-med {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.summary-table .val-n {
+    color: var(--text-muted);
+    font-size: 0.6rem;
+}
