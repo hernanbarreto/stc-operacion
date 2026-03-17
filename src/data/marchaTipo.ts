@@ -11,25 +11,25 @@ import { SERVICE_STATIONS, STATION_PK } from './stationPK';
 // ─── Velocidades ideales por tramo (km/h) ───
 // Extraídas de medianas de periodos normales N1/N2 (cajas rectas, CBTC puro)
 export const IDEAL_SEGMENT_SPEED: Record<string, number> = {
-    'PAN→ZAR': 62,   // 1702m
-    'ZAR→GOM': 50,   // 912m
-    'GOM→BOU': 47,   // 760m
-    'BOU→BAL': 46,   // 746m
-    'BAL→MOC': 50,   // 853m
-    'MOC→SLA': 43,   // 627m
-    'SLA→CAN': 55,   // 1021m
-    'CAN→MER': 50,   // 845m
-    'MER→PIN': 52,   // 895m
-    'PIN→ISA': 40,   // 532m
-    'ISA→SAL': 42,   // 593m
-    'SAL→BAD': 42,   // 610m
-    'BAD→CUA': 40,   // 559m
-    'CUA→INS': 52,   // 943m
-    'INS→SEV': 48,   // 794m
-    'SEV→CHP': 44,   // 651m
-    'CHP→JNA': 58,   // 1124m
-    'JNA→TCY': 60,   // 1308m
-    'TCY→OBS': 62,   // 1410m
+    'PAN→ZAR': 46.1,   // 1702m
+    'ZAR→GOM': 44.8,   // 912m
+    'GOM→BOU': 41.9,   // 760m
+    'BOU→BAL': 41.5,   // 746m
+    'BAL→MOC': 43.8,   // 853m
+    'MOC→SLA': 37,   // 627m
+    'SLA→CAN': 40,   // 1021m
+    'CAN→MER': 39.3,   // 845m
+    'MER→PIN': 33.7,   // 895m
+    'PIN→ISA': 36.3,   // 532m
+    'ISA→SAL': 35.6,   // 593m
+    'SAL→BAD': 37.5,   // 610m
+    'BAD→CUA': 37.3,   // 559m
+    'CUA→INS': 44.3,   // 943m
+    'INS→SEV': 42.2,   // 794m
+    'SEV→CHP': 39,   // 651m
+    'CHP→JNA': 42.7,   // 1124m
+    'JNA→TCY': 48,   // 1308m
+    'TCY→OBS': 44.5,   // 1410m
 };
 
 // ─── Tiempos de estacionamiento (ms) ───
