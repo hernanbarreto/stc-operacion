@@ -1,4 +1,4 @@
-import { ref, listAll, uploadBytes, getMetadata, getBlob } from 'firebase/storage';
+import { ref, listAll, uploadBytes, getMetadata, getBlob, deleteObject } from 'firebase/storage';
 import { storage } from '../firebase';
 
 export interface StorageFile {
@@ -55,4 +55,10 @@ export async function downloadExcelFile(path: string): Promise<ArrayBuffer> {
     const fileRef = ref(storage, path);
     const blob = await getBlob(fileRef);
     return blob.arrayBuffer();
+}
+
+/** Delete a file from storage. */
+export async function deleteExcelFile(path: string): Promise<void> {
+    const fileRef = ref(storage, path);
+    await deleteObject(fileRef);
 }

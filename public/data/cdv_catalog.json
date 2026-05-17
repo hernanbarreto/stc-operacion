@@ -1,0 +1,3768 @@
+{
+ "fisicos": [
+  {
+   "id": "C10BAD",
+   "station": "BAD",
+   "via": "V2",
+   "pk_ini_m": 10836.34,
+   "pk_fin_m": 10675.17,
+   "longitud_m": 161.17,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11BAD",
+   "station": "BAD",
+   "via": "V2",
+   "pk_ini_m": 10675.17,
+   "pk_fin_m": 10603.47,
+   "longitud_m": 71.7,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C12BAD",
+   "station": "BAD",
+   "via": "V2",
+   "pk_ini_m": 10603.47,
+   "pk_fin_m": 10429.91,
+   "longitud_m": 173.56,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13BAD",
+   "station": "BAD",
+   "via": "V2",
+   "pk_ini_m": 10989.4,
+   "pk_fin_m": 10836.34,
+   "longitud_m": 153.06,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C21BAD",
+   "station": "BAD",
+   "via": "V1",
+   "pk_ini_m": 10666.56,
+   "pk_fin_m": 10599.1,
+   "longitud_m": 67.46,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C22BAD",
+   "station": "BAD",
+   "via": "V1",
+   "pk_ini_m": 10599.1,
+   "pk_fin_m": 10425.15,
+   "longitud_m": 173.95,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C11BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4970.757,
+   "pk_fin_m": 4629.304,
+   "longitud_m": 341.453,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C12BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4629.304,
+   "pk_fin_m": 4455.216,
+   "longitud_m": 174.088,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4455.216,
+   "pk_fin_m": 4389.597,
+   "longitud_m": 65.619,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C14BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4389.597,
+   "pk_fin_m": 4226.036,
+   "longitud_m": 163.561,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4961.808,
+   "pk_fin_m": 4622.684,
+   "longitud_m": 339.124,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4622.684,
+   "pk_fin_m": 4448.634,
+   "longitud_m": 174.05,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4448.634,
+   "pk_fin_m": 4376.972,
+   "longitud_m": 71.662,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C24BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4376.972,
+   "pk_fin_m": 4216.115,
+   "longitud_m": 160.857,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 4086.479,
+   "pk_fin_m": 3882.357,
+   "longitud_m": 204.122,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C12BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 3882.357,
+   "pk_fin_m": 3711.586,
+   "longitud_m": 170.771,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 3711.586,
+   "pk_fin_m": 3406.601,
+   "longitud_m": 304.985,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C14BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 3406.601,
+   "pk_fin_m": 3254.319,
+   "longitud_m": 152.282,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C20BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 3399.217,
+   "pk_fin_m": 3246.581,
+   "longitud_m": 152.636,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 4076.852,
+   "pk_fin_m": 3875.406,
+   "longitud_m": 201.446,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 3875.406,
+   "pk_fin_m": 3704.01,
+   "longitud_m": 171.396,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 3704.01,
+   "pk_fin_m": 3399.217,
+   "longitud_m": 304.793,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7380.105,
+   "pk_fin_m": 7123,
+   "longitud_m": 257.105,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C12CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 6110.522,
+   "pk_fin_m": 5938.81,
+   "longitud_m": 171.712,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7800.852,
+   "pk_fin_m": 7380.105,
+   "longitud_m": 420.747,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C14CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7630.773,
+   "pk_fin_m": 7380.105,
+   "longitud_m": 250.668,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C20CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 7624.787,
+   "pk_fin_m": 7374.86,
+   "longitud_m": 249.927,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 7624.787,
+   "pk_fin_m": 7374.86,
+   "longitud_m": 249.927,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 6101.804,
+   "pk_fin_m": 5929.608,
+   "longitud_m": 172.196,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 6951,
+   "pk_fin_m": 6522.926,
+   "longitud_m": 428.074,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C10CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13783.3,
+   "pk_fin_m": 13618.56,
+   "longitud_m": 164.74,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13618.56,
+   "pk_fin_m": 13550.03,
+   "longitud_m": 68.53,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C12CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13550.03,
+   "pk_fin_m": 13377.67,
+   "longitud_m": 172.36,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13377.67,
+   "pk_fin_m": 13300.34,
+   "longitud_m": 77.33,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C14CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13300.34,
+   "pk_fin_m": 13100.58,
+   "longitud_m": 199.76,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C20CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13785.66,
+   "pk_fin_m": 13611.22,
+   "longitud_m": 174.44,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13611.22,
+   "pk_fin_m": 13545.1,
+   "longitud_m": 66.12,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C22CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13545.1,
+   "pk_fin_m": 13372.72,
+   "longitud_m": 172.38,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13372.72,
+   "pk_fin_m": 13295.75,
+   "longitud_m": 76.97,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C24CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13295.75,
+   "pk_fin_m": 13096.01,
+   "longitud_m": 199.74,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11CUA",
+   "station": "CUA",
+   "via": "V2",
+   "pk_ini_m": 11546.46,
+   "pk_fin_m": 11163.62,
+   "longitud_m": 382.84,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C12CUA",
+   "station": "CUA",
+   "via": "V2",
+   "pk_ini_m": 11163.62,
+   "pk_fin_m": 10989.4,
+   "longitud_m": 174.22,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C21CUA",
+   "station": "CUA",
+   "via": "V1",
+   "pk_ini_m": 11541.71,
+   "pk_fin_m": 11158.42,
+   "longitud_m": 383.29,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C22CUA",
+   "station": "CUA",
+   "via": "V1",
+   "pk_ini_m": 11158.42,
+   "pk_fin_m": 10984.15,
+   "longitud_m": 174.27,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C11GOM",
+   "station": "GOM",
+   "via": "V2",
+   "pk_ini_m": 3254.319,
+   "pk_fin_m": 3122.974,
+   "longitud_m": 131.345,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C12GOM",
+   "station": "GOM",
+   "via": "V2",
+   "pk_ini_m": 3122.974,
+   "pk_fin_m": 2949.987,
+   "longitud_m": 172.987,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13GOM",
+   "station": "GOM",
+   "via": "V2",
+   "pk_ini_m": 2949.987,
+   "pk_fin_m": 2553.823,
+   "longitud_m": 396.164,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C21GOM",
+   "station": "GOM",
+   "via": "V1",
+   "pk_ini_m": 3246.581,
+   "pk_fin_m": 3116.781,
+   "longitud_m": 129.8,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C22GOM",
+   "station": "GOM",
+   "via": "V1",
+   "pk_ini_m": 3116.781,
+   "pk_fin_m": 2943.175,
+   "longitud_m": 173.606,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23GOM",
+   "station": "GOM",
+   "via": "V1",
+   "pk_ini_m": 2943.175,
+   "pk_fin_m": 2545.912,
+   "longitud_m": 397.263,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C11INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 12352,
+   "pk_fin_m": 12103.98,
+   "longitud_m": 248.02,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C12INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 12103.98,
+   "pk_fin_m": 11932.82,
+   "longitud_m": 171.16,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 11932.82,
+   "pk_fin_m": 11546.46,
+   "longitud_m": 386.36,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C14INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 12476.98,
+   "pk_fin_m": 12352,
+   "longitud_m": 124.98,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C20INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 12471.49,
+   "pk_fin_m": 12346.48,
+   "longitud_m": 125.01,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C21INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 12346.48,
+   "pk_fin_m": 12099.08,
+   "longitud_m": 247.4,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 12099.08,
+   "pk_fin_m": 11928,
+   "longitud_m": 171.08,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 11928,
+   "pk_fin_m": 11541.71,
+   "longitud_m": 386.29,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C12ISA",
+   "station": "ISA",
+   "via": "V2",
+   "pk_ini_m": 9401.6,
+   "pk_fin_m": 9225.293,
+   "longitud_m": 176.307,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13ISA",
+   "station": "ISA",
+   "via": "V2",
+   "pk_ini_m": 9225.293,
+   "pk_fin_m": 9101.778,
+   "longitud_m": 123.515,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C21ISA",
+   "station": "ISA",
+   "via": "V1",
+   "pk_ini_m": 9597.93,
+   "pk_fin_m": 9396.35,
+   "longitud_m": 201.58,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22ISA",
+   "station": "ISA",
+   "via": "V1",
+   "pk_ini_m": 9396.35,
+   "pk_fin_m": 9220.053,
+   "longitud_m": 176.297,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C10JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14892.94,
+   "pk_fin_m": 14812.89,
+   "longitud_m": 80.05,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C11JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14812.89,
+   "pk_fin_m": 14670.93,
+   "longitud_m": 141.96,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C12JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14670.93,
+   "pk_fin_m": 14498.93,
+   "longitud_m": 172,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14498.93,
+   "pk_fin_m": 13923.21,
+   "longitud_m": 575.72,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C20JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14890.79,
+   "pk_fin_m": 14811.11,
+   "longitud_m": 79.68,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C21JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14811.11,
+   "pk_fin_m": 14669.23,
+   "longitud_m": 141.88,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C22JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14669.23,
+   "pk_fin_m": 14496.9,
+   "longitud_m": 172.33,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14496.9,
+   "pk_fin_m": 13919.66,
+   "longitud_m": 577.24,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C11MER",
+   "station": "MER",
+   "via": "V2",
+   "pk_ini_m": 8179.356,
+   "pk_fin_m": 7973.732,
+   "longitud_m": 205.624,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C12MER",
+   "station": "MER",
+   "via": "V2",
+   "pk_ini_m": 7973.732,
+   "pk_fin_m": 7800.852,
+   "longitud_m": 172.88,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13MER",
+   "station": "MER",
+   "via": "V2",
+   "pk_ini_m": 7800.852,
+   "pk_fin_m": 7630.773,
+   "longitud_m": 170.079,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21MER",
+   "station": "MER",
+   "via": "V1",
+   "pk_ini_m": 8170.877,
+   "pk_fin_m": 7968.248,
+   "longitud_m": 202.629,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22MER",
+   "station": "MER",
+   "via": "V1",
+   "pk_ini_m": 7968.248,
+   "pk_fin_m": 7795.668,
+   "longitud_m": 172.58,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23MER",
+   "station": "MER",
+   "via": "V1",
+   "pk_ini_m": 7795.668,
+   "pk_fin_m": 7624.787,
+   "longitud_m": 170.881,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11MOC",
+   "station": "MOC",
+   "via": "V2",
+   "pk_ini_m": 5711.803,
+   "pk_fin_m": 5482.507,
+   "longitud_m": 229.296,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C12MOC",
+   "station": "MOC",
+   "via": "V2",
+   "pk_ini_m": 5482.507,
+   "pk_fin_m": 5309.558,
+   "longitud_m": 172.949,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13MOC",
+   "station": "MOC",
+   "via": "V2",
+   "pk_ini_m": 5309.558,
+   "pk_fin_m": 4970.757,
+   "longitud_m": 338.801,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21MOC",
+   "station": "MOC",
+   "via": "V1",
+   "pk_ini_m": 5702.979,
+   "pk_fin_m": 5475.637,
+   "longitud_m": 227.342,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22MOC",
+   "station": "MOC",
+   "via": "V1",
+   "pk_ini_m": 5475.637,
+   "pk_fin_m": 5302.848,
+   "longitud_m": 172.789,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23MOC",
+   "station": "MOC",
+   "via": "V1",
+   "pk_ini_m": 5302.848,
+   "pk_fin_m": 4961.808,
+   "longitud_m": 341.04,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C09OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 16998.43,
+   "pk_fin_m": 16551.74,
+   "longitud_m": 446.69,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C10OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 17164.67,
+   "pk_fin_m": 16998.43,
+   "longitud_m": 166.24,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 17213.65,
+   "pk_fin_m": 17164.67,
+   "longitud_m": 48.98,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C12OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 17386.17,
+   "pk_fin_m": 17213.65,
+   "longitud_m": 172.52,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C19OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17002.78,
+   "pk_fin_m": 16555.03,
+   "longitud_m": 447.75,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C20OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17133.01,
+   "pk_fin_m": 17002.78,
+   "longitud_m": 130.23,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17217.61,
+   "pk_fin_m": 17133.01,
+   "longitud_m": 84.6,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C22OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17393.43,
+   "pk_fin_m": 17217.61,
+   "longitud_m": 175.82,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C64OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17393.43,
+   "pk_fin_m": 17217.61,
+   "longitud_m": 175.82,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C84OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 16144.03,
+   "pk_fin_m": 15979.62,
+   "longitud_m": 164.41,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C104OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 16144.03,
+   "pk_fin_m": 15979.62,
+   "longitud_m": 164.41,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C10PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 1064.256,
+   "pk_fin_m": 924.643,
+   "longitud_m": 139.613,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C11PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 924.643,
+   "pk_fin_m": 758.472,
+   "longitud_m": 166.171,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C12PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2383.517,
+   "pk_fin_m": 2212,
+   "longitud_m": 171.517,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C14PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2212,
+   "pk_fin_m": 2037.179,
+   "longitud_m": 174.821,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C16PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 924.643,
+   "pk_fin_m": 758.472,
+   "longitud_m": 166.171,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C20PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 1057.194,
+   "pk_fin_m": 917.977,
+   "longitud_m": 139.217,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C22PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2383.517,
+   "pk_fin_m": 2212,
+   "longitud_m": 171.517,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C24PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2212,
+   "pk_fin_m": 2037.179,
+   "longitud_m": 174.821,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C26PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 924.643,
+   "pk_fin_m": 758.472,
+   "longitud_m": 166.171,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C36PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 1057.194,
+   "pk_fin_m": 917.977,
+   "longitud_m": 139.217,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C37PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 917.977,
+   "pk_fin_m": 784.822,
+   "longitud_m": 133.155,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C42PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 2375.751,
+   "pk_fin_m": 2205.328,
+   "longitud_m": 170.423,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C44PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 2375.751,
+   "pk_fin_m": 2205.328,
+   "longitud_m": 170.423,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C64PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 2375.751,
+   "pk_fin_m": 2205.328,
+   "longitud_m": 170.423,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C10PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 9101.778,
+   "pk_fin_m": 8942.438,
+   "longitud_m": 159.34,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8942.438,
+   "pk_fin_m": 8867.538,
+   "longitud_m": 74.9,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C12PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8867.538,
+   "pk_fin_m": 8694.795,
+   "longitud_m": 172.743,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8694.795,
+   "pk_fin_m": 8581.728,
+   "longitud_m": 113.067,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C14PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8581.728,
+   "pk_fin_m": 8380.126,
+   "longitud_m": 201.602,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C15PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8380.126,
+   "pk_fin_m": 8179.356,
+   "longitud_m": 200.77,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C21PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8930.317,
+   "pk_fin_m": 8862.386,
+   "longitud_m": 67.931,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C22PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8862.386,
+   "pk_fin_m": 8689.44,
+   "longitud_m": 172.946,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8689.44,
+   "pk_fin_m": 8573.387,
+   "longitud_m": 116.053,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C24PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8573.387,
+   "pk_fin_m": 8371.936,
+   "longitud_m": 201.451,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C25PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8371.936,
+   "pk_fin_m": 8170.877,
+   "longitud_m": 201.059,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C32PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8867.538,
+   "pk_fin_m": 8694.795,
+   "longitud_m": 172.743,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C33PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 9101.778,
+   "pk_fin_m": 8942.438,
+   "longitud_m": 159.34,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C34PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 10245.45,
+   "pk_fin_m": 10094.82,
+   "longitud_m": 150.63,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C09SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 9824.51,
+   "pk_fin_m": 9720.91,
+   "longitud_m": 103.6,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C10SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 9720.91,
+   "pk_fin_m": 9605.53,
+   "longitud_m": 115.38,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C14SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 10429.91,
+   "pk_fin_m": 10245.45,
+   "longitud_m": 184.46,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C15SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 10245.45,
+   "pk_fin_m": 10094.82,
+   "longitud_m": 150.63,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C16SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 10094.82,
+   "pk_fin_m": 9997.94,
+   "longitud_m": 96.88,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C17SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 9997.94,
+   "pk_fin_m": 9824.51,
+   "longitud_m": 173.43,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C19SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 9814.3,
+   "pk_fin_m": 9708.38,
+   "longitud_m": 105.92,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C20SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 9708.38,
+   "pk_fin_m": 9597.93,
+   "longitud_m": 110.45,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C24SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 10425.15,
+   "pk_fin_m": 10251.6,
+   "longitud_m": 173.55,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C25SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 10251.6,
+   "pk_fin_m": 10088.12,
+   "longitud_m": 163.48,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C26SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 10088.12,
+   "pk_fin_m": 9990.59,
+   "longitud_m": 97.53,
+   "n_virtuales": 0
+  },
+  {
+   "id": "C27SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 9990.59,
+   "pk_fin_m": 9814.3,
+   "longitud_m": 176.29,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C11SEV",
+   "station": "SEV",
+   "via": "V2",
+   "pk_ini_m": 13100.58,
+   "pk_fin_m": 12898.95,
+   "longitud_m": 201.63,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C12SEV",
+   "station": "SEV",
+   "via": "V2",
+   "pk_ini_m": 12898.95,
+   "pk_fin_m": 12727.02,
+   "longitud_m": 171.93,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13SEV",
+   "station": "SEV",
+   "via": "V2",
+   "pk_ini_m": 12727.02,
+   "pk_fin_m": 12476.98,
+   "longitud_m": 250.04,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21SEV",
+   "station": "SEV",
+   "via": "V1",
+   "pk_ini_m": 13096.01,
+   "pk_fin_m": 12893.91,
+   "longitud_m": 202.1,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22SEV",
+   "station": "SEV",
+   "via": "V1",
+   "pk_ini_m": 12893.91,
+   "pk_fin_m": 12722.23,
+   "longitud_m": 171.68,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23SEV",
+   "station": "SEV",
+   "via": "V1",
+   "pk_ini_m": 12722.23,
+   "pk_fin_m": 12471.49,
+   "longitud_m": 250.74,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C11SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 6530.108,
+   "pk_fin_m": 6110.522,
+   "longitud_m": 419.586,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C12SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 6110.522,
+   "pk_fin_m": 5938.81,
+   "longitud_m": 171.712,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 5938.81,
+   "pk_fin_m": 5825.698,
+   "longitud_m": 113.112,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C14SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 5825.698,
+   "pk_fin_m": 5711.803,
+   "longitud_m": 113.895,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C20SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 5816.816,
+   "pk_fin_m": 5702.979,
+   "longitud_m": 113.837,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 6522.926,
+   "pk_fin_m": 6101.804,
+   "longitud_m": 421.122,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C22SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 6101.804,
+   "pk_fin_m": 5929.608,
+   "longitud_m": 172.196,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 5929.608,
+   "pk_fin_m": 5816.816,
+   "longitud_m": 112.792,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C11TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 16144.03,
+   "pk_fin_m": 15979.62,
+   "longitud_m": 164.41,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C12TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15979.62,
+   "pk_fin_m": 15807.97,
+   "longitud_m": 171.65,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C13TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15807.97,
+   "pk_fin_m": 15350.1,
+   "longitud_m": 457.87,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C14TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15350.1,
+   "pk_fin_m": 14892.94,
+   "longitud_m": 457.16,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C18TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 16555.03,
+   "pk_fin_m": 16144.03,
+   "longitud_m": 411,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C20TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 16551.74,
+   "pk_fin_m": 16139.67,
+   "longitud_m": 412.07,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C21TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 16139.67,
+   "pk_fin_m": 15976.06,
+   "longitud_m": 163.61,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15976.06,
+   "pk_fin_m": 15803.97,
+   "longitud_m": 172.09,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15803.97,
+   "pk_fin_m": 15347.15,
+   "longitud_m": 456.82,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C24TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15347.15,
+   "pk_fin_m": 14890.79,
+   "longitud_m": 456.36,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C09ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 1551.425,
+   "pk_fin_m": 1064.256,
+   "longitud_m": 487.169,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C10ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 2553.823,
+   "pk_fin_m": 2383.517,
+   "longitud_m": 170.306,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C11ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 2383.517,
+   "pk_fin_m": 2212,
+   "longitud_m": 171.517,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C14ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 1811.676,
+   "pk_fin_m": 1551.425,
+   "longitud_m": 260.251,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C19ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1543.402,
+   "pk_fin_m": 1057.194,
+   "longitud_m": 486.208,
+   "n_virtuales": 3
+  },
+  {
+   "id": "C20ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 2545.912,
+   "pk_fin_m": 2375.751,
+   "longitud_m": 170.161,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C21ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 2375.751,
+   "pk_fin_m": 2205.328,
+   "longitud_m": 170.423,
+   "n_virtuales": 2
+  },
+  {
+   "id": "C22ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 2205.328,
+   "pk_fin_m": 2030.192,
+   "longitud_m": 175.136,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C23ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1057.194,
+   "pk_fin_m": 917.977,
+   "longitud_m": 139.217,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C24ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1707.193,
+   "pk_fin_m": 1543.402,
+   "longitud_m": 163.791,
+   "n_virtuales": 1
+  },
+  {
+   "id": "C33ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1707.193,
+   "pk_fin_m": 14.515,
+   "longitud_m": 1692.678,
+   "n_virtuales": 0
+  }
+ ],
+ "virtuales": [
+  {
+   "id": "C10BAD1",
+   "padre": "C10BAD",
+   "station": "BAD",
+   "via": "V2",
+   "pk_ini_m": 10743.47,
+   "pk_fin_m": 10675.17,
+   "longitud_m": 68.3
+  },
+  {
+   "id": "C10BAD2",
+   "padre": "C10BAD",
+   "station": "BAD",
+   "via": "V2",
+   "pk_ini_m": 10836.34,
+   "pk_fin_m": 10743.47,
+   "longitud_m": 92.87
+  },
+  {
+   "id": "C12BAD1",
+   "padre": "C12BAD",
+   "station": "BAD",
+   "via": "V2",
+   "pk_ini_m": 10603.47,
+   "pk_fin_m": 10429.91,
+   "longitud_m": 173.56
+  },
+  {
+   "id": "C13BAD1",
+   "padre": "C13BAD",
+   "station": "BAD",
+   "via": "V2",
+   "pk_ini_m": 10989.4,
+   "pk_fin_m": 10836.34,
+   "longitud_m": 153.06
+  },
+  {
+   "id": "C22BAD1",
+   "padre": "C22BAD",
+   "station": "BAD",
+   "via": "V1",
+   "pk_ini_m": 10599.1,
+   "pk_fin_m": 10425.15,
+   "longitud_m": 173.95
+  },
+  {
+   "id": "C11BAL1",
+   "padre": "C11BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4769.304,
+   "pk_fin_m": 4629.304,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11BAL2",
+   "padre": "C11BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4970.757,
+   "pk_fin_m": 4769.304,
+   "longitud_m": 201.453
+  },
+  {
+   "id": "C12BAL1",
+   "padre": "C12BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4629.304,
+   "pk_fin_m": 4455.216,
+   "longitud_m": 174.088
+  },
+  {
+   "id": "C14BAL1",
+   "padre": "C14BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4308.634,
+   "pk_fin_m": 4226.036,
+   "longitud_m": 82.598
+  },
+  {
+   "id": "C14BAL2",
+   "padre": "C14BAL",
+   "station": "BAL",
+   "via": "V2",
+   "pk_ini_m": 4389.597,
+   "pk_fin_m": 4308.634,
+   "longitud_m": 80.963
+  },
+  {
+   "id": "C21BAL1",
+   "padre": "C21BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4766,
+   "pk_fin_m": 4622.684,
+   "longitud_m": 143.316
+  },
+  {
+   "id": "C21BAL2",
+   "padre": "C21BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4961.808,
+   "pk_fin_m": 4766,
+   "longitud_m": 195.808
+  },
+  {
+   "id": "C22BAL1",
+   "padre": "C22BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4622.684,
+   "pk_fin_m": 4448.634,
+   "longitud_m": 174.05
+  },
+  {
+   "id": "C24BAL1",
+   "padre": "C24BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4308.634,
+   "pk_fin_m": 4216.115,
+   "longitud_m": 92.519
+  },
+  {
+   "id": "C24BAL2",
+   "padre": "C24BAL",
+   "station": "BAL",
+   "via": "V1",
+   "pk_ini_m": 4376.972,
+   "pk_fin_m": 4308.634,
+   "longitud_m": 68.338
+  },
+  {
+   "id": "C11BOU1",
+   "padre": "C11BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 4022.357,
+   "pk_fin_m": 3882.357,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11BOU2",
+   "padre": "C11BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 4086.479,
+   "pk_fin_m": 4022.357,
+   "longitud_m": 64.122
+  },
+  {
+   "id": "C12BOU1",
+   "padre": "C12BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 3882.357,
+   "pk_fin_m": 3711.585,
+   "longitud_m": 170.772
+  },
+  {
+   "id": "C13BOU1",
+   "padre": "C13BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 3568,
+   "pk_fin_m": 3406.601,
+   "longitud_m": 161.399
+  },
+  {
+   "id": "C13BOU2",
+   "padre": "C13BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 3711.586,
+   "pk_fin_m": 3568,
+   "longitud_m": 143.586
+  },
+  {
+   "id": "C14BOU1",
+   "padre": "C14BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 3262.974,
+   "pk_fin_m": 3254.319,
+   "longitud_m": 8.655
+  },
+  {
+   "id": "C14BOU2",
+   "padre": "C14BOU",
+   "station": "BOU",
+   "via": "V2",
+   "pk_ini_m": 3406.601,
+   "pk_fin_m": 3262.974,
+   "longitud_m": 143.627
+  },
+  {
+   "id": "C20BOU1",
+   "padre": "C20BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 3259,
+   "pk_fin_m": 3246.581,
+   "longitud_m": 12.419
+  },
+  {
+   "id": "C20BOU2",
+   "padre": "C20BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 3399.217,
+   "pk_fin_m": 3259,
+   "longitud_m": 140.217
+  },
+  {
+   "id": "C21BOU1",
+   "padre": "C21BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 4019,
+   "pk_fin_m": 3875.406,
+   "longitud_m": 143.594
+  },
+  {
+   "id": "C21BOU2",
+   "padre": "C21BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 4076.852,
+   "pk_fin_m": 4019,
+   "longitud_m": 57.852
+  },
+  {
+   "id": "C22BOU1",
+   "padre": "C22BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 3875.406,
+   "pk_fin_m": 3704.01,
+   "longitud_m": 171.396
+  },
+  {
+   "id": "C23BOU1",
+   "padre": "C23BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 3564.01,
+   "pk_fin_m": 3399.217,
+   "longitud_m": 164.793
+  },
+  {
+   "id": "C23BOU2",
+   "padre": "C23BOU",
+   "station": "BOU",
+   "via": "V1",
+   "pk_ini_m": 3704.01,
+   "pk_fin_m": 3564.01,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11CAN1",
+   "padre": "C11CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7263,
+   "pk_fin_m": 7123,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11CAN2",
+   "padre": "C11CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7380.105,
+   "pk_fin_m": 7263,
+   "longitud_m": 117.105
+  },
+  {
+   "id": "C12CAN1",
+   "padre": "C12CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 6110.522,
+   "pk_fin_m": 5938.522,
+   "longitud_m": 172
+  },
+  {
+   "id": "C13CAN1",
+   "padre": "C13CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7658.852,
+   "pk_fin_m": 7519.96,
+   "longitud_m": 138.892
+  },
+  {
+   "id": "C13CAN2",
+   "padre": "C13CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7800.852,
+   "pk_fin_m": 7658.852,
+   "longitud_m": 142
+  },
+  {
+   "id": "C13CAN3",
+   "padre": "C13CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7519.96,
+   "pk_fin_m": 7379.96,
+   "longitud_m": 140
+  },
+  {
+   "id": "C14CAN1",
+   "padre": "C14CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7502,
+   "pk_fin_m": 7380.105,
+   "longitud_m": 121.895
+  },
+  {
+   "id": "C14CAN2",
+   "padre": "C14CAN",
+   "station": "CAN",
+   "via": "V2",
+   "pk_ini_m": 7630.773,
+   "pk_fin_m": 7502,
+   "longitud_m": 128.773
+  },
+  {
+   "id": "C20CAN1",
+   "padre": "C20CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 7502,
+   "pk_fin_m": 7374.86,
+   "longitud_m": 127.14
+  },
+  {
+   "id": "C20CAN2",
+   "padre": "C20CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 7624.787,
+   "pk_fin_m": 7502,
+   "longitud_m": 122.787
+  },
+  {
+   "id": "C21CAN1",
+   "padre": "C21CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 7512.927,
+   "pk_fin_m": 7372.927,
+   "longitud_m": 140
+  },
+  {
+   "id": "C21CAN2",
+   "padre": "C21CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 7624.787,
+   "pk_fin_m": 7512.927,
+   "longitud_m": 111.86
+  },
+  {
+   "id": "C22CAN1",
+   "padre": "C22CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 6101.804,
+   "pk_fin_m": 5929.804,
+   "longitud_m": 172
+  },
+  {
+   "id": "C23CAN1",
+   "padre": "C23CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 6809,
+   "pk_fin_m": 6662.926,
+   "longitud_m": 146.074
+  },
+  {
+   "id": "C23CAN2",
+   "padre": "C23CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 6951,
+   "pk_fin_m": 6809,
+   "longitud_m": 142
+  },
+  {
+   "id": "C23CAN3",
+   "padre": "C23CAN",
+   "station": "CAN",
+   "via": "V1",
+   "pk_ini_m": 6662.926,
+   "pk_fin_m": 6522.926,
+   "longitud_m": 140
+  },
+  {
+   "id": "C10CHP1",
+   "padre": "C10CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13690.03,
+   "pk_fin_m": 13618.56,
+   "longitud_m": 71.47
+  },
+  {
+   "id": "C10CHP2",
+   "padre": "C10CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13783.3,
+   "pk_fin_m": 13690.03,
+   "longitud_m": 93.27
+  },
+  {
+   "id": "C12CHP1",
+   "padre": "C12CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13550.03,
+   "pk_fin_m": 13377.67,
+   "longitud_m": 172.36
+  },
+  {
+   "id": "C13CHP1",
+   "padre": "C13CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13377.67,
+   "pk_fin_m": 13300.34,
+   "longitud_m": 77.33
+  },
+  {
+   "id": "C14CHP1",
+   "padre": "C14CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13234,
+   "pk_fin_m": 13100.58,
+   "longitud_m": 133.42
+  },
+  {
+   "id": "C14CHP2",
+   "padre": "C14CHP",
+   "station": "CHP",
+   "via": "V2",
+   "pk_ini_m": 13300.34,
+   "pk_fin_m": 13234,
+   "longitud_m": 66.34
+  },
+  {
+   "id": "C20CHP1",
+   "padre": "C20CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13686,
+   "pk_fin_m": 13611.22,
+   "longitud_m": 74.78
+  },
+  {
+   "id": "C20CHP2",
+   "padre": "C20CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13785.66,
+   "pk_fin_m": 13686,
+   "longitud_m": 99.66
+  },
+  {
+   "id": "C22CHP1",
+   "padre": "C22CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13545.1,
+   "pk_fin_m": 13372.72,
+   "longitud_m": 172.38
+  },
+  {
+   "id": "C23CHP1",
+   "padre": "C23CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13372.72,
+   "pk_fin_m": 13295.75,
+   "longitud_m": 76.97
+  },
+  {
+   "id": "C24CHP1",
+   "padre": "C24CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13232.72,
+   "pk_fin_m": 13096.01,
+   "longitud_m": 136.71
+  },
+  {
+   "id": "C24CHP2",
+   "padre": "C24CHP",
+   "station": "CHP",
+   "via": "V1",
+   "pk_ini_m": 13295.75,
+   "pk_fin_m": 13232.72,
+   "longitud_m": 63.03
+  },
+  {
+   "id": "C11CUA1",
+   "padre": "C11CUA",
+   "station": "CUA",
+   "via": "V2",
+   "pk_ini_m": 11303.62,
+   "pk_fin_m": 11163.62,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11CUA2",
+   "padre": "C11CUA",
+   "station": "CUA",
+   "via": "V2",
+   "pk_ini_m": 11420,
+   "pk_fin_m": 11303.62,
+   "longitud_m": 116.38
+  },
+  {
+   "id": "C11CUA3",
+   "padre": "C11CUA",
+   "station": "CUA",
+   "via": "V2",
+   "pk_ini_m": 11546.46,
+   "pk_fin_m": 11420,
+   "longitud_m": 126.46
+  },
+  {
+   "id": "C12CUA1",
+   "padre": "C12CUA",
+   "station": "CUA",
+   "via": "V2",
+   "pk_ini_m": 11163.62,
+   "pk_fin_m": 10989.4,
+   "longitud_m": 174.22
+  },
+  {
+   "id": "C21CUA1",
+   "padre": "C21CUA",
+   "station": "CUA",
+   "via": "V1",
+   "pk_ini_m": 11298.42,
+   "pk_fin_m": 11158.42,
+   "longitud_m": 140
+  },
+  {
+   "id": "C21CUA2",
+   "padre": "C21CUA",
+   "station": "CUA",
+   "via": "V1",
+   "pk_ini_m": 11420,
+   "pk_fin_m": 11298.42,
+   "longitud_m": 121.58
+  },
+  {
+   "id": "C21CUA3",
+   "padre": "C21CUA",
+   "station": "CUA",
+   "via": "V1",
+   "pk_ini_m": 11541.71,
+   "pk_fin_m": 11420,
+   "longitud_m": 121.71
+  },
+  {
+   "id": "C22CUA1",
+   "padre": "C22CUA",
+   "station": "CUA",
+   "via": "V1",
+   "pk_ini_m": 11158.42,
+   "pk_fin_m": 10984.15,
+   "longitud_m": 174.27
+  },
+  {
+   "id": "C11GOM1",
+   "padre": "C11GOM",
+   "station": "GOM",
+   "via": "V2",
+   "pk_ini_m": 3254.319,
+   "pk_fin_m": 3122.974,
+   "longitud_m": 131.345
+  },
+  {
+   "id": "C12GOM1",
+   "padre": "C12GOM",
+   "station": "GOM",
+   "via": "V2",
+   "pk_ini_m": 3122.974,
+   "pk_fin_m": 2949.987,
+   "longitud_m": 172.987
+  },
+  {
+   "id": "C13GOM1",
+   "padre": "C13GOM",
+   "station": "GOM",
+   "via": "V2",
+   "pk_ini_m": 2678,
+   "pk_fin_m": 2553.823,
+   "longitud_m": 124.177
+  },
+  {
+   "id": "C13GOM2",
+   "padre": "C13GOM",
+   "station": "GOM",
+   "via": "V2",
+   "pk_ini_m": 2807,
+   "pk_fin_m": 2678,
+   "longitud_m": 129
+  },
+  {
+   "id": "C13GOM3",
+   "padre": "C13GOM",
+   "station": "GOM",
+   "via": "V2",
+   "pk_ini_m": 2949.987,
+   "pk_fin_m": 2807,
+   "longitud_m": 142.987
+  },
+  {
+   "id": "C21GOM1",
+   "padre": "C21GOM",
+   "station": "GOM",
+   "via": "V1",
+   "pk_ini_m": 3246.581,
+   "pk_fin_m": 3116.781,
+   "longitud_m": 129.8
+  },
+  {
+   "id": "C22GOM1",
+   "padre": "C22GOM",
+   "station": "GOM",
+   "via": "V1",
+   "pk_ini_m": 3116.781,
+   "pk_fin_m": 2943.175,
+   "longitud_m": 173.606
+  },
+  {
+   "id": "C23GOM1",
+   "padre": "C23GOM",
+   "station": "GOM",
+   "via": "V1",
+   "pk_ini_m": 2678,
+   "pk_fin_m": 2545.912,
+   "longitud_m": 132.088
+  },
+  {
+   "id": "C23GOM2",
+   "padre": "C23GOM",
+   "station": "GOM",
+   "via": "V1",
+   "pk_ini_m": 2803.175,
+   "pk_fin_m": 2678,
+   "longitud_m": 125.175
+  },
+  {
+   "id": "C23GOM3",
+   "padre": "C23GOM",
+   "station": "GOM",
+   "via": "V1",
+   "pk_ini_m": 2943.175,
+   "pk_fin_m": 2803.175,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11INS1",
+   "padre": "C11INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 12243.98,
+   "pk_fin_m": 12103.98,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11INS2",
+   "padre": "C11INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 12352,
+   "pk_fin_m": 12243.98,
+   "longitud_m": 108.02
+  },
+  {
+   "id": "C12INS1",
+   "padre": "C12INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 12103.98,
+   "pk_fin_m": 11932.82,
+   "longitud_m": 171.16
+  },
+  {
+   "id": "C13INS1",
+   "padre": "C13INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 11666,
+   "pk_fin_m": 11546.46,
+   "longitud_m": 119.54
+  },
+  {
+   "id": "C13INS2",
+   "padre": "C13INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 11789,
+   "pk_fin_m": 11666,
+   "longitud_m": 123
+  },
+  {
+   "id": "C13INS3",
+   "padre": "C13INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 11932.82,
+   "pk_fin_m": 11789,
+   "longitud_m": 143.82
+  },
+  {
+   "id": "C14INS1",
+   "padre": "C14INS",
+   "station": "INS",
+   "via": "V2",
+   "pk_ini_m": 12476.98,
+   "pk_fin_m": 12352,
+   "longitud_m": 124.98
+  },
+  {
+   "id": "C20INS1",
+   "padre": "C20INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 12471.49,
+   "pk_fin_m": 12346.48,
+   "longitud_m": 125.01
+  },
+  {
+   "id": "C21INS1",
+   "padre": "C21INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 12240,
+   "pk_fin_m": 12099.08,
+   "longitud_m": 140.92
+  },
+  {
+   "id": "C21INS2",
+   "padre": "C21INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 12346.48,
+   "pk_fin_m": 12240,
+   "longitud_m": 106.48
+  },
+  {
+   "id": "C22INS1",
+   "padre": "C22INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 12099.08,
+   "pk_fin_m": 11928,
+   "longitud_m": 171.08
+  },
+  {
+   "id": "C23INS1",
+   "padre": "C23INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 11666,
+   "pk_fin_m": 11541.71,
+   "longitud_m": 124.29
+  },
+  {
+   "id": "C23INS2",
+   "padre": "C23INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 11788,
+   "pk_fin_m": 11666,
+   "longitud_m": 122
+  },
+  {
+   "id": "C23INS3",
+   "padre": "C23INS",
+   "station": "INS",
+   "via": "V1",
+   "pk_ini_m": 11928,
+   "pk_fin_m": 11788,
+   "longitud_m": 140
+  },
+  {
+   "id": "C12ISA1",
+   "padre": "C12ISA",
+   "station": "ISA",
+   "via": "V2",
+   "pk_ini_m": 9401.6,
+   "pk_fin_m": 9225.293,
+   "longitud_m": 176.307
+  },
+  {
+   "id": "C13ISA1",
+   "padre": "C13ISA",
+   "station": "ISA",
+   "via": "V2",
+   "pk_ini_m": 9225.293,
+   "pk_fin_m": 9101.778,
+   "longitud_m": 123.515
+  },
+  {
+   "id": "C21ISA1",
+   "padre": "C21ISA",
+   "station": "ISA",
+   "via": "V1",
+   "pk_ini_m": 9538,
+   "pk_fin_m": 9396.35,
+   "longitud_m": 141.65
+  },
+  {
+   "id": "C21ISA2",
+   "padre": "C21ISA",
+   "station": "ISA",
+   "via": "V1",
+   "pk_ini_m": 9597.93,
+   "pk_fin_m": 9538,
+   "longitud_m": 59.93
+  },
+  {
+   "id": "C22ISA1",
+   "padre": "C22ISA",
+   "station": "ISA",
+   "via": "V1",
+   "pk_ini_m": 9396.35,
+   "pk_fin_m": 9220.053,
+   "longitud_m": 176.297
+  },
+  {
+   "id": "C10JNA1",
+   "padre": "C10JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14892.94,
+   "pk_fin_m": 14812.89,
+   "longitud_m": 80.05
+  },
+  {
+   "id": "C11JNA1",
+   "padre": "C11JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14812.89,
+   "pk_fin_m": 14670.93,
+   "longitud_m": 141.96
+  },
+  {
+   "id": "C12JNA1",
+   "padre": "C12JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14670.93,
+   "pk_fin_m": 14498.93,
+   "longitud_m": 172
+  },
+  {
+   "id": "C13JNA1",
+   "padre": "C13JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14279.93,
+   "pk_fin_m": 14066.14,
+   "longitud_m": 213.79
+  },
+  {
+   "id": "C13JNA2",
+   "padre": "C13JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14498.93,
+   "pk_fin_m": 14279.93,
+   "longitud_m": 219
+  },
+  {
+   "id": "C13JNA3",
+   "padre": "C13JNA",
+   "station": "JNA",
+   "via": "V2",
+   "pk_ini_m": 14066.14,
+   "pk_fin_m": 13923.21,
+   "longitud_m": 142.93
+  },
+  {
+   "id": "C20JNA1",
+   "padre": "C20JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14890.79,
+   "pk_fin_m": 14811.11,
+   "longitud_m": 79.68
+  },
+  {
+   "id": "C21JNA1",
+   "padre": "C21JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14811.11,
+   "pk_fin_m": 14669.23,
+   "longitud_m": 141.88
+  },
+  {
+   "id": "C22JNA1",
+   "padre": "C22JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14669.23,
+   "pk_fin_m": 14496.9,
+   "longitud_m": 172.33
+  },
+  {
+   "id": "C23JNA1",
+   "padre": "C23JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14277.9,
+   "pk_fin_m": 14060.56,
+   "longitud_m": 217.34
+  },
+  {
+   "id": "C23JNA2",
+   "padre": "C23JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14496.9,
+   "pk_fin_m": 14277.9,
+   "longitud_m": 219
+  },
+  {
+   "id": "C23JNA3",
+   "padre": "C23JNA",
+   "station": "JNA",
+   "via": "V1",
+   "pk_ini_m": 14060.56,
+   "pk_fin_m": 13919.66,
+   "longitud_m": 140.9
+  },
+  {
+   "id": "C11MER1",
+   "padre": "C11MER",
+   "station": "MER",
+   "via": "V2",
+   "pk_ini_m": 8113.732,
+   "pk_fin_m": 7973.732,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11MER2",
+   "padre": "C11MER",
+   "station": "MER",
+   "via": "V2",
+   "pk_ini_m": 8179.356,
+   "pk_fin_m": 8113.732,
+   "longitud_m": 65.624
+  },
+  {
+   "id": "C12MER1",
+   "padre": "C12MER",
+   "station": "MER",
+   "via": "V2",
+   "pk_ini_m": 7973.732,
+   "pk_fin_m": 7800.853,
+   "longitud_m": 172.879
+  },
+  {
+   "id": "C13MER1",
+   "padre": "C13MER",
+   "station": "MER",
+   "via": "V2",
+   "pk_ini_m": 7658,
+   "pk_fin_m": 7630.773,
+   "longitud_m": 27.227
+  },
+  {
+   "id": "C13MER2",
+   "padre": "C13MER",
+   "station": "MER",
+   "via": "V2",
+   "pk_ini_m": 7800.852,
+   "pk_fin_m": 7658,
+   "longitud_m": 142.852
+  },
+  {
+   "id": "C21MER1",
+   "padre": "C21MER",
+   "station": "MER",
+   "via": "V1",
+   "pk_ini_m": 8111,
+   "pk_fin_m": 7968.248,
+   "longitud_m": 142.752
+  },
+  {
+   "id": "C21MER2",
+   "padre": "C21MER",
+   "station": "MER",
+   "via": "V1",
+   "pk_ini_m": 8170.877,
+   "pk_fin_m": 8111,
+   "longitud_m": 59.877
+  },
+  {
+   "id": "C22MER1",
+   "padre": "C22MER",
+   "station": "MER",
+   "via": "V1",
+   "pk_ini_m": 7968.248,
+   "pk_fin_m": 7795.668,
+   "longitud_m": 172.58
+  },
+  {
+   "id": "C23MER1",
+   "padre": "C23MER",
+   "station": "MER",
+   "via": "V1",
+   "pk_ini_m": 7655.668,
+   "pk_fin_m": 7624.787,
+   "longitud_m": 30.881
+  },
+  {
+   "id": "C23MER2",
+   "padre": "C23MER",
+   "station": "MER",
+   "via": "V1",
+   "pk_ini_m": 7795.668,
+   "pk_fin_m": 7655.668,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11MOC1",
+   "padre": "C11MOC",
+   "station": "MOC",
+   "via": "V2",
+   "pk_ini_m": 5622.507,
+   "pk_fin_m": 5482.507,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11MOC2",
+   "padre": "C11MOC",
+   "station": "MOC",
+   "via": "V2",
+   "pk_ini_m": 5711.803,
+   "pk_fin_m": 5622.507,
+   "longitud_m": 89.296
+  },
+  {
+   "id": "C12MOC1",
+   "padre": "C12MOC",
+   "station": "MOC",
+   "via": "V2",
+   "pk_ini_m": 5482.507,
+   "pk_fin_m": 5309.558,
+   "longitud_m": 172.949
+  },
+  {
+   "id": "C13MOC1",
+   "padre": "C13MOC",
+   "station": "MOC",
+   "via": "V2",
+   "pk_ini_m": 5166,
+   "pk_fin_m": 4970.757,
+   "longitud_m": 195.243
+  },
+  {
+   "id": "C13MOC2",
+   "padre": "C13MOC",
+   "station": "MOC",
+   "via": "V2",
+   "pk_ini_m": 5309.558,
+   "pk_fin_m": 5166,
+   "longitud_m": 143.558
+  },
+  {
+   "id": "C21MOC1",
+   "padre": "C21MOC",
+   "station": "MOC",
+   "via": "V1",
+   "pk_ini_m": 5619,
+   "pk_fin_m": 5475.637,
+   "longitud_m": 143.363
+  },
+  {
+   "id": "C21MOC2",
+   "padre": "C21MOC",
+   "station": "MOC",
+   "via": "V1",
+   "pk_ini_m": 5702.979,
+   "pk_fin_m": 5619,
+   "longitud_m": 83.979
+  },
+  {
+   "id": "C22MOC1",
+   "padre": "C22MOC",
+   "station": "MOC",
+   "via": "V1",
+   "pk_ini_m": 5475.637,
+   "pk_fin_m": 5302.849,
+   "longitud_m": 172.788
+  },
+  {
+   "id": "C23MOC1",
+   "padre": "C23MOC",
+   "station": "MOC",
+   "via": "V1",
+   "pk_ini_m": 5162.847,
+   "pk_fin_m": 4961.807,
+   "longitud_m": 201.04
+  },
+  {
+   "id": "C23MOC2",
+   "padre": "C23MOC",
+   "station": "MOC",
+   "via": "V1",
+   "pk_ini_m": 5302.848,
+   "pk_fin_m": 5162.847,
+   "longitud_m": 140.001
+  },
+  {
+   "id": "C09OBS1",
+   "padre": "C09OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 16701.333,
+   "pk_fin_m": 16551.74,
+   "longitud_m": 149.593
+  },
+  {
+   "id": "C09OBS2",
+   "padre": "C09OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 16850.667,
+   "pk_fin_m": 16701.333,
+   "longitud_m": 149.334
+  },
+  {
+   "id": "C09OBS3",
+   "padre": "C09OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 16998.43,
+   "pk_fin_m": 16850.667,
+   "longitud_m": 147.763
+  },
+  {
+   "id": "C104OBS1",
+   "padre": "C104OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 16144.03,
+   "pk_fin_m": 15980.03,
+   "longitud_m": 164
+  },
+  {
+   "id": "C10OBS1",
+   "padre": "C10OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 17075,
+   "pk_fin_m": 16998.43,
+   "longitud_m": 76.57
+  },
+  {
+   "id": "C10OBS2",
+   "padre": "C10OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 17164.67,
+   "pk_fin_m": 17075,
+   "longitud_m": 89.67
+  },
+  {
+   "id": "C12OBS1",
+   "padre": "C12OBS",
+   "station": "OBS",
+   "via": "V1",
+   "pk_ini_m": 17386.17,
+   "pk_fin_m": 17213.65,
+   "longitud_m": 172.52
+  },
+  {
+   "id": "C19OBS1",
+   "padre": "C19OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 16701.333,
+   "pk_fin_m": 16555.03,
+   "longitud_m": 146.303
+  },
+  {
+   "id": "C19OBS2",
+   "padre": "C19OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 16850.667,
+   "pk_fin_m": 16701.333,
+   "longitud_m": 149.334
+  },
+  {
+   "id": "C19OBS3",
+   "padre": "C19OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17002.78,
+   "pk_fin_m": 16850.667,
+   "longitud_m": 152.113
+  },
+  {
+   "id": "C20OBS1",
+   "padre": "C20OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17075,
+   "pk_fin_m": 17002.78,
+   "longitud_m": 72.22
+  },
+  {
+   "id": "C20OBS2",
+   "padre": "C20OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17133.01,
+   "pk_fin_m": 17075,
+   "longitud_m": 58.01
+  },
+  {
+   "id": "C22OBS1",
+   "padre": "C22OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17393.43,
+   "pk_fin_m": 17217.61,
+   "longitud_m": 175.82
+  },
+  {
+   "id": "C64OBS1",
+   "padre": "C64OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 17393.43,
+   "pk_fin_m": 17217.43,
+   "longitud_m": 176
+  },
+  {
+   "id": "C84OBS1",
+   "padre": "C84OBS",
+   "station": "OBS",
+   "via": "V2",
+   "pk_ini_m": 16144.03,
+   "pk_fin_m": 15980.03,
+   "longitud_m": 164
+  },
+  {
+   "id": "C10PAN1",
+   "padre": "C10PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 1064.256,
+   "pk_fin_m": 924.643,
+   "longitud_m": 139.613
+  },
+  {
+   "id": "C11PAN1",
+   "padre": "C11PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 924.643,
+   "pk_fin_m": 877.35,
+   "longitud_m": 47.293
+  },
+  {
+   "id": "C12PAN1",
+   "padre": "C12PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2383.517,
+   "pk_fin_m": 2212.837,
+   "longitud_m": 170.68
+  },
+  {
+   "id": "C14PAN1",
+   "padre": "C14PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2115.01,
+   "pk_fin_m": 2035.26,
+   "longitud_m": 79.75
+  },
+  {
+   "id": "C14PAN2",
+   "padre": "C14PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2212,
+   "pk_fin_m": 2115.01,
+   "longitud_m": 96.99
+  },
+  {
+   "id": "C16PAN1",
+   "padre": "C16PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 924.643,
+   "pk_fin_m": 758.203,
+   "longitud_m": 166.44
+  },
+  {
+   "id": "C20PAN1",
+   "padre": "C20PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 1057.194,
+   "pk_fin_m": 917.977,
+   "longitud_m": 139.217
+  },
+  {
+   "id": "C22PAN1",
+   "padre": "C22PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2383.517,
+   "pk_fin_m": 2211.208,
+   "longitud_m": 172.309
+  },
+  {
+   "id": "C24PAN1",
+   "padre": "C24PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2104.54,
+   "pk_fin_m": 2036.82,
+   "longitud_m": 67.72
+  },
+  {
+   "id": "C24PAN2",
+   "padre": "C24PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 2212,
+   "pk_fin_m": 2104.54,
+   "longitud_m": 107.46
+  },
+  {
+   "id": "C26PAN1",
+   "padre": "C26PAN",
+   "station": "PAN",
+   "via": "V2",
+   "pk_ini_m": 924.643,
+   "pk_fin_m": 760.063,
+   "longitud_m": 164.58
+  },
+  {
+   "id": "C36PAN1",
+   "padre": "C36PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 1057.194,
+   "pk_fin_m": 917.734,
+   "longitud_m": 139.46
+  },
+  {
+   "id": "C37PAN1",
+   "padre": "C37PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 917.977,
+   "pk_fin_m": 877.017,
+   "longitud_m": 40.96
+  },
+  {
+   "id": "C42PAN1",
+   "padre": "C42PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 2375.751,
+   "pk_fin_m": 2204.071,
+   "longitud_m": 171.68
+  },
+  {
+   "id": "C44PAN1",
+   "padre": "C44PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 2251.911,
+   "pk_fin_m": 2206.401,
+   "longitud_m": 45.51
+  },
+  {
+   "id": "C44PAN2",
+   "padre": "C44PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 2375.751,
+   "pk_fin_m": 2251.911,
+   "longitud_m": 123.84
+  },
+  {
+   "id": "C64PAN1",
+   "padre": "C64PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 2256.171,
+   "pk_fin_m": 2203.461,
+   "longitud_m": 52.71
+  },
+  {
+   "id": "C64PAN2",
+   "padre": "C64PAN",
+   "station": "PAN",
+   "via": "V1",
+   "pk_ini_m": 2375.751,
+   "pk_fin_m": 2256.171,
+   "longitud_m": 119.58
+  },
+  {
+   "id": "C10PIN1",
+   "padre": "C10PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 9083,
+   "pk_fin_m": 8942.438,
+   "longitud_m": 140.562
+  },
+  {
+   "id": "C10PIN2",
+   "padre": "C10PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 9101.778,
+   "pk_fin_m": 9083,
+   "longitud_m": 18.778
+  },
+  {
+   "id": "C12PIN1",
+   "padre": "C12PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8867.538,
+   "pk_fin_m": 8694.795,
+   "longitud_m": 172.743
+  },
+  {
+   "id": "C14PIN1",
+   "padre": "C14PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8581.728,
+   "pk_fin_m": 8408.854,
+   "longitud_m": 172.874
+  },
+  {
+   "id": "C14PIN2",
+   "padre": "C14PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8408.854,
+   "pk_fin_m": 8380.126,
+   "longitud_m": 28.728
+  },
+  {
+   "id": "C15PIN1",
+   "padre": "C15PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8380.126,
+   "pk_fin_m": 8179.355,
+   "longitud_m": 200.771
+  },
+  {
+   "id": "C22PIN1",
+   "padre": "C22PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8862.386,
+   "pk_fin_m": 8689.441,
+   "longitud_m": 172.945
+  },
+  {
+   "id": "C23PIN1",
+   "padre": "C23PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8689.44,
+   "pk_fin_m": 8573.386,
+   "longitud_m": 116.054
+  },
+  {
+   "id": "C24PIN1",
+   "padre": "C24PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8573.387,
+   "pk_fin_m": 8395.883,
+   "longitud_m": 177.504
+  },
+  {
+   "id": "C24PIN2",
+   "padre": "C24PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8395.883,
+   "pk_fin_m": 8371.936,
+   "longitud_m": 23.947
+  },
+  {
+   "id": "C25PIN1",
+   "padre": "C25PIN",
+   "station": "PIN",
+   "via": "V1",
+   "pk_ini_m": 8371.936,
+   "pk_fin_m": 8170.877,
+   "longitud_m": 201.059
+  },
+  {
+   "id": "C32PIN1",
+   "padre": "C32PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 8867.538,
+   "pk_fin_m": 8603.538,
+   "longitud_m": 264
+  },
+  {
+   "id": "C33PIN1",
+   "padre": "C33PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 9101.778,
+   "pk_fin_m": 9038.578,
+   "longitud_m": 63.2
+  },
+  {
+   "id": "C34PIN1",
+   "padre": "C34PIN",
+   "station": "PIN",
+   "via": "V2",
+   "pk_ini_m": 10245.45,
+   "pk_fin_m": 10094.45,
+   "longitud_m": 151
+  },
+  {
+   "id": "C09SAL1",
+   "padre": "C09SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 9824.51,
+   "pk_fin_m": 9720.91,
+   "longitud_m": 103.6
+  },
+  {
+   "id": "C10SAL2",
+   "padre": "C10SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 9720.91,
+   "pk_fin_m": 9680,
+   "longitud_m": 40.91
+  },
+  {
+   "id": "C14SAL1",
+   "padre": "C14SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 10393,
+   "pk_fin_m": 10352.45,
+   "longitud_m": 40.55
+  },
+  {
+   "id": "C14SAL2",
+   "padre": "C14SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 10429.91,
+   "pk_fin_m": 10393,
+   "longitud_m": 36.91
+  },
+  {
+   "id": "C15SAL1",
+   "padre": "C15SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 10137.94,
+   "pk_fin_m": 10094.82,
+   "longitud_m": 43.12
+  },
+  {
+   "id": "C15SAL2",
+   "padre": "C15SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 10245.45,
+   "pk_fin_m": 10137.94,
+   "longitud_m": 107.51
+  },
+  {
+   "id": "C17SAL1",
+   "padre": "C17SAL",
+   "station": "SAL",
+   "via": "V2",
+   "pk_ini_m": 9997.94,
+   "pk_fin_m": 9824.51,
+   "longitud_m": 173.43
+  },
+  {
+   "id": "C19SAL1",
+   "padre": "C19SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 9814.3,
+   "pk_fin_m": 9708.38,
+   "longitud_m": 105.92
+  },
+  {
+   "id": "C20SAL1",
+   "padre": "C20SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 9674.3,
+   "pk_fin_m": 9597.93,
+   "longitud_m": 76.37
+  },
+  {
+   "id": "C20SAL2",
+   "padre": "C20SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 9708.38,
+   "pk_fin_m": 9674.3,
+   "longitud_m": 34.08
+  },
+  {
+   "id": "C24SAL2",
+   "padre": "C24SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 10425.15,
+   "pk_fin_m": 10391.6,
+   "longitud_m": 33.55
+  },
+  {
+   "id": "C25SAL1",
+   "padre": "C25SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 10131,
+   "pk_fin_m": 10088.12,
+   "longitud_m": 42.88
+  },
+  {
+   "id": "C25SAL2",
+   "padre": "C25SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 10251.6,
+   "pk_fin_m": 10131,
+   "longitud_m": 120.6
+  },
+  {
+   "id": "C27SAL1",
+   "padre": "C27SAL",
+   "station": "SAL",
+   "via": "V1",
+   "pk_ini_m": 9990.59,
+   "pk_fin_m": 9814.3,
+   "longitud_m": 176.29
+  },
+  {
+   "id": "C11SEV1",
+   "padre": "C11SEV",
+   "station": "SEV",
+   "via": "V2",
+   "pk_ini_m": 13038.95,
+   "pk_fin_m": 12898.95,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11SEV2",
+   "padre": "C11SEV",
+   "station": "SEV",
+   "via": "V2",
+   "pk_ini_m": 13100.58,
+   "pk_fin_m": 13038.95,
+   "longitud_m": 61.63
+  },
+  {
+   "id": "C12SEV1",
+   "padre": "C12SEV",
+   "station": "SEV",
+   "via": "V2",
+   "pk_ini_m": 12898.95,
+   "pk_fin_m": 12727.02,
+   "longitud_m": 171.93
+  },
+  {
+   "id": "C13SEV1",
+   "padre": "C13SEV",
+   "station": "SEV",
+   "via": "V2",
+   "pk_ini_m": 12583,
+   "pk_fin_m": 12476.98,
+   "longitud_m": 106.02
+  },
+  {
+   "id": "C13SEV2",
+   "padre": "C13SEV",
+   "station": "SEV",
+   "via": "V2",
+   "pk_ini_m": 12727.02,
+   "pk_fin_m": 12583,
+   "longitud_m": 144.02
+  },
+  {
+   "id": "C21SEV1",
+   "padre": "C21SEV",
+   "station": "SEV",
+   "via": "V1",
+   "pk_ini_m": 13035,
+   "pk_fin_m": 12893.91,
+   "longitud_m": 141.09
+  },
+  {
+   "id": "C21SEV2",
+   "padre": "C21SEV",
+   "station": "SEV",
+   "via": "V1",
+   "pk_ini_m": 13096.01,
+   "pk_fin_m": 13035,
+   "longitud_m": 61.01
+  },
+  {
+   "id": "C22SEV1",
+   "padre": "C22SEV",
+   "station": "SEV",
+   "via": "V1",
+   "pk_ini_m": 12893.91,
+   "pk_fin_m": 12722.23,
+   "longitud_m": 171.68
+  },
+  {
+   "id": "C23SEV1",
+   "padre": "C23SEV",
+   "station": "SEV",
+   "via": "V1",
+   "pk_ini_m": 12582.23,
+   "pk_fin_m": 12471.49,
+   "longitud_m": 110.74
+  },
+  {
+   "id": "C23SEV2",
+   "padre": "C23SEV",
+   "station": "SEV",
+   "via": "V1",
+   "pk_ini_m": 12722.23,
+   "pk_fin_m": 12582.23,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11SLA1",
+   "padre": "C11SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 6250.522,
+   "pk_fin_m": 6110.522,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11SLA2",
+   "padre": "C11SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 6386.5,
+   "pk_fin_m": 6250.522,
+   "longitud_m": 135.978
+  },
+  {
+   "id": "C11SLA3",
+   "padre": "C11SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 6530.108,
+   "pk_fin_m": 6386.5,
+   "longitud_m": 143.608
+  },
+  {
+   "id": "C12SLA1",
+   "padre": "C12SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 6110.522,
+   "pk_fin_m": 5938.81,
+   "longitud_m": 171.712
+  },
+  {
+   "id": "C13SLA1",
+   "padre": "C13SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 5938.81,
+   "pk_fin_m": 5825.698,
+   "longitud_m": 113.112
+  },
+  {
+   "id": "C14SLA1",
+   "padre": "C14SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 5794,
+   "pk_fin_m": 5711.803,
+   "longitud_m": 82.197
+  },
+  {
+   "id": "C14SLA2",
+   "padre": "C14SLA",
+   "station": "SLA",
+   "via": "V2",
+   "pk_ini_m": 5825.698,
+   "pk_fin_m": 5794,
+   "longitud_m": 31.698
+  },
+  {
+   "id": "C20SLA1",
+   "padre": "C20SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 5789.608,
+   "pk_fin_m": 5702.98,
+   "longitud_m": 86.628
+  },
+  {
+   "id": "C20SLA2",
+   "padre": "C20SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 5816.816,
+   "pk_fin_m": 5789.608,
+   "longitud_m": 27.208
+  },
+  {
+   "id": "C21SLA1",
+   "padre": "C21SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 6246,
+   "pk_fin_m": 6101.804,
+   "longitud_m": 144.196
+  },
+  {
+   "id": "C21SLA2",
+   "padre": "C21SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 6386.5,
+   "pk_fin_m": 6246,
+   "longitud_m": 140.5
+  },
+  {
+   "id": "C21SLA3",
+   "padre": "C21SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 6522.926,
+   "pk_fin_m": 6386.5,
+   "longitud_m": 136.426
+  },
+  {
+   "id": "C22SLA1",
+   "padre": "C22SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 6101.804,
+   "pk_fin_m": 5929.608,
+   "longitud_m": 172.196
+  },
+  {
+   "id": "C23SLA1",
+   "padre": "C23SLA",
+   "station": "SLA",
+   "via": "V1",
+   "pk_ini_m": 5929.608,
+   "pk_fin_m": 5816.816,
+   "longitud_m": 112.792
+  },
+  {
+   "id": "C11TCY1",
+   "padre": "C11TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15942.06,
+   "pk_fin_m": 15802.06,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11TCY2",
+   "padre": "C11TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 16144.03,
+   "pk_fin_m": 15942.06,
+   "longitud_m": 201.97
+  },
+  {
+   "id": "C12TCY1",
+   "padre": "C12TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15979.62,
+   "pk_fin_m": 15807.97,
+   "longitud_m": 171.65
+  },
+  {
+   "id": "C13TCY1",
+   "padre": "C13TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15807.97,
+   "pk_fin_m": 15652.57,
+   "longitud_m": 155.4
+  },
+  {
+   "id": "C13TCY2",
+   "padre": "C13TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15508.6,
+   "pk_fin_m": 15350.1,
+   "longitud_m": 158.5
+  },
+  {
+   "id": "C13TCY3",
+   "padre": "C13TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15652.57,
+   "pk_fin_m": 15508.6,
+   "longitud_m": 143.97
+  },
+  {
+   "id": "C14TCY1",
+   "padre": "C14TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15042.333,
+   "pk_fin_m": 14892.94,
+   "longitud_m": 149.393
+  },
+  {
+   "id": "C14TCY2",
+   "padre": "C14TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15194.667,
+   "pk_fin_m": 15042.333,
+   "longitud_m": 152.334
+  },
+  {
+   "id": "C14TCY3",
+   "padre": "C14TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 15350.1,
+   "pk_fin_m": 15194.667,
+   "longitud_m": 155.433
+  },
+  {
+   "id": "C18TCY1",
+   "padre": "C18TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 16346,
+   "pk_fin_m": 16144.03,
+   "longitud_m": 201.97
+  },
+  {
+   "id": "C18TCY2",
+   "padre": "C18TCY",
+   "station": "TCY",
+   "via": "V2",
+   "pk_ini_m": 16555.03,
+   "pk_fin_m": 16346,
+   "longitud_m": 209.03
+  },
+  {
+   "id": "C20TCY1",
+   "padre": "C20TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 16346,
+   "pk_fin_m": 16139.67,
+   "longitud_m": 206.33
+  },
+  {
+   "id": "C20TCY2",
+   "padre": "C20TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 16551.74,
+   "pk_fin_m": 16346,
+   "longitud_m": 205.74
+  },
+  {
+   "id": "C21TCY1",
+   "padre": "C21TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15933.34,
+   "pk_fin_m": 15793.34,
+   "longitud_m": 140
+  },
+  {
+   "id": "C21TCY2",
+   "padre": "C21TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 16139.67,
+   "pk_fin_m": 15933.34,
+   "longitud_m": 206.33
+  },
+  {
+   "id": "C22TCY1",
+   "padre": "C22TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15976.06,
+   "pk_fin_m": 15803.97,
+   "longitud_m": 172.09
+  },
+  {
+   "id": "C23TCY1",
+   "padre": "C23TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15803.97,
+   "pk_fin_m": 15645.62,
+   "longitud_m": 158.35
+  },
+  {
+   "id": "C23TCY2",
+   "padre": "C23TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15505.62,
+   "pk_fin_m": 15347.15,
+   "longitud_m": 158.47
+  },
+  {
+   "id": "C23TCY3",
+   "padre": "C23TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15645.62,
+   "pk_fin_m": 15505.62,
+   "longitud_m": 140
+  },
+  {
+   "id": "C24TCY1",
+   "padre": "C24TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15042.333,
+   "pk_fin_m": 14890.79,
+   "longitud_m": 151.543
+  },
+  {
+   "id": "C24TCY2",
+   "padre": "C24TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15194.667,
+   "pk_fin_m": 15042.333,
+   "longitud_m": 152.334
+  },
+  {
+   "id": "C24TCY3",
+   "padre": "C24TCY",
+   "station": "TCY",
+   "via": "V1",
+   "pk_ini_m": 15347.15,
+   "pk_fin_m": 15194.667,
+   "longitud_m": 152.483
+  },
+  {
+   "id": "C09ZAR1",
+   "padre": "C09ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 1233.5,
+   "pk_fin_m": 1064.256,
+   "longitud_m": 169.244
+  },
+  {
+   "id": "C09ZAR2",
+   "padre": "C09ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 1407,
+   "pk_fin_m": 1233.5,
+   "longitud_m": 173.5
+  },
+  {
+   "id": "C09ZAR3",
+   "padre": "C09ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 1551.425,
+   "pk_fin_m": 1407,
+   "longitud_m": 144.425
+  },
+  {
+   "id": "C10ZAR1",
+   "padre": "C10ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 2553.823,
+   "pk_fin_m": 2383.518,
+   "longitud_m": 170.305
+  },
+  {
+   "id": "C11ZAR1",
+   "padre": "C11ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 2352,
+   "pk_fin_m": 2212,
+   "longitud_m": 140
+  },
+  {
+   "id": "C11ZAR2",
+   "padre": "C11ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 2383.517,
+   "pk_fin_m": 2352,
+   "longitud_m": 31.517
+  },
+  {
+   "id": "C14ZAR1",
+   "padre": "C14ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 1811.676,
+   "pk_fin_m": 1685.601,
+   "longitud_m": 126.075
+  },
+  {
+   "id": "C14ZAR2",
+   "padre": "C14ZAR",
+   "station": "ZAR",
+   "via": "V2",
+   "pk_ini_m": 1685.601,
+   "pk_fin_m": 1551.424,
+   "longitud_m": 134.177
+  },
+  {
+   "id": "C19ZAR1",
+   "padre": "C19ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1233.5,
+   "pk_fin_m": 1057.194,
+   "longitud_m": 176.306
+  },
+  {
+   "id": "C19ZAR2",
+   "padre": "C19ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1403.402,
+   "pk_fin_m": 1233.5,
+   "longitud_m": 169.902
+  },
+  {
+   "id": "C19ZAR3",
+   "padre": "C19ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1543.402,
+   "pk_fin_m": 1403.402,
+   "longitud_m": 140
+  },
+  {
+   "id": "C20ZAR1",
+   "padre": "C20ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 2545.912,
+   "pk_fin_m": 2375.751,
+   "longitud_m": 170.161
+  },
+  {
+   "id": "C21ZAR1",
+   "padre": "C21ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 2348,
+   "pk_fin_m": 2205.328,
+   "longitud_m": 142.672
+  },
+  {
+   "id": "C21ZAR2",
+   "padre": "C21ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 2375.751,
+   "pk_fin_m": 2348,
+   "longitud_m": 27.751
+  },
+  {
+   "id": "C22ZAR1",
+   "padre": "C22ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 2205.328,
+   "pk_fin_m": 2030.191,
+   "longitud_m": 175.137
+  },
+  {
+   "id": "C23ZAR1",
+   "padre": "C23ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1057.194,
+   "pk_fin_m": 917.194,
+   "longitud_m": 140
+  },
+  {
+   "id": "C24ZAR1",
+   "padre": "C24ZAR",
+   "station": "ZAR",
+   "via": "V1",
+   "pk_ini_m": 1707.193,
+   "pk_fin_m": 1543.402,
+   "longitud_m": 163.791
+  }
+ ]
+}

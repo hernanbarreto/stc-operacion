@@ -1,0 +1,19 @@
+{
+  "expediente": "CA-01148-RTV",
+  "descripcion": "Restricciones de velocidad — Línea 1 STC CDMX, agosto 2024",
+  "rtvs": [
+    { "id": 1,  "via": "V1", "pki_m": 1057.154, "pkf_m": 1233.460, "v_rtv_kmh": 75, "cdvs": ["C19zar1"] },
+    { "id": 2,  "via": "V1", "pki_m": 5702.979, "pkf_m": 5936.607, "v_rtv_kmh": 60, "cdvs": ["C20sla1","C20sla2","C23sla1"] },
+    { "id": 3,  "via": "V1", "pki_m": 6101.804, "pkf_m": 6386.500, "v_rtv_kmh": 60, "cdvs": ["C21sla1","C21sla2"] },
+    { "id": 4,  "via": "V1", "pki_m": 6669.000, "pkf_m": 6951.000, "v_rtv_kmh": 60, "cdvs": ["C23can2","C23can3"] },
+    { "id": 5,  "via": "V1", "pki_m": 7374.860, "pkf_m": 7655.668, "v_rtv_kmh": 59, "cdvs": ["C20can1","C20can2","C23mer1"] },
+    { "id": 6,  "via": "V1", "pki_m": 8549.440, "pkf_m": 8689.441, "v_rtv_kmh": 49, "cdvs": ["C24pin2","C23pin1"] },
+    { "id": 7,  "via": "V2", "pki_m": 1064.256, "pkf_m": 1233.500, "v_rtv_kmh": 78, "cdvs": ["c09zar1"] },
+    { "id": 8,  "via": "V2", "pki_m": 5711.803, "pkf_m": 5938.810, "v_rtv_kmh": 61, "cdvs": ["c14sla1","c14sla2","c13sla1"] },
+    { "id": 9,  "via": "V2", "pki_m": 6110.522, "pkf_m": 6386.500, "v_rtv_kmh": 61, "cdvs": ["c11sla1","c11sla2"] },
+    { "id": 10, "via": "V2", "pki_m": 6669.000, "pkf_m": 6951.000, "v_rtv_kmh": 59, "cdvs": ["c13can2","c13can3"] },
+    { "id": 11, "via": "V2", "pki_m": 7380.105, "pkf_m": 7658.000, "v_rtv_kmh": 59, "cdvs": ["c14can1","c14can2","c13mer1"] },
+    { "id": 12, "via": "V2", "pki_m": 8380.126, "pkf_m": 8553.000, "v_rtv_kmh": 49, "cdvs": ["c14pin1"] },
+    { "id": 13, "via": "V2", "pki_m": 8553.000, "pkf_m": 8694.795, "v_rtv_kmh": 49, "cdvs": ["c14pin2","c13pin"] }
+  ]
+}

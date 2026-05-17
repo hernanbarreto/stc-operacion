@@ -1,6 +1,13 @@
 import { read, utils } from 'xlsx';
 import type { ATSEvent, AlarmEvent, ExcelUploadData } from '../types';
 
+type ExcelCell = string | number | boolean | Date | null | undefined;
+type ExcelRow = ExcelCell[];
+
+const isDev = import.meta.env.DEV;
+const devLog = (...args: unknown[]) => { if (isDev) console.log(...args); };
+const devWarn = (...args: unknown[]) => { if (isDev) console.warn(...args); };
+
 const STATION_MAP: { [key: string]: string } = {
   '101': 'PAN', '102': 'ZAR', '106': 'GOM', '107': 'BOU',
   '108': 'BAL', '109': 'MOC', '110': 'SLA', '111': 'CAN',
@@ -54,26 +61,26 @@ const KNOWN_STATIONS = ['PAN', 'ZAR', 'GOM', 'BOU', 'BAL', 'MOC', 'SLA', 'CAN',
   'AVC54OBS', 'AVC34OBS', 'AVC14OBS', 'AVC24OBS', 'AVC44OBS', 'AVC64OBS', 'AVC84OBS', 'AVC104OBS'];
 
 export const useExcelProcessor = () => {
-  const procesarExcel = (file: File): Promise<ExcelUploadData> => {
+  const procesarExcelBuffer = (buffer: ArrayBuffer, fileName: string): Promise<ExcelUploadData> => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
+      // Yield to the browser so the loading UI can paint before the heavy parse blocks the main thread.
+      setTimeout(() => {
         try {
-          const data = new Uint8Array(e.target?.result as ArrayBuffer);
+          devLog(`📂 Parseando ${fileName} (${(buffer.byteLength / 1024 / 1024).toFixed(2)} MB)`);
+          const data = new Uint8Array(buffer);
           const workbook = read(data, { type: 'array' });
 
-          // Obtener la primera hoja
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
-          const rows = utils.sheet_to_json(worksheet, { header: 1 }) as any[];
+          const rows = utils.sheet_to_json<ExcelRow>(worksheet, { header: 1 });
 
           const eventos_por_dia: { [fecha: string]: ATSEvent[] } = {};
           const alarmas_por_dia: { [fecha: string]: AlarmEvent[] } = {};
           const dias_set = new Set<string>();
 
-          console.log('📊 Procesando Excel - Total filas:', rows.length);
-          console.log('📊 Primera fila:', rows[0]);
-          console.log('📊 Segunda fila:', rows[1]);
+          devLog('📊 Procesando Excel - Total filas:', rows.length);
+          devLog('📊 Primera fila:', rows[0]);
+          devLog('📊 Segunda fila:', rows[1]);
 
           // Procesar todas las filas sin saltar
           for (let i = 1; i < rows.length; i++) {
@@ -102,8 +109,10 @@ export const useExcelProcessor = () => {
                 datetime = new Date(ms + tzOffsetMs);
               } else if (typeof fechaHora === 'string') {
                 datetime = new Date(fechaHora);
+              } else if (fechaHora instanceof Date) {
+                datetime = fechaHora;
               } else {
-                datetime = new Date(fechaHora);
+                continue;
               }
 
               if (isNaN(datetime.getTime())) {
@@ -191,7 +200,7 @@ export const useExcelProcessor = () => {
             const estacionMatch = descripcion.match(/(?:estación|ESTACIÓN|estacion|ESTACION)\s+(\d+)/i);
 
             if (!trenMatch || !estacionMatch) {
-              console.warn('❌ No se extrajo tren o estación de:', descripcion);
+              devWarn('❌ No se extrajo tren o estación de:', descripcion);
               continue;
             }
 
@@ -232,16 +241,16 @@ export const useExcelProcessor = () => {
             eventos_por_dia[fecha] = deduped;
           });
           if (totalRemoved > 0) {
-            console.log(`🧹 Deduplicación: eliminados ${totalRemoved} eventos duplicados del ATS`);
+            devLog(`🧹 Deduplicación: eliminados ${totalRemoved} eventos duplicados del ATS`);
           }
 
           const dias = Array.from(dias_set).sort();
 
-          console.log('✅ Procesamiento completado');
-          console.log('   Días encontrados:', dias);
-          console.log('   Eventos totales:', Object.values(eventos_por_dia).reduce((sum, arr) => sum + arr.length, 0));
-          console.log('   Alarmas totales:', Object.values(alarmas_por_dia).reduce((sum, arr) => sum + arr.length, 0));
-          console.log('   Alarmas con estación:', Object.values(alarmas_por_dia).reduce((sum, arr) => sum + arr.filter(a => a.estacion).length, 0));
+          devLog('✅ Procesamiento completado');
+          devLog('   Días encontrados:', dias);
+          devLog('   Eventos totales:', Object.values(eventos_por_dia).reduce((sum, arr) => sum + arr.length, 0));
+          devLog('   Alarmas totales:', Object.values(alarmas_por_dia).reduce((sum, arr) => sum + arr.length, 0));
+          devLog('   Alarmas con estación:', Object.values(alarmas_por_dia).reduce((sum, arr) => sum + arr.filter(a => a.estacion).length, 0));
 
           if (dias.length === 0) {
             reject(new Error('No se encontraron eventos válidos en el archivo'));
@@ -257,13 +266,12 @@ export const useExcelProcessor = () => {
           console.error('❌ Error al procesar Excel:', error);
           reject(error);
         }
-      };
-      reader.onerror = () => {
-        reject(new Error('Error al leer el archivo'));
-      };
-      reader.readAsArrayBuffer(file);
+      }, 0);
     });
   };
 
-  return { procesarExcel };
+  const procesarExcel = (file: File): Promise<ExcelUploadData> =>
+    file.arrayBuffer().then(buf => procesarExcelBuffer(buf, file.name));
+
+  return { procesarExcel, procesarExcelBuffer };
 };

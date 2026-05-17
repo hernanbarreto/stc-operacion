@@ -12,7 +12,8 @@
 import { useMemo } from 'react';
 import type { ATSEvent } from '../types';
 import { STATION_PK } from '../data/stationPK';
-import { buildMarchaTipo, IDEAL_SEGMENT_SPEED, IDEAL_DWELL_MS, type MarchaPoint } from '../data/marchaTipo';
+import { buildMarchaTipo, inferHorario, inferMaterial, type MarchaPoint } from '../data/marchaTipo';
+import { dwellTimeSec } from '../data/marchaTipoSiemens';
 import { formatDuration } from '../utils/timeFormat';
 
 // ─── Types ───
@@ -239,8 +240,6 @@ function analyzeTrip(
 
 export function useMarchaAnalysis(
     eventos: ATSEvent[],
-    speeds: Record<string, number> = IDEAL_SEGMENT_SPEED,
-    dwells: Record<string, number> = IDEAL_DWELL_MS,
     serviceStartHour: number = 5,
     allEvents: ATSEvent[] = [],
 ): MarchaAnalysisData {
@@ -249,13 +248,14 @@ export function useMarchaAnalysis(
             return { trips: [], bestTrip: null, worstTrip: null, avgAdherence: 0, topDelaySegments: [], dwellExcess: [], divergenceFrequency: [], dboCorrelation: { divergencesWithDbo: 0, totalDivergences: 0, pct: 0, details: [] }, totalTrips: 0 };
         }
 
-        const marchaPO = buildMarchaTipo('PAN→OBS', speeds, dwells);
-        const marchaOP = buildMarchaTipo('OBS→PAN', speeds, dwells);
-
         const rawTrips = detectTrips(eventos, serviceStartHour);
-        const trips: TripAnalysis[] = rawTrips.map(t =>
-            analyzeTrip(t, t.direction === 'PAN→OBS' ? marchaPO : marchaOP)
-        );
+        const trips: TripAnalysis[] = rawTrips.map(t => {
+            // Cada vuelta tiene su propia marcha tipo segun (material, via, horario)
+            const material = inferMaterial(t.tren);
+            const horario = inferHorario(t.departureTime);
+            const marcha = buildMarchaTipo(t.direction, material, horario);
+            return analyzeTrip(t, marcha);
+        });
 
         if (trips.length === 0) {
             return { trips: [], bestTrip: null, worstTrip: null, avgAdherence: 0, topDelaySegments: [], dwellExcess: [], divergenceFrequency: [], dboCorrelation: { divergencesWithDbo: 0, totalDivergences: 0, pct: 0, details: [] }, totalTrips: 0 };
@@ -308,7 +308,10 @@ export function useMarchaAnalysis(
                     if (trip.events[j].estacion === ev.estacion && trip.events[j].evento === 'PARTIO') {
                         const dt = trip.events[j].datetime.getTime() - ev.datetime.getTime();
                         if (dt > 0 && dt < 300_000) {
-                            const idealDwell = (dwells[ev.estacion] ?? 20_000);
+                            // Dwell ideal segun Siemens (Tabla 8): por via + horario + estacion
+                            const _viaCode: 'V1' | 'V2' = trip.direction === 'PAN→OBS' ? 'V1' : 'V2';
+                            const _horario = inferHorario(ev.datetime.getTime());
+                            const idealDwell = dwellTimeSec(_viaCode, _horario, ev.estacion) * 1000;
                             const excess = dt - idealDwell;
                             const key = `${ev.estacion} (${via})`;
                             if (!dwellData[key]) dwellData[key] = [];
@@ -387,7 +390,7 @@ export function useMarchaAnalysis(
             dboCorrelation,
             totalTrips: trips.length,
         };
-    }, [eventos, speeds, dwells, serviceStartHour, allEvents]);
+    }, [eventos, serviceStartHour, allEvents]);
 }
 
 // ─── Formatters for display ───
