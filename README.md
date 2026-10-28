@@ -161,9 +161,12 @@ El panel de información (Elemento, Eventos, Estado, Fuentes, Observaciones, Ley
 ATS desde la computadora (se lee en un Web Worker). Trenes con número de servicio y tren físico en su posición
 (andén por los eventos TGMT; entre estaciones, interpolado con la marcha tipo del material), alarmas y comandos
 sobre los elementos, enclavamientos desconectados, IHM (usuario, servidor, áreas), diagrama de hilo alineado con el
-esquemático (clic: tren y momento; rueda: escala de tiempo; arrastre: desplazarse) y marcha tipo NM16/NM22 por vía
-o la del tren seleccionado. Lo que falta representar de cada tipo de evento está en
-[`docs/eventos-esquematico.md`](docs/eventos-esquematico.md).
+esquemático (clic: tren y momento; rueda: escala de tiempo; arrastre: desplazarse; el divisor ajusta su alto) y
+marcha tipo NM16/NM22 por vía o la del tren seleccionado. Itinerarios de señal a señal y deslizamientos con la
+posición de agujas (recorrido inferido del plano), DBO (cuadrado rojo en andén o señal), RTV, alarmas sobre los CDV
+con su nombre (y pendientes de reconocer) y trenes detenidos en el CDV de la alarma. El botón «Clasificar eventos
+(CSV)» recorre los Excel de Storage (o archivos locales) y descarga qué tipos de evento hay y cuáles se muestran.
+Detalle de cada tipo de evento y de lo que falta en [`docs/eventos-esquematico.md`](docs/eventos-esquematico.md).
 
 Los datos derivan de planos C2-Confidencial y el repositorio es público: **no van al repositorio ni a `/public`**
 (Hosting los serviría sin login). La web los lee de Firebase Storage (`esquematico/esquematico_l1.json`) con el

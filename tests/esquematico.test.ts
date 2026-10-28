@@ -12,8 +12,9 @@ import {
 import { calcularRotulos } from '../src/components/esquematico/rotulos';
 import { validarEsquematico } from '../src/components/esquematico/esquema';
 import { type CurvaMarcha, ARCHIVOS_MARCHA, curvaDesdeJson, pkEnTramo, trayectoriaTipo } from '../src/components/esquematico/marcha';
-import { PLANTILLAS, type FilaLog, interpretar, numeroEn, numeroServicio, nombreTren } from '../src/components/esquematico/eventos';
-import { crearContexto, estadoEn, mapaPkMarcha, recorridoReal } from '../src/components/esquematico/replay';
+import { PLANTILLAS, type FilaLog, etiquetaAlarma, interpretar, numeroEn, numeroServicio, nombreTren } from '../src/components/esquematico/eventos';
+import { crearContexto, estadoEn, faseEn, lugarDeVia, mapaPkMarcha, prepararReplay, recorridoReal } from '../src/components/esquematico/replay';
+import { deslizamiento, itinerario, posicionesDeslizamiento } from '../src/components/esquematico/rutas';
 import { parseFecha, horaTxt, fechaDia } from '../src/components/esquematico/fecha';
 
 const RAIZ = resolve(__dirname, '..');
@@ -303,6 +304,11 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
       { t: s(530), tipo: 'COMM_IXL_CONNECT', desc: 'Enclavamiento conectado: PANIXL' },
       { t: s(600), tipo: 'TRAIN_CHANGED', desc: 'Tren numerado 27 cambió a *27' },
     ];
+    const conRuta: FilaLog[] = [
+      ...filas.slice(0, 4),
+      { t: s(8), tipo: 'COMMAND_ACK', desc: 'Comando EstablecerItinerario PAN S42APAN S24ZAR ejecutado por PANIXL' },
+      ...filas.slice(4),
+    ];
 
     it('interpreta el log: tren, paradas, número de servicio e intervalos', () => {
       const mod = interpretar(filas, ix!);
@@ -323,11 +329,11 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
     it('estado en un instante: posición del tren, elementos con alarma, enclavamiento caído e IHM', () => {
       const mod = interpretar(filas, ix!);
       const eje = construirEjePk(data);
-      const ctx = crearContexto(data, eje, curvas);
+      const rep = prepararReplay(crearContexto(data, eje, curvas), mod);
       const xPan = data.estaciones.find(e => e.codigo === 'PAN')!.x as number;
       const xZar = data.estaciones.find(e => e.codigo === 'ZAR')!.x as number;
 
-      const enMarcha = estadoEn(ctx, mod, s(70)).trenes[0];
+      const enMarcha = estadoEn(rep, s(70)).trenes[0];
       expect(enMarcha.enAnden).toBe(false);
       expect(enMarcha.via).toBe(1);
       expect(enMarcha.sentido).toBe('OBS');
@@ -335,26 +341,124 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
       expect(enMarcha.x).toBeLessThan(xPan);
       expect(enMarcha.x).toBeGreaterThan(xZar - 60);
 
-      const enAnden = estadoEn(ctx, mod, s(145)).trenes[0];
+      const enAnden = estadoEn(rep, s(145)).trenes[0];
       expect(enAnden).toMatchObject({ enAnden: true, estCodigo: 'ZAR' });
 
-      const e230 = estadoEn(ctx, mod, s(230));
+      const e230 = estadoEn(rep, s(230));
       const det = mod.intervalos.find(i => i.tipo === 'detenido')!;
-      expect(e230.porElemento.get(`${det.refs[0].tipo}:${det.refs[0].id}`)).toContain('detenido');
-      expect(estadoEn(ctx, mod, s(515)).ixlCaidos.has('PANIXL')).toBe(true);
-      expect(estadoEn(ctx, mod, s(540)).ixlCaidos.size).toBe(0);
+      expect(e230.porElemento.get(`${det.refs[0].tipo}:${det.refs[0].id}`)?.map(i => i.tipo)).toContain('detenido');
+      expect(det.tren).toBe('27 (nm22)');
+      expect(estadoEn(rep, s(515)).ixlCaidos.has('PANIXL')).toBe(true);
+      expect(estadoEn(rep, s(540)).ixlCaidos.size).toBe(0);
       expect(e230.ihm).toContainEqual({ ihm: '2', usuario: 'Regulador1', servidor: '1', areas: ['PIN'] });
     });
 
     it('recorrido para el diagrama de hilo y PK de la marcha tipo llevado al plano', () => {
       const mod = interpretar(filas, ix!);
       const ctx = crearContexto(data, construirEjePk(data), curvas);
-      const rec = recorridoReal(ctx, mod.trenes[0]);
+      const rec = recorridoReal(prepararReplay(ctx, mod), mod.trenes[0]);
       expect(rec).toHaveLength(1);
       for (let i = 1; i < rec[0].length; i++) expect(rec[0][i].t).toBeGreaterThanOrEqual(rec[0][i - 1].t);
       const m = mapaPkMarcha(ctx, 1);
       expect(m(2117.798)).toBeCloseTo(ctx.pkEst(102, 1) as number, 3);   // ZAR
       expect(m(17300.6)).toBeCloseTo(ctx.pkEst(123, 1) as number, 3);    // OBS
+    });
+
+    it('itinerario: se dibuja mientras el tren lo usa y se libera al pasar', () => {
+      const mod = interpretar(conRuta, ix!);
+      expect(mod.itinerarios).toEqual([{ t: s(8), accion: 'establecer', est: 'PAN', origen: 'S42APAN', destino: 'S24ZAR' }]);
+      const rep = prepararReplay(crearContexto(data, construirEjePk(data), curvas), mod);
+      const r = rep.rutas[0];
+      expect(r.rec).not.toBeNull();
+      expect(r.tren).toBe('27 (nm22)');
+      expect(estadoEn(rep, s(60)).rutas.map(x => x.id)).toEqual([r.id]);
+      expect(estadoEn(rep, s(400)).rutas).toHaveLength(0);
+    });
+
+    it('tren detenido entre estaciones: queda en el CDV de la alarma', () => {
+      const eje = construirEjePk(data);
+      const ctx = crearContexto(data, eje, curvas);
+      const pZar = ctx.pkEst(102, 1) as number, pGom = ctx.pkEst(106, 1) as number;
+      const secc = data.secciones.find(x => {
+        const l = lugarDeVia(ctx, { tipo: 'seccion', id: x.id });
+        return l?.via === 1 && l.pk > pZar + 200 && l.pk < pGom - 200;
+      })!;
+      expect(secc).toBeTruthy();
+      const filasDet: FilaLog[] = [
+        { t: s(0), tipo: 'COMMAND_ACK', desc: 'Comando ATS_I_Train_Number#32840#0#2700 ejecutado por PANTTS' },
+        { t: s(10), tipo: 'TGMT_DEPARTURE_AT_PLATFORM', desc: 'El tren 32840 en la vía 1 ha salido a la estación 102' },
+        { t: s(120), tipo: 'ALARM_OPENED', desc: `Tren número  está detenido en el circuito de vía ${secc.id} . Abierta` },
+        { t: s(400), tipo: 'ALARM_NORMALIZED', desc: `Tren número  está detenido en el circuito de vía ${secc.id} . Normalizada` },
+        { t: s(520), tipo: 'TGMT_ARRIVAL_AT_PLATFORM', desc: 'El tren 32840 en la vía 1 ha llegado a la estación 106' },
+      ];
+      const mod = interpretar(filasDet, ix!);
+      const rep = prepararReplay(ctx, mod);
+      expect(mod.intervalos[0].tren).toBe('27 (nm22)');      // sin número: el tren más cercano
+      const p = estadoEn(rep, s(250)).trenes[0];
+      expect(p.cdv).toEqual({ tipo: 'seccion', id: secc.id });
+      expect(estadoEn(rep, s(450)).trenes[0].cdv).toBeNull();
+    });
+  });
+
+  describe('itinerarios y deslizamientos inferidos del plano', () => {
+    it('rutas del log recorren el plano de señal a señal en el sentido de la señal origen', () => {
+      for (const [o, d] of [['S10PAN', 'S12BPAN'], ['S42APAN', 'S24ZAR'], ['S10OBS', 'S22BOBS'], ['S12BPAN', 'S24BPAN'],
+        ['S24BPAN', 'BSBPAN'], ['S83BZAR', 'S36PAN'], ['S22ATCY', 'S10OBS'], ['SZBSAL', 'S17BSAL']]) {
+        const r = itinerario(data, o, d);
+        expect(r, `${o}>${d}`).not.toBeNull();
+        const so = data.senales.find(x => x.id === o)!, sd = data.senales.find(x => x.id === d)!;
+        const xs = r!.tramos.flatMap(t => [t[0], t[2]]);
+        expect(Math.min(...xs)).toBeCloseTo(Math.min(so.x, sd.x), 0);
+        expect(Math.max(...xs)).toBeCloseTo(Math.max(so.x, sd.x), 0);
+        expect(r!.secciones.length).toBeGreaterThan(0);
+      }
+      expect(itinerario(data, 'S10PAN', 'NOEXISTE')).toBeNull();
+    });
+    it('deslizamiento con la posición de agujas del comando', () => {
+      expect(posicionesDeslizamiento('EstablecerDeslizamientoNormal1Invertido2')).toEqual(['normal', 'invertida']);
+      expect(posicionesDeslizamiento('EstablecerDeslizamientoInvertida')).toEqual(['invertida']);
+      const n = deslizamiento(data, 'S12BOBS', ['normal'])!;
+      const i = deslizamiento(data, 'S12BPAN', ['invertida'])!;
+      expect(n.agujas.map(a => a.pos)).toEqual(['normal']);
+      expect(i.agujas.map(a => a.pos)).toEqual(['invertida']);
+      expect(n.largo).toBeLessThanOrEqual(140);
+    });
+  });
+
+  describe('alarmas: activa, pendiente de reconocer y marcas de comandos', () => {
+    const T0 = parseFecha('2026-10-21 09:00:00.000') as number;
+    const s = (seg: number) => T0 + seg * 1000;
+    it('normalizada sin reconocimiento termina al normalizarse; con reconocimiento queda pendiente hasta el cierre', () => {
+      const a = 'ARB activo en el circuito de vía C11BOU (BOU)';
+      const b = 'Ocupación intempestiva en PANA11PAN';
+      const mod = interpretar([
+        { t: s(0), tipo: 'ALARM_OPENED', desc: `${a} . Abierta` },
+        { t: s(10), tipo: 'ALARM_OPENED', desc: `${b} . Abierta` },
+        { t: s(60), tipo: 'ALARM_NORMALIZED', desc: `${a} . Normalizada` },
+        { t: s(70), tipo: 'ALARM_NORMALIZED', desc: `${b} . Normalizada` },
+        { t: s(300), tipo: 'ALARM_ACK', desc: `${b} . Reconocida` },
+        { t: s(300.5), tipo: 'ALARM_CLOSED', desc: `${b} . Cerrada` },
+        { t: s(400), tipo: 'COMMAND_ACK', desc: 'Comando ActivarModoFlota PAN S10PAN ejecutado por PANIXL' },
+        { t: s(500), tipo: 'COMMAND_ACK', desc: 'Comando DesactivarModoFlota PAN S10PAN ejecutado por PANIXL' },
+        { t: s(600), tipo: 'COMMAND_ACK', desc: 'Comando DBONoCBTC SAL S17ASAL ejecutado por OBSIXL' },
+        { t: s(610), tipo: 'COMMAND_NACK', desc: 'Comando CancelarDBONoCBTC SAL S17ASAL rechazado por OBSIXL: Comando rechazado por el enclavamiento' },
+      ], ix!);
+      const [ia, ib] = mod.intervalos;
+      expect(ia).toMatchObject({ tipo: 'arb', etiqueta: 'ARB', t0: s(0), tN: s(60), t1: s(60) });
+      expect(ib).toMatchObject({ tipo: 'alarma', etiqueta: 'OCUP. INTEMP', tN: s(70), t1: s(300.5) });
+      expect(faseEn(ib, s(100))).toBe('pendiente');
+      expect(faseEn(ib, s(50))).toBe('activa');
+      expect(ib.refs[0]).toMatchObject({ id: expect.stringMatching(/A11PAN/) });
+      expect(mod.intervalos.find(i => i.etiqueta === 'FLOTA')).toMatchObject({ t0: s(400), t1: s(500), refs: [{ tipo: 'senal', id: 'S10PAN' }] });
+      const dbo = mod.intervalos.find(i => i.tipo === 'dbo')!;
+      expect(dbo).toMatchObject({ t0: s(600), t1: null, refs: [{ tipo: 'senal', id: 'S17ASAL' }] });   // el NACK no lo cancela
+      expect(mod.eventos.at(-1)!.rechazo).toBe('Comando rechazado por el enclavamiento');
+    });
+    it('etiquetas cortas de alarmas', () => {
+      expect(etiquetaAlarma('Tren número 16 está detenido en el circuito de vía OBSC14OBS')).toBe('DET 16');
+      expect(etiquetaAlarma('Señal S24OBS (OBS) foco rojo en fallo')).toBe('FOCO R');
+      expect(etiquetaAlarma('Aguja A63BOBS (OBS) talonada')).toBe('TALONADA');
+      expect(etiquetaAlarma('NRB activo en el circuito de vía C12PAN (PAN)')).toBe('NRB');
     });
   });
 });

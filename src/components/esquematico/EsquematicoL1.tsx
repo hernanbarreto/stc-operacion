@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Search, ZoomIn, ZoomOut, Rows3, Layers, FileText, AlertTriangle, Info, PanelRightOpen, PanelRightClose, ListTree, Activity, Upload, FolderOpen, ChartNoAxesGantt } from 'lucide-react';
+import { Search, ZoomIn, ZoomOut, Rows3, Maximize2, Layers, FileText, AlertTriangle, Info, PanelRightOpen, PanelRightClose, ListTree, Activity, Upload, FolderOpen, ChartNoAxesGantt } from 'lucide-react';
 import type { ElementoRef, Esquematico, Seccion, Tramo } from './types';
 import {
   cajaDe, construirEjePk, construirIndice, fmtPk, perfilEn, rangoX, resolver, type Indice,
@@ -9,9 +9,9 @@ import {
   IXL_COLORS, MODOS, SIN_DATO, TIPO_COLORS, VIA_IHM, Y_EST, Y_PK, Y_PK_G, colorVelocidad, type Capa, type Modo,
 } from './constantes';
 import {
-  AgujaSvg, AndenSvg, ArmariosSvg, BalizasSvg, CartelesSvg, EnergiaSvg, EquiposSvg, EstadosSvg, FantasmasSvg, JuntasSvg,
+  AgujaSvg, AndenSvg, ArmariosSvg, BalizasSvg, CartelesSvg, DboSvg, EnergiaSvg, EquiposSvg, EstadosSvg, FantasmasSvg, JuntasSvg, RutasSvg,
   PendientesSvg, RotulosSvg, RotulosViaSvg, SenalSvg, TramosSvg, TrenesSvg, VelAgujasSvg, VelocidadSvg, ZonasSvg,
-  type TrenDibujo,
+  type Geo, type IntervaloDibujo, type RutaDibujo, type TrenDibujo,
 } from './capas';
 import { Detalle, Fuentes, Leyenda, Observaciones, Tooltip } from './paneles';
 import { EventosPanel, EstadoPanel, TrenPanel } from './panelesReplay';
@@ -19,12 +19,13 @@ import { leerArchivoLocal, leerEsquematico, subirEsquematico } from './almacen';
 import { calcularRotulos } from './rotulos';
 import { type Evento, type ModeloEventos, indiceEvento, interpretar } from './eventos';
 import { LectorEventos } from './lectorEventos';
-import { crearContexto, DESTELLO_MS, HUECO_MAX_MS, estadoEn, mapaPkMarcha, recorridoReal, yDeVia } from './replay';
+import { crearContexto, DESTELLO_MS, HUECO_MAX_MS, estadoEn, faseEn, mapaPkMarcha, prepararReplay, recorridoReal, yDeVia } from './replay';
 import { type CurvaMarcha, cargarCurvas, curvaDe, trayectoriaTipo, type PuntoMarcha } from './marcha';
 import { Hilo, type MarchaDibujo, type MarcaEvento } from './Hilo';
 import { BarraReproduccion, type OpcionMarcha } from './BarraReproduccion';
 import { fetchIndex, type DayIndexEntry } from '../../services/daysIndex';
-import { downloadExcelFile } from '../../services/storageService';
+import { downloadExcelFile, listExcelFiles } from '../../services/storageService';
+import { fechaDia } from './fecha';
 import { inferHorario } from '../../data/marchaTipoSiemens';
 import './EsquematicoL1.css';
 
@@ -194,12 +195,13 @@ export const EsquematicoL1: React.FC = () => {
   }, []);
 
   // ── reproducción: estado en el instante t ──
-  const estado = useMemo(() => (ctx && mod ? estadoEn(ctx, mod, t) : null), [ctx, mod, t]);
+  const rep = useMemo(() => (ctx && mod ? prepararReplay(ctx, mod) : null), [ctx, mod]);
+  const estado = useMemo(() => (rep ? estadoEn(rep, t) : null), [rep, t]);
   const recorridos = useMemo(() => {
     const m = new Map<string, { t: number; pk: number; via: number }[][]>();
-    if (ctx && mod) for (const tr of mod.trenes) m.set(tr.clave, recorridoReal(ctx, tr));
+    if (rep && mod) for (const tr of mod.trenes) m.set(tr.clave, recorridoReal(rep, tr));
     return m;
-  }, [ctx, mod]);
+  }, [rep, mod]);
 
   const seleccionar = useCallback((ref: ElementoRef | null, zoom = false) => {
     setSel(ref);
@@ -263,6 +265,41 @@ export const EsquematicoL1: React.FC = () => {
       alert(`No se pudo leer el archivo: ${e instanceof Error ? e.message : e}`);
     }
   };
+  // clasificación de tipos de evento de varios archivos → CSV
+  const clasificarArchivos = async (fuentes: { nombre: string; obtener: () => Promise<ArrayBuffer> }[]) => {
+    if (!fuentes.length) { alert('No hay archivos de eventos para clasificar.'); return; }
+    setReproduciendo(false);
+    try {
+      let filas = 0;
+      for (let i = 0; i < fuentes.length; i++) {
+        setCargando(`Clasificando ${i + 1}/${fuentes.length}: ${fuentes[i].nombre}…`);
+        filas += (await lector.clasificar(fuentes[i].nombre, await fuentes[i].obtener(), i === 0)).n;
+      }
+      const csv = await lector.csvClasificacion();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      a.download = `clasificacion_eventos_${fechaDia(Date.now())}.csv`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      setCargando(`Clasificación lista: ${fuentes.length} archivo(s), ${filas.toLocaleString('es-MX')} filas`);
+      setTimeout(() => setCargando(c => (c?.startsWith('Clasificación lista') ? null : c)), 6000);
+    } catch (e) {
+      setCargando(null);
+      alert(`No se pudo clasificar: ${e instanceof Error ? e.message : e}`);
+    }
+  };
+  const onClasificarStorage = async () => {
+    try {
+      setCargando('Listando archivos de Storage…');
+      const fs = await listExcelFiles();
+      await clasificarArchivos(fs.map(f => ({ nombre: f.name, obtener: () => downloadExcelFile(f.fullPath) })));
+    } catch (e) {
+      setCargando(null);
+      alert(`No se pudo leer Storage: ${e instanceof Error ? e.message : e}`);
+    }
+  };
+  const onClasificarLocal = (fs: File[]) => clasificarArchivos(fs.map(f => ({ nombre: f.name, obtener: () => f.arrayBuffer() })));
+
   const onDiaLocal = (fecha: string) => { if (archivoLocal) void cargarDia(`__local:${archivoLocal}`, fecha, async () => undefined); };
 
   // reloj de la reproducción
@@ -516,14 +553,18 @@ export const EsquematicoL1: React.FC = () => {
   }, [modo, ix, cdvOrden, ixlDe, velSeccion]);
 
   // geometría de un elemento para resaltarlo (estados de la reproducción)
-  type Geo = { d?: string; rect?: [number, number, number, number]; c?: [number, number] } | null;
   const geoCache = useMemo(() => new Map<string, Geo>(), [ix]); // eslint-disable-line react-hooks/exhaustive-deps
   const geoDe = useCallback((k: string): Geo => {
     if (!ix) return null;
     const i = k.indexOf(':');
     const ref = { tipo: k.slice(0, i), id: k.slice(i + 1) } as ElementoRef;
-    if (ref.tipo === 'seccion') { const s = ix.seccion.get(ref.id); return s ? { d: tramoD(s.tramos) } : null; }
-    if (ref.tipo === 'cdv') { const c = ix.cdv.get(ref.id); return c ? { d: tramoD(c.tramos) } : null; }
+    const conLab = (ts: Tramo[]): Geo => {
+      if (!ts.length) return null;
+      const m = ts.reduce((a, q) => (Math.abs(q[2] - q[0]) > Math.abs(a[2] - a[0]) ? q : a));
+      return { d: tramoD(ts), lab: [(m[0] + m[2]) / 2, (m[1] + m[3]) / 2] };
+    };
+    if (ref.tipo === 'seccion') { const s = ix.seccion.get(ref.id); return s ? conLab(s.tramos) : null; }
+    if (ref.tipo === 'cdv') { const c = ix.cdv.get(ref.id); return c ? conLab(c.tramos) : null; }
     const b = cajaDe(ix, ref);
     if (!b) return null;
     if (ref.tipo === 'anden' || ref.tipo === 'bfu') return { rect: b };
@@ -576,8 +617,38 @@ export const EsquematicoL1: React.FC = () => {
 
   const trenesDibujo: TrenDibujo[] = useMemo(() => (estado?.trenes ?? []).map(p => ({
     clave: p.tren.clave, numero: p.numero, x: p.x, y: p.y, sentido: p.sentido, material: p.tren.material,
-    enAnden: p.enAnden, vigente: p.vigente, degradado: !!p.numero && (estado?.degradados.has(p.numero) ?? false),
+    enAnden: p.enAnden || !!p.cdv, vigente: p.vigente, degradado: !!p.numero && (estado?.degradados.has(p.numero) ?? false),
   })), [estado]);
+
+  // alarmas y marcas por elemento (sin DBO, que va en su propia capa)
+  const porElementoDibujo = useMemo(() => {
+    const m = new Map<string, IntervaloDibujo[]>();
+    if (!estado) return m;
+    for (const [k, ivs] of estado.porElemento) {
+      const l = ivs.filter(iv => iv.tipo !== 'dbo').map(iv => ({ tipo: iv.tipo, etiqueta: iv.etiqueta, fase: faseEn(iv, t) }));
+      if (l.length) m.set(k, l);
+    }
+    return m;
+  }, [estado, t]);
+  const dboItems = useMemo(() => (estado?.activos ?? []).filter(iv => iv.tipo === 'dbo')
+    .flatMap(iv => iv.refs.map(r => ({ k: refKey(r), texto: iv.texto }))), [estado]);
+  const rutasDibujo: RutaDibujo[] = useMemo(() => {
+    if (!estado) return [];
+    const num = new Map(estado.trenes.map(p => [p.tren.clave, p.numero]));
+    const out: RutaDibujo[] = [];
+    for (const r of estado.rutas) {
+      if (!r.rec) continue;
+      const tr = r.tren ? `${num.get(r.tren) ?? '—'} · ${r.tren}` : 'sin tren asociado todavía';
+      out.push({ id: r.id, tramos: r.rec.tramos, agujas: r.rec.agujas, tipo: 'ruta', activa: !!trenSel && r.tren === trenSel,
+        texto: `Itinerario ${r.origen} → ${r.destino} · tren ${tr} · agujas ${r.rec.agujas.map(a => `${a.id} ${a.pos}`).join(', ') || '—'} (recorrido inferido del plano)` });
+    }
+    for (const d of estado.desl) {
+      if (!d.rec) continue;
+      out.push({ id: d.id, tramos: d.rec.tramos, agujas: d.rec.agujas, tipo: 'desl', activa: !!trenSel && d.tren === trenSel,
+        texto: `Deslizamiento ${d.senal} (${d.comando.replace('EstablecerDeslizamiento', '')}) · agujas ${d.rec.agujas.map(a => `${a.id} ${a.pos}`).join(', ') || '—'} (inferido del plano)` });
+    }
+    return out;
+  }, [estado, trenSel]);
 
   const marcas: MarcaEvento[] = useMemo(() => {
     if (!mod || !ix) return [];
@@ -586,9 +657,9 @@ export const EsquematicoL1: React.FC = () => {
     for (let i = indiceEvento(mod.eventos, tTop); i < mod.eventos.length && mod.eventos[i].t <= tBot; i++) {
       const e = mod.eventos[i];
       // los DBO acompañan cada parada: se omiten en el hilo para no tapar el resto (siguen en la lista y en el lienzo)
-      if (e.cat === 'movimiento' || e.plantilla === 'dbo' || !e.refs.length) continue;
+      if (e.cat === 'movimiento' || e.plantilla === 'dbo' || e.plantilla === 'dbo_nocbtc' || !e.refs.length) continue;
       const g = geo(refKey(e.refs[0]));
-      const x = g?.c?.[0] ?? (g?.rect ? (g.rect[0] + g.rect[2]) / 2 : null) ?? (g?.d ? Number(/M([\d.]+)/.exec(g.d)?.[1]) : null);
+      const x = g?.lab?.[0] ?? g?.c?.[0] ?? (g?.rect ? (g.rect[0] + g.rect[2]) / 2 : null);
       if (x == null || Number.isNaN(x)) continue;
       out.push({ t: e.t, x, color: COLOR_CATEGORIA[e.cat], titulo: e.desc, i: e.i });
       if (out.length > 4000) break;
@@ -677,9 +748,9 @@ export const EsquematicoL1: React.FC = () => {
       <g className="esq-est-names">
         {data.estaciones.map(e => e.x != null && (
           <text key={e.codigo} x={e.x} y={(yEstacion.get(e.codigo) ?? Y_EST) + (general ? 2 : 0)}
-            fontSize={general ? 11 : effW > 3000 ? 7 : 4.2}
+            fontSize={Math.max(4.2, (general ? 15 : 13) * px)}
             className={(e.enclavamiento && ixlCaidos.has(e.enclavamiento)) || (e.atp && ixlCaidos.has(e.atp)) ? 'caido' : ''}>
-            {general ? e.nombre : effW > 3000 ? e.codigo : `${e.nombre} (${e.codigo})`}
+            {general || effW > 1500 ? e.nombre : `${e.nombre} (${e.codigo})`}
           </text>
         ))}
       </g>
@@ -698,7 +769,7 @@ export const EsquematicoL1: React.FC = () => {
       )}
 
       {on('estados') && estado && (
-        <EstadosSvg porElemento={estado.porElemento} recientes={estado.recientes} ventanaMs={DESTELLO_MS} geo={geo} px={px} />
+        <EstadosSvg porElemento={porElementoDibujo} recientes={estado.recientes} ventanaMs={DESTELLO_MS} geo={geo} px={px} etiquetas={!general || effW < 3000} />
       )}
 
       {capaVias}
@@ -712,7 +783,8 @@ export const EsquematicoL1: React.FC = () => {
       <JuntasSvg juntas={data.juntas} fisicas={on('juntas_fisicas')} virtuales={on('juntas_virtuales')}
         lazos={on('lazos')} etiquetas={lod.lazosTxt} px={px} selIdx={selIdx('junta')} hov={hov} />
 
-      <RotulosViaSvg rotulos={rotulosVia} px={px} x0={visX0} x1={visX1} cdv={on('cdv_nombres')} seccion={on('secciones_nombres')} longitudes={longitudes} />
+      <RotulosViaSvg rotulos={rotulosVia} px={px} x0={visX0} x1={visX1} cdv={on('cdv_nombres') && !general && effW < 1800}
+        seccion={on('secciones_nombres') && !general && effW < 1100} longitudes={longitudes} />
 
       {on('avc') && data.avc.map(a => (
         <g key={a.id} className="esq-avc" {...hov({ tipo: 'avc', id: a.id })}>
@@ -742,13 +814,15 @@ export const EsquematicoL1: React.FC = () => {
         <AgujaSvg key={a.id} a={a} data={data} k={strokeK} etiqueta={lod.nombresAguja} activo={selKey === `aguja:${a.id}` || hoverKey === `aguja:${a.id}`} hov={hov} />
       ))}
       {on('senales') && data.senales.map(s => (
-        <SenalSvg key={s.id} s={s} etiqueta={lod.nombresSenal} activo={selKey === `senal:${s.id}` || hoverKey === `senal:${s.id}`} hov={hov} />
+        <SenalSvg key={s.id} s={s} etiqueta={lod.nombresSenal} activo={selKey === `senal:${s.id}` || hoverKey === `senal:${s.id}`} hov={hov} escala={Math.min(3, Math.max(1, 1.5 * px))} />
       ))}
       {on('equipos') && data.equipos && (
         <EquiposSvg equipos={data.equipos} reset={on('reset') && lod.reset} etiquetas={lod.equiposTxt} selIdx={selIdx('equipo')} hov={hov} />
       )}
       {on('armarios') && data.armarios && <ArmariosSvg armarios={data.armarios} etiquetas={lod.armariosTxt} selId={selId('armario')} hov={hov} />}
 
+      {on('rutas') && rutasDibujo.length > 0 && <RutasSvg rutas={rutasDibujo} px={px} etiquetas={effW < 1500} />}
+      {on('dbo') && dboItems.length > 0 && <DboSvg items={dboItems} geo={geo} px={px} />}
       {on('fantasmas') && fantasmas.length > 0 && <FantasmasSvg items={fantasmas} px={px} />}
       {on('trenes') && trenesDibujo.length > 0 && <TrenesSvg trenes={trenesDibujo} px={px} sel={trenSel} hov={hov} />}
 
@@ -779,8 +853,9 @@ export const EsquematicoL1: React.FC = () => {
           {MODOS.map(m => <option key={m.key} value={m.key}>Color: {m.label}</option>)}
         </select>
         <div className="esq-modes">
-          <button className={general ? 'active' : ''} onClick={() => setVista('general')} title="Línea completa en filas"><Rows3 size={14} /></button>
+          <button className={general ? 'active' : ''} onClick={() => setVista('general')} title="Ver toda la línea (en filas)"><Rows3 size={14} /> Línea completa</button>
           <button className={!general ? 'active' : ''} onClick={() => setVista('detalle')} title="Detalle con zoom">Detalle</button>
+          <button onClick={() => { setVista('detalle'); encuadrar([data.lienzo.area[0], 150, data.lienzo.area[2], 330], 9000); }} title="Toda la línea en una sola tira (detalle)"><Maximize2 size={14} /></button>
         </div>
         <div className="esq-tools">
           <button onClick={() => (general ? setVista('detalle') : zoomBtn(1 / 1.6))} title="Acercar"><ZoomIn size={15} /></button>
@@ -884,21 +959,24 @@ export const EsquematicoL1: React.FC = () => {
 
         {hiloAbierto && (
           <>
+            <div className="esq-divisor" title="Arrastrar para agrandar o achicar el diagrama de hilo · doble clic: mitad de la pantalla"
+              onDoubleClick={() => setHiloAlto(h => (h > window.innerHeight * 0.4 ? 200 : Math.round(window.innerHeight * 0.5)))}
+              onPointerDown={e => {
+                e.preventDefault();
+                const y0 = e.clientY, h0 = hiloAlto;
+                const mover = (ev: PointerEvent) => setHiloAlto(Math.max(60, Math.min(window.innerHeight - 260, h0 - (ev.clientY - y0))));
+                const soltar = () => { window.removeEventListener('pointermove', mover); window.removeEventListener('pointerup', soltar); };
+                window.addEventListener('pointermove', mover);
+                window.addEventListener('pointerup', soltar);
+              }}><span /></div>
             <BarraReproduccion dias={dias} diasLocales={diasLocales} archivoLocal={archivoLocal} actual={actual} cargando={cargando}
               onDiaStorage={onDiaStorage} onArchivo={onArchivo} onDiaLocal={onDiaLocal} mod={mod} t={t} setT={setT}
               reproduciendo={reproduciendo} setReproduciendo={setReproduciendo} velocidad={velocidad} setVelocidad={setVelocidad}
               span={span} setSpan={setSpan} marcha={marcha} setMarcha={setMarchaDesdeAhora} seguir={seguir} setSeguir={setSeguir}
-              hayTrenSel={!!trenSel} onPaso={pasoEvento} />
+              hayTrenSel={!!trenSel} onPaso={pasoEvento} onClasificarStorage={() => void onClasificarStorage()} onClasificarLocal={fs => void onClasificarLocal(fs)} />
             <div className="esq-hilo-wrap" style={{ height: mod || marchasHilo.length ? hiloAlto : 44 }}>
-              <div className="esq-resizer" onPointerDown={e => {
-                const y0 = e.clientY, h0 = hiloAlto;
-                const mover = (ev: PointerEvent) => setHiloAlto(Math.max(90, Math.min(window.innerHeight * 0.7, h0 - (ev.clientY - y0))));
-                const soltar = () => { window.removeEventListener('pointermove', mover); window.removeEventListener('pointerup', soltar); };
-                window.addEventListener('pointermove', mover);
-                window.addEventListener('pointerup', soltar);
-              }} />
               {mod || marchasHilo.length ? (
-                <Hilo mod={mod ?? { eventos: [], trenes: [], intervalos: [], numeros: new Map(), areasIhm: [], sesionesIhm: [], servidoresIhm: [], t0: t, t1: t, conteo: new Map() }}
+                <Hilo mod={mod ?? { eventos: [], trenes: [], intervalos: [], numeros: new Map(), areasIhm: [], sesionesIhm: [], servidoresIhm: [], itinerarios: [], deslizamientos: [], t0: t, t1: t, conteo: new Map() }}
                   eje={eje} recorridos={recorridos} vx={visX0} vw={visX1 - visX0} t={t} span={span} onT={tt => { setT(tt); setReproduciendo(false); }}
                   onSpan={setSpan} sel={trenSel} onSel={c => (c ? seleccionar({ tipo: 'tren', id: c }) : undefined)} marchas={marchasHilo}
                   marcas={marcas} onMarca={i => { if (mod) irAEvento(mod.eventos[i]); }} estaciones={estacionesHilo} />

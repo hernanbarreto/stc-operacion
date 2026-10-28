@@ -525,6 +525,7 @@ const NOMBRE_LAZO: Record<string, string> = {
 const NOMBRE_ESTADO: Record<string, string> = {
   detenido: 'Tren detenido en CDV', arb: 'ARB', alarma: 'Otra alarma activa', rebase: 'Rebase de punto de parada', dbo: 'DBO activo',
   degradado: 'Tren degradado', tarjeta: 'Tarjeta de enclavamiento', ihm: 'IHM sin conexión', ixl: 'Enclavamiento / ATP desconectado',
+  nrb: 'NRB', marca: 'Marca de comando (FLOTA, ITI AUTO, SALTO, BLOQ…)',
 };
 
 const Glifo: React.FC<{ tipo: string; color: string }> = ({ tipo, color }) => (
@@ -560,7 +561,12 @@ export const Leyenda: React.FC<{ modo: Modo }> = ({ modo }) => (
     <div><i style={{ background: '#fbbf24' }} />Tren seleccionado · <span style={{ opacity: 0.45 }}>atenuado = dato sin actualizar</span></div>
     <div><i style={{ background: 'transparent', border: '1px dashed #fbbf24' }} />Tren de marcha tipo (comparación)</div>
     {Object.entries(NOMBRE_ESTADO).map(([k, n]) => <div key={k}><i style={{ background: COLOR_ESTADO[k] }} />{n}</div>)}
-    <div><i style={{ background: '#fde047' }} />Destello: elemento nombrado en un evento de los últimos 20 s</div>
+    <div><b className="esq-ley-dbo">DBO</b>DBO activo en el andén (CBTC) o en la señal (no CBTC)</div>
+    <div><i style={{ background: '#22c55e' }} />Itinerario establecido (recorrido inferido del plano; N / I = posición de agujas)</div>
+    <div><i style={{ background: 'transparent', border: '1px dashed #f59e0b' }} />Deslizamiento</div>
+    <div><i style={{ background: 'repeating-linear-gradient(90deg,#fde047 0 3px,transparent 3px 6px)' }} />RTV: restricción temporal de velocidad (sin valor en el log)</div>
+    <div>Texto junto al elemento: alarma o marca activa; con * = normalizada, pendiente de que el operador la reconozca (trazo discontinuo)</div>
+    <div><i style={{ background: '#fde047' }} />Destello: elemento nombrado en un evento de los últimos 20 s (rojo: comando rechazado)</div>
     <h4>Categorías de evento (lista y diagrama de hilo)</h4>
     {Object.entries(COLOR_CATEGORIA).map(([k, c]) => <div key={k}><i style={{ background: c, width: 8, height: 8, borderRadius: '50%' }} />{k}</div>)}
     <hr />

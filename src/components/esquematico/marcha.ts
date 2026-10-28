@@ -43,6 +43,8 @@ export async function cargarCurvas(): Promise<CurvaMarcha[]> {
 }
 
 const V_MIN = 3; // km/h: evita tiempos infinitos en los puntos de detención
+const A_FRENO = 0.9;   // m/s²: frenado de servicio hasta el punto de parada (andén o CDV donde se detiene)
+const A_ARRANQUE = 0.8; // m/s²: arranque desde la parada
 
 function indiceDesde(pk: number[], x: number): number {
   let lo = 0, hi = pk.length - 1;
@@ -63,11 +65,16 @@ export function perfilTramo(c: CurvaMarcha, pkA: number, pkB: number): { pks: nu
   const pks: number[] = [a];
   for (let i = i0 + 1; i <= i1; i++) if (c.pk[i] > a && c.pk[i] < b) pks.push(c.pk[i]);
   pks.push(b);
+  // velocidad de la curva de marcha tipo, limitada por el arranque desde pkA y el frenado hasta pkB: así el tren
+  // también se detiene (y arranca) en puntos que no son estaciones, p. ej. un CDV donde quedó detenido
   const vAt = (x: number) => {
     const i = indiceDesde(c.pk, x);
     const j = Math.min(i + 1, c.pk.length - 1);
     const t = c.pk[j] === c.pk[i] ? 0 : (x - c.pk[i]) / (c.pk[j] - c.pk[i]);
-    return Math.max(V_MIN, c.v[i] + t * (c.v[j] - c.v[i]));
+    const vCurva = c.v[i] + t * (c.v[j] - c.v[i]);
+    const dIni = Math.abs(x - pkA), dFin = Math.abs(pkB - x);
+    const vFreno = Math.sqrt(2 * A_FRENO * dFin) * 3.6, vArr = Math.sqrt(2 * A_ARRANQUE * dIni) * 3.6;
+    return Math.max(V_MIN, Math.min(vCurva, vFreno, vArr));
   };
   const cum = [0];
   for (let i = 1; i < pks.length; i++) {

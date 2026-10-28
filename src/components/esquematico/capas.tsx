@@ -1,7 +1,7 @@
 // Capas SVG del esquemático (coordenadas del lienzo = puntos PDF de la hoja 1/25 del plano de señalización).
 import React from 'react';
 import type { Anden, Aguja, Armario, Baliza, Cartel, ElementoRef, Equipo, Esquematico, Junta, Pendiente, Rotulo, Senal,
-  Subestacion, TramoObra, VelocidadAguja, Zona, ZonaVelocidad } from './types';
+  Subestacion, Tramo, TramoObra, VelocidadAguja, Zona, ZonaVelocidad } from './types';
 import { COLOR_ESTADO, LAMP, LAZO_COLORS, Y_ARM, Y_ENER, Y_SE, Y_TOP, colorVelocidad } from './constantes';
 import { fmtPk } from './resolver';
 import type { RotuloVia } from './rotulos';
@@ -11,7 +11,15 @@ export type HovFn = (ref: ElementoRef) => Record<string, unknown>;
 
 // ───────────────────────── señales, agujas, andenes ─────────────────────────
 
-export const SenalSvg: React.FC<{ s: Senal; etiqueta: boolean; activo: boolean; hov: HovFn }> = ({ s, etiqueta, activo, hov }) => {
+/** Señal; `escala` > 1 la agranda alrededor del poste para que siga visible con la línea alejada. */
+export const SenalSvg: React.FC<{ s: Senal; etiqueta: boolean; activo: boolean; hov: HovFn; escala?: number }> = ({ s, etiqueta, activo, hov, escala = 1 }) => {
+  if (escala > 1.01) {
+    return (
+      <g transform={`translate(${s.x} ${s.y}) scale(${escala}) translate(${-s.x} ${-s.y})`}>
+        <SenalSvg s={s} etiqueta={etiqueta} activo={activo} hov={hov} />
+      </g>
+    );
+  }
   // Geometría del plano: poste en (x, y) sobre la vía, cabeza de focos entre head.x0 y head.x1 a la altura head.cy.
   // El sentido gobernado es el que va del poste hacia los focos.
   if (!s.head) {
@@ -352,34 +360,104 @@ export const RotulosViaSvg: React.FC<{
 
 // ───────────────────────── reproducción de eventos ─────────────────────────
 
-const PRIORIDAD = ['rebase', 'detenido', 'arb', 'alarma', 'dbo'];
+const PRIORIDAD = ['rebase', 'detenido', 'arb', 'nrb', 'alarma', 'degradado', 'marca'];
 
-/** Resalta los elementos con intervalos activos (alarmas, DBO…) y los nombrados en eventos recientes. */
+export type Geo = { d?: string; rect?: [number, number, number, number]; c?: [number, number]; lab?: [number, number] } | null;
+export interface IntervaloDibujo { tipo: string; etiqueta: string; fase: 'activa' | 'pendiente' }
+
+/** Punto de referencia para la etiqueta de un elemento. */
+function puntoDe(g: NonNullable<Geo>): [number, number] | null {
+  return g.lab ?? g.c ?? (g.rect ? [(g.rect[0] + g.rect[2]) / 2, (g.rect[1] + g.rect[3]) / 2] : null);
+}
+
+/**
+ * Alarmas y marcas sobre los elementos: el CDV / sección / andén se pinta con el color del estado y se escribe la
+ * alarma (activa: trazo lleno; normalizada pendiente de reconocer: trazo discontinuo). Destello de eventos recientes
+ * (rojo si el comando fue rechazado).
+ */
 export const EstadosSvg: React.FC<{
-  porElemento: Map<string, string[]>; recientes: Map<string, number>; ventanaMs: number;
-  geo: (k: string) => { d?: string; rect?: [number, number, number, number]; c?: [number, number] } | null; px: number;
-}> = ({ porElemento, recientes, ventanaMs, geo, px }) => {
-  const sw = 7 * px;
+  porElemento: Map<string, IntervaloDibujo[]>; recientes: Map<string, { edad: number; rechazo: boolean }>; ventanaMs: number;
+  geo: (k: string) => Geo; px: number; etiquetas: boolean;
+}> = ({ porElemento, recientes, ventanaMs, geo, px, etiquetas }) => {
+  const sw = 7 * px, fs = 9 * px;
   return (
     <g className="esq-estados">
-      {[...porElemento.entries()].map(([k, tipos]) => {
+      {[...porElemento.entries()].map(([k, ivs]) => {
         const g = geo(k);
         if (!g) return null;
-        const t = PRIORIDAD.find(p => tipos.includes(p)) ?? tipos[0];
-        const col = COLOR_ESTADO[t] ?? '#facc15';
-        if (g.d) return <path key={k} d={g.d} stroke={col} style={{ strokeWidth: sw }} className="esq-estado-via" />;
-        if (g.rect) return <rect key={k} x={g.rect[0]} y={g.rect[1]} width={g.rect[2] - g.rect[0]} height={g.rect[3] - g.rect[1]} fill={col} className="esq-estado-area" />;
-        if (g.c) return <circle key={k} cx={g.c[0]} cy={g.c[1]} r={6 * px} fill="none" stroke={col} style={{ strokeWidth: 2 * px }} />;
-        return null;
+        const ord = [...ivs].sort((a, b) => (PRIORIDAD.indexOf(a.tipo) + 99 * +(a.fase === 'pendiente')) - (PRIORIDAD.indexOf(b.tipo) + 99 * +(b.fase === 'pendiente')));
+        const top = ord[0];
+        const col = COLOR_ESTADO[top.tipo] ?? '#facc15';
+        const pend = top.fase === 'pendiente';
+        const dash = pend ? `${4 * px} ${3 * px}` : undefined;
+        const p = puntoDe(g);
+        const txt = [...new Set(ord.map(x => (x.fase === 'pendiente' ? `${x.etiqueta}*` : x.etiqueta)))].join(' · ');
+        const arriba = p ? p[1] < 228 : true;
+        return (
+          <g key={k} className={`esq-estado${pend ? ' pendiente' : ''}`}>
+            {g.d && <path d={g.d} stroke={col} style={{ strokeWidth: sw, strokeDasharray: dash }} className="esq-estado-via" />}
+            {g.d && ord.some(x => x.etiqueta === 'RTV') && <path d={g.d} className="esq-rtv" style={{ strokeWidth: sw * 1.3, strokeDasharray: `${2 * px} ${2 * px}` }} />}
+            {g.rect && <rect x={g.rect[0]} y={g.rect[1]} width={g.rect[2] - g.rect[0]} height={g.rect[3] - g.rect[1]} fill={col}
+              stroke={col} style={{ strokeDasharray: dash, strokeWidth: 1.5 * px }} className="esq-estado-area" />}
+            {!g.d && !g.rect && g.c && <circle cx={g.c[0]} cy={g.c[1]} r={6 * px} fill="none" stroke={col} style={{ strokeWidth: 2 * px, strokeDasharray: dash }} />}
+            {etiquetas && p && txt && (
+              <text x={p[0]} y={arriba ? p[1] - 30 * px : p[1] + 30 * px + fs} fontSize={fs} className="esq-estado-txt" style={{ fill: col }}>{txt}</text>
+            )}
+          </g>
+        );
       })}
-      {[...recientes.entries()].map(([k, edad]) => {
+      {[...recientes.entries()].map(([k, r]) => {
         const g = geo(k);
         if (!g) return null;
-        const op = Math.max(0.15, 1 - edad / ventanaMs);
-        const c = g.c ?? (g.rect ? [(g.rect[0] + g.rect[2]) / 2, (g.rect[1] + g.rect[3]) / 2] : null);
-        if (g.d) return <path key={`r${k}`} d={g.d} className="esq-reciente-via" style={{ strokeWidth: 3 * px, opacity: op }} />;
-        return c ? <circle key={`r${k}`} cx={c[0]} cy={c[1]} r={(8 + 6 * (1 - op)) * px} className="esq-reciente" style={{ strokeWidth: 1.6 * px, opacity: op }} /> : null;
+        const op = Math.max(0.15, 1 - r.edad / ventanaMs);
+        const c = puntoDe(g);
+        const cls = r.rechazo ? ' rechazo' : '';
+        if (g.d) return <path key={`r${k}`} d={g.d} className={`esq-reciente-via${cls}`} style={{ strokeWidth: 3 * px, opacity: op }} />;
+        return c ? <circle key={`r${k}`} cx={c[0]} cy={c[1]} r={(8 + 6 * (1 - op)) * px} className={`esq-reciente${cls}`} style={{ strokeWidth: 1.6 * px, opacity: op }} /> : null;
       })}
+    </g>
+  );
+};
+
+/** DBO activo: cuadrado rojo con «DBO» sobre el andén (DBO CBTC) o junto a la señal (DBO no CBTC). */
+export const DboSvg: React.FC<{ items: { k: string; texto: string }[]; geo: (k: string) => Geo; px: number }> = ({ items, geo, px }) => {
+  const w = 30 * px, h = 15 * px, fs = 10 * px;
+  return (
+    <g className="esq-dbo">
+      {items.map(({ k, texto }) => {
+        const g = geo(k);
+        const p = g ? puntoDe(g) : null;
+        if (!g || !p) return null;
+        const [x, y] = g.rect ? [Math.min(g.rect[0] + w / 2 + 3 * px, p[0]), p[1]] : [p[0], p[1] + (p[1] < 228 ? -14 * px : 14 * px)];
+        return (
+          <g key={k}>
+            <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={1.5 * px} style={{ strokeWidth: 1.2 * px }} />
+            <text x={x} y={y + fs * 0.36} fontSize={fs}>DBO</text>
+            <title>{texto}</title>
+          </g>
+        );
+      })}
+    </g>
+  );
+};
+
+export interface RutaDibujo { id: string; tramos: Tramo[]; agujas: { id: string; pos: string; x: number; y: number }[]; texto: string; tipo: 'ruta' | 'desl'; activa: boolean }
+
+/** Itinerarios establecidos (verde) y deslizamientos (ámbar, discontinuo), con la posición de las agujas. */
+export const RutasSvg: React.FC<{ rutas: RutaDibujo[]; px: number; etiquetas: boolean }> = ({ rutas, px, etiquetas }) => {
+  const fs = 9 * px;
+  return (
+    <g className="esq-rutas">
+      {rutas.map(r => (
+        <g key={r.id} className={`esq-ruta ${r.tipo}${r.activa ? ' activa' : ''}`}>
+          <path d={r.tramos.map(t => `M${t[0]} ${t[1]}L${t[2]} ${t[3]}`).join('')}
+            style={{ strokeWidth: (r.activa ? 9 : 6) * px, strokeDasharray: r.tipo === 'desl' ? `${5 * px} ${3 * px}` : undefined }} />
+          {etiquetas && r.agujas.map(a => (
+            <text key={a.id} x={a.x} y={a.y + (a.y < 228 ? -9 * px : 9 * px + fs * 0.7)} fontSize={fs * 0.9} className="esq-ruta-ag">{a.pos === 'normal' ? 'N' : 'I'}</text>
+          ))}
+          <title>{r.texto}</title>
+        </g>
+      ))}
     </g>
   );
 };

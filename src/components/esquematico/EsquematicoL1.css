@@ -521,9 +521,21 @@
 .esq-replay-cargando { color: #fbbf24; }
 
 /* diagrama de hilo */
-.esq-hilo-wrap { position: relative; flex-shrink: 0; min-height: 90px; }
-.esq-resizer { position: absolute; left: 0; right: 0; top: -4px; height: 8px; cursor: ns-resize; z-index: 5; }
-.esq-resizer:hover { background: rgba(56, 189, 248, 0.25); }
+.esq-hilo-wrap { position: relative; flex-shrink: 0; min-height: 44px; }
+.esq-divisor {
+  flex-shrink: 0;
+  height: 10px;
+  margin: -2px 0;
+  cursor: ns-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  touch-action: none;
+}
+.esq-divisor span { width: 64px; height: 4px; border-radius: 2px; background: #475569; }
+.esq-divisor:hover { background: rgba(56, 189, 248, 0.15); }
+.esq-divisor:hover span { background: #38bdf8; }
 .esq-hilo {
   width: 100%;
   height: 100%;
@@ -606,3 +618,22 @@
 .esq-ley-sec { color: #94a3b8; font-family: 'JetBrains Mono', ui-monospace, monospace; }
 .esq-panel-body table.esq-ihm th { width: auto; font-size: 0.7rem; }
 .esq-panel-body table.esq-ihm td { font-size: 0.72rem; padding-right: 0.4rem; }
+.esq-ev-rechazo { color: #f87171; font-style: normal; }
+.esq-estado-item.pendiente { opacity: 0.75; }
+.esq-estado-item em { color: #fbbf24; font-style: normal; }
+
+/* alarmas con etiqueta, DBO, itinerarios */
+.esq-estado.pendiente .esq-estado-via { stroke-opacity: 0.35; }
+.esq-estado-txt { text-anchor: middle; font-weight: 700; font-family: 'JetBrains Mono', ui-monospace, monospace; paint-order: stroke; stroke: #05080f; stroke-width: 0.35em; stroke-linejoin: round; pointer-events: none; }
+.esq-reciente.rechazo, .esq-reciente-via.rechazo { stroke: #ef4444; }
+.esq-dbo rect { fill: #dc2626; stroke: #fecaca; }
+.esq-dbo text { fill: #fff; font-weight: 800; text-anchor: middle; font-family: 'JetBrains Mono', ui-monospace, monospace; pointer-events: none; }
+.esq-ruta path { fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: stroke; }
+.esq-ruta.ruta path { stroke: #22c55e; stroke-opacity: 0.55; }
+.esq-ruta.desl path { stroke: #f59e0b; stroke-opacity: 0.75; }
+.esq-ruta.activa path { stroke-opacity: 0.9; }
+.esq-ruta-ag { fill: #bbf7d0; font-weight: 700; text-anchor: middle; font-family: 'JetBrains Mono', ui-monospace, monospace; paint-order: stroke; stroke: #05080f; stroke-width: 0.3em; pointer-events: none; }
+.esq-ruta.desl .esq-ruta-ag { fill: #fde68a; }
+.esq-modes button { gap: 0.3rem; }
+.esq-rtv { fill: none; stroke: #fde047; stroke-linecap: butt; pointer-events: none; }
+.esq-ley-dbo { background: #dc2626; color: #fff; font-size: 0.62rem; padding: 0 3px; border-radius: 2px; font-family: 'JetBrains Mono', ui-monospace, monospace; flex-shrink: 0; }

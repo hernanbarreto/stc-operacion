@@ -3,7 +3,7 @@
 export type Modo = 'ihm' | 'cdv' | 'frecuencia' | 'tipo' | 'enclavamiento' | 'velocidad';
 
 export type Capa =
-  | 'trenes' | 'estados' | 'fantasmas' | 'energia_zonas' | 'senales' | 'agujas' | 'juntas_fisicas' | 'juntas_virtuales' | 'lazos' | 'cdv_nombres'
+  | 'trenes' | 'estados' | 'rutas' | 'dbo' | 'fantasmas' | 'energia_zonas' | 'senales' | 'agujas' | 'juntas_fisicas' | 'juntas_virtuales' | 'lazos' | 'cdv_nombres'
   | 'secciones_nombres' | 'andenes' | 'avc' | 'topes' | 'limites' | 'pk' | 'balizas' | 'psp' | 'fp'
   | 'marcadores_al' | 'vel_zonas' | 'vel_agujas' | 'pendientes' | 'equipos' | 'reset' | 'zonas_rauz'
   | 'zonas_asr' | 'armarios' | 'subestaciones' | 'carteles' | 'tramos' | 'rotulos';
@@ -61,7 +61,9 @@ export const GRUPOS_CAPAS: { grupo: string; capas: { key: Capa; label: string }[
   {
     grupo: 'Reproducción de eventos', capas: [
       { key: 'trenes', label: 'Trenes (número y posición)' },
-      { key: 'estados', label: 'Estados y alarmas sobre los elementos' },
+      { key: 'rutas', label: 'Itinerarios y deslizamientos' },
+      { key: 'dbo', label: 'DBO' },
+      { key: 'estados', label: 'Alarmas y marcas sobre los elementos' },
       { key: 'fantasmas', label: 'Tren de marcha tipo' },
     ],
   },
@@ -70,7 +72,7 @@ export const GRUPOS_CAPAS: { grupo: string; capas: { key: Capa; label: string }[
 export const CAPAS_INICIALES: Capa[] = ['senales', 'agujas', 'juntas_fisicas', 'juntas_virtuales', 'lazos',
   'cdv_nombres', 'secciones_nombres', 'andenes', 'avc', 'topes', 'limites', 'pk', 'balizas', 'vel_zonas',
   'vel_agujas', 'equipos', 'armarios', 'subestaciones', 'energia_zonas', 'carteles', 'tramos', 'rotulos', 'fp',
-  'trenes', 'estados', 'fantasmas'];
+  'trenes', 'rutas', 'dbo', 'estados', 'fantasmas'];
 
 export const MODOS: { key: Modo; label: string }[] = [
   { key: 'ihm', label: 'IHM' },
@@ -129,6 +131,8 @@ export const COLOR_CATEGORIA: Record<string, string> = {
 
 /** Color de resaltado por tipo de intervalo activo en la reproducción. */
 export const COLOR_ESTADO: Record<string, string> = {
-  detenido: '#f97316', arb: '#e879f9', alarma: '#facc15', rebase: '#ef4444', dbo: '#22c55e', degradado: '#ef4444',
-  tarjeta: '#ef4444', ihm: '#a78bfa', ixl: '#ef4444',
+  detenido: '#f97316', arb: '#e879f9', nrb: '#c084fc', alarma: '#facc15', rebase: '#ef4444', dbo: '#dc2626', degradado: '#ef4444',
+  tarjeta: '#ef4444', ihm: '#a78bfa', ixl: '#ef4444', marca: '#22d3ee',
 };
+export const COLOR_RUTA = '#22c55e';
+export const COLOR_DESL = '#f59e0b';

@@ -64,7 +64,7 @@ export const EventosPanel: React.FC<{
             <span className="h">{horaTxt(e.t)}</span>
             <i style={{ background: COLOR_CATEGORIA[e.cat] }} />
             <span className="d">
-              <b>{e.tipo}</b> {e.desc}
+              <b>{e.tipo}</b> {e.desc}{e.rechazo && <em className="esq-ev-rechazo"> rechazado: {e.rechazo}</em>}
               {e.refs.length > 0 && <span className="refs">{e.refs.map(r => <button key={rk(r)} className="esq-link" onClick={ev => { ev.stopPropagation(); onSel(r); }}>{refTxt(r)}</button>)}</span>}
             </span>
           </div>
@@ -76,9 +76,9 @@ export const EventosPanel: React.FC<{
 };
 
 const NOMBRE_IV: Record<string, string> = {
-  detenido: 'Tren detenido en CDV', arb: 'ARB activo', alarma: 'Otras alarmas', rebase: 'Rebase de punto de parada',
+  detenido: 'Tren detenido en CDV', arb: 'ARB activo', nrb: 'NRB activo', alarma: 'Otras alarmas', rebase: 'Rebase de punto de parada',
   dbo: 'DBO activo', degradado: 'Tren degradado', tarjeta: 'Tarjeta de enclavamiento en fallo', ihm: 'IHM sin conexión',
-  ixl: 'Enclavamiento/ATP desconectado',
+  ixl: 'Enclavamiento/ATP desconectado', marca: 'Marcas de comandos (flota, automáticos, salto, bloqueos, TSR…)',
 };
 
 export const EstadoPanel: React.FC<{ estado: EstadoInstante; onSel: (r: ElementoRef) => void }> = ({ estado, onSel }) => {
@@ -106,12 +106,29 @@ export const EstadoPanel: React.FC<{ estado: EstadoInstante; onSel: (r: Elemento
           ))}
         </tbody></table>
       ) : <p className="esq-muted">Sin sesiones, servidores ni cambios de área registrados hasta este momento.</p>}
+      <h4>Itinerarios establecidos ({estado.rutas.length})</h4>
+      {estado.rutas.length ? estado.rutas.map(r => (
+        <div key={r.id} className="esq-estado-item">
+          <span className="h">{horaTxt(r.t0)}</span> {r.origen} → {r.destino}
+          {r.tren && <> · <button className="esq-link" onClick={() => onSel({ tipo: 'tren', id: r.tren as string })}>{r.tren}</button></>}
+          {r.rec ? ` · ${r.rec.agujas.map(a => `${a.id} ${a.pos === 'normal' ? 'N' : 'I'}`).join(', ') || 'sin agujas'}` : ' · sin recorrido en el plano'}
+        </div>
+      )) : <p className="esq-muted">Ninguno.</p>}
+      {estado.desl.length > 0 && <h4>Deslizamientos ({estado.desl.length})</h4>}
+      {estado.desl.map(d => (
+        <div key={d.id} className="esq-estado-item">
+          <span className="h">{horaTxt(d.t0)}</span> {d.senal} · {d.comando.replace('EstablecerDeslizamiento', '')}
+          {d.rec ? ` · ${d.rec.agujas.map(a => `${a.id} ${a.pos === 'normal' ? 'N' : 'I'}`).join(', ') || 'sin agujas'}` : ''}
+        </div>
+      ))}
       {[...grupos.entries()].map(([tipo, l]) => (
         <section key={tipo}>
           <h4>{NOMBRE_IV[tipo] ?? tipo} ({l.length})</h4>
           {l.slice(0, 80).map((a, i) => (
-            <div key={i} className="esq-estado-item">
+            <div key={i} className={`esq-estado-item${a.tN != null && a.tN <= estado.t ? ' pendiente' : ''}`}>
               <span className="h">{horaTxt(a.t0)}</span> {a.texto}
+              {a.tN != null && a.tN <= estado.t && <em> — normalizada {horaTxt(a.tN)}, pendiente de reconocer</em>}
+              {a.tren && <> · <button className="esq-link" onClick={() => onSel({ tipo: 'tren', id: a.tren as string })}>{a.tren}</button></>}
               {a.refs.map(r => <button key={rk(r)} className="esq-link" onClick={() => onSel(r)}> {r.id}</button>)}
             </div>
           ))}
@@ -126,6 +143,8 @@ export const TrenPanel: React.FC<{ mod: ModeloEventos; clave: string; t: number;
   if (!tr) return <p>{clave}</p>;
   const pos = estado.trenes.find(p => p.tren.clave === clave);
   const numero = numeroEn(mod, tr, t);
+  const rutas = estado.rutas.filter(r => r.tren === clave);
+  const desl = estado.desl.filter(d => d.tren === clave);
   const historial = tr.cabinas.flatMap(c => (mod.numeros.get(c) ?? []).map(x => ({ ...x, cab: c }))).sort((a, b) => a.t - b.t);
   const i = tr.paradas.findIndex(p => p.t > t);
   const prox = i >= 0 ? tr.paradas.slice(i, i + 4) : [];
@@ -136,7 +155,10 @@ export const TrenPanel: React.FC<{ mod: ModeloEventos; clave: string; t: number;
         <tr><th>Número de servicio</th><td>{numero ?? '—'}</td></tr>
         <tr><th>Material</th><td>{tr.material ?? '—'}</td></tr>
         <tr><th>Cabinas TGMT</th><td>{tr.cabinas.join(', ')}</td></tr>
-        <tr><th>Posición</th><td>{pos ? (pos.enAnden ? `detenido en ${pos.estCodigo} (vía ${pos.via})` : `en marcha, PK ${fmtPk(pos.pk)} (vía ${pos.via})`) : 'sin datos en este momento'}</td></tr>
+        <tr><th>Posición</th><td>{pos ? (pos.cdv ? `detenido en ${pos.cdv.id} (alarma de tren detenido)` : pos.enAnden ? `detenido en ${pos.estCodigo} (vía ${pos.via})` : `en marcha, PK ${fmtPk(pos.pk)} (vía ${pos.via})`) : 'sin datos en este momento'}</td></tr>
+        {rutas.length > 0 && <tr><th>Itinerario</th><td>{rutas.map(r => `${r.origen} → ${r.destino}`).join(', ')}</td></tr>}
+        {desl.length > 0 && <tr><th>Deslizamiento</th><td>{desl.map(d => `${d.senal} (${d.comando.replace('EstablecerDeslizamiento', '')})`).join(', ')}</td></tr>}
+        <tr><th>Modo de conducción</th><td>no viene en el log del ATS{estado.degradados.has(numero ?? '') ? ' (alarma: degradado)' : ''}</td></tr>
         {pos && !pos.vigente && <tr><th>Nota</th><td>dato sin actualizar (más de 15 min sin eventos de andén)</td></tr>}
         <tr><th>Eventos de andén</th><td>{tr.paradas.length}</td></tr>
       </tbody></table>
@@ -148,7 +170,7 @@ export const TrenPanel: React.FC<{ mod: ModeloEventos; clave: string; t: number;
       ))}
       {historial.length > 0 && <h4>Números asignados</h4>}
       {historial.map((x, k) => <div key={k} className="esq-estado-item"><span className="h">{horaTxt(x.t)}</span> cabina {x.cab}: {x.numero ?? 'borrado'}</div>)}
-      <p className="esq-muted">Fuente: eventos TGMT de llegada/salida (posición por estación; entre estaciones se interpola con la marcha tipo del material) y ATS_I_Train_Number / TRAIN_CHANGED (número).</p>
+      <p className="esq-muted">Fuente: eventos TGMT de llegada/salida (posición por estación; entre estaciones se interpola con la marcha tipo del material), alarmas de tren detenido en CDV, ATS_I_Train_Number / TRAIN_CHANGED (número) e itinerarios asociados por el paso del tren por la señal origen (estimado).</p>
     </div>
   );
 };
