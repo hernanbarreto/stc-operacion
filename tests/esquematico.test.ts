@@ -1,17 +1,64 @@
-// Pruebas del esquemático de la Línea 1: resolución de identificadores (planos y log del ATS), ejes de PK,
-// correspondencia entre las reglas de los dos planos e integridad del JSON generado por tools/esquematico.
-import { describe, expect, it } from 'vitest';
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+// Pruebas del esquemático de la Línea 1: cifrado de los datos, resolución de identificadores (planos y log del
+// ATS), ejes de PK, correspondencia entre las reglas de los dos planos e integridad del JSON generado por
+// tools/esquematico. Los datos en claro están en datos_planos/ (no versionado); si no están, se descifran los de
+// public/data/l1 con STC_CLAVE_DATOS; sin ninguno de los dos se omiten las pruebas de integridad.
+import { beforeAll, describe, expect, it } from 'vitest';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import type { Esquematico } from '../src/components/esquematico/types';
 import {
   cajaDe, construirEjePk, construirIndice, ejeDesdeRegla, fmtPk, interpolar, parsePk, perfilEn, rangoX, resolver,
   tramosHomologos,
 } from '../src/components/esquematico/resolver';
+import { AlmacenCifrado } from '../src/components/esquematico/datos';
+// @ts-expect-error módulo ESM de Node sin tipos
+import { cifrarDirectorio } from '../tools/esquematico/cifrado.mjs';
 
-const RUTA = resolve(__dirname, '../public/data/esquematico_l1.json');
-const hayDatos = existsSync(RUTA);
-const data: Esquematico = hayDatos ? JSON.parse(readFileSync(RUTA, 'utf-8')) : ({} as Esquematico);
+const RAIZ = resolve(__dirname, '..');
+const PLANO = join(RAIZ, 'datos_planos/esquematico_l1.json');
+const CIFRADO = join(RAIZ, 'public/data/l1');
+const CLAVE = process.env.STC_CLAVE_DATOS;
+const lectorFs = (dir: string) => async (f: string) => new Uint8Array(readFileSync(join(dir, f)));
+const hayDatos = existsSync(PLANO) || (!!CLAVE && existsSync(join(CIFRADO, 'manifest.json')));
+let data = {} as Esquematico;
+
+beforeAll(async () => {
+  if (existsSync(PLANO)) data = JSON.parse(readFileSync(PLANO, 'utf-8'));
+  else if (hayDatos) {
+    const a = new AlmacenCifrado('', lectorFs(CIFRADO));
+    if (!(await a.desbloquear(CLAVE as string))) throw new Error('STC_CLAVE_DATOS no corresponde a public/data/l1');
+    data = await a.leerJson<Esquematico>('esquematico_l1.json');
+  }
+});
+
+describe('cifrado de datos', () => {
+  it('lo cifrado con tools/esquematico/cifrado.mjs se descifra en la web sólo con la clave correcta', async () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'esq-'));
+    const ent = join(tmp, 'plano');
+    mkdirSync(join(ent, 'planos/x'), { recursive: true });
+    writeFileSync(join(ent, 'esquematico_l1.json'), JSON.stringify({ hola: 'línea 1', n: [1, 2, 3] }));
+    writeFileSync(join(ent, 'planos/x/t00.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>');
+    const clave = 'clave-de-prueba-0123456789';
+    await cifrarDirectorio(ent, join(tmp, 'l1'), clave);
+    const a = new AlmacenCifrado('', lectorFs(join(tmp, 'l1')));
+    expect(await a.desbloquear('otra-clave-0123456789')).toBeNull();
+    const raw = await a.desbloquear(clave);
+    expect(raw?.length).toBe(32);
+    expect(await a.leerJson('esquematico_l1.json')).toEqual({ hola: 'línea 1', n: [1, 2, 3] });
+    expect(new TextDecoder().decode(await a.leer('planos/x/t00.svg'))).toContain('<svg');
+    const b = new AlmacenCifrado('', lectorFs(join(tmp, 'l1')));
+    expect(await b.desbloquearCruda(raw as Uint8Array<ArrayBuffer>)).toBe(true);
+    await expect(new AlmacenCifrado('', lectorFs(join(tmp, 'l1'))).leer('esquematico_l1.json')).rejects.toThrow();
+  }, 30000);
+
+  it('el repo no contiene los datos en claro', () => {
+    for (const f of ['public/data/esquematico_l1.json', 'public/data/planos']) expect(existsSync(join(RAIZ, f))).toBe(false);
+    const m = JSON.parse(readFileSync(join(CIFRADO, 'manifest.json'), 'utf-8'));
+    expect(m.kdf.iteraciones).toBeGreaterThanOrEqual(600000);
+    expect(Object.keys(m.archivos)).toContain('esquematico_l1.json');
+  });
+});
 
 describe('PK', () => {
   it('parsea y formatea', () => {
@@ -57,7 +104,8 @@ describe('PK', () => {
 });
 
 describe.runIf(hayDatos)('esquematico_l1.json', () => {
-  const ix = hayDatos ? construirIndice(data) : null;
+  let ix: ReturnType<typeof construirIndice> | null = null;
+  beforeAll(() => { ix = construirIndice(data); });
 
   it('declara las fuentes y sus revisiones', () => {
     const f = new Map(data.fuentes.map(x => [x.id, x]));

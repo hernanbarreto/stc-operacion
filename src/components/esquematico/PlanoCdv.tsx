@@ -4,7 +4,7 @@
 // x que en el plano de señalización. En la mayoría de los tramos la escala es la misma (factor 1).
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { type EjePk, fmtPk, tramosHomologos } from './resolver';
-import { PlanoTiras, type PlanoIndex } from './capas';
+import { PlanoTiras, type FuenteTiras, type PlanoIndex } from './capas';
 
 interface Props {
   index: PlanoIndex;
@@ -17,11 +17,12 @@ interface Props {
   cursorPk: number | null;
   onCursorPk: (pk: number | null) => void;
   claro: boolean;
+  fuente: FuenteTiras;
 }
 
 const Y_CENTRO = 215;   // centro de las vías en la hoja del plano de CDV
 
-export const PlanoCdv: React.FC<Props> = ({ index, base, reglaSen, reglaCdv, ejeSen, vx, vw, cursorPk, onCursorPk, claro }) => {
+export const PlanoCdv: React.FC<Props> = ({ index, base, reglaSen, reglaCdv, ejeSen, vx, vw, cursorPk, onCursorPk, claro, fuente }) => {
   const ref = useRef<HTMLDivElement>(null);
   const uid = useId().replace(/:/g, '');
   const [asp, setAsp] = useState(0.3);
@@ -76,7 +77,7 @@ export const PlanoCdv: React.FC<Props> = ({ index, base, reglaSen, reglaCdv, eje
           return (
             <g key={i} clipPath={`url(#${uid}-c${i})`}>
               <g transform={`matrix(${sx} 0 0 1 ${t.xs0 - sx * t.xc0} 0)`}>
-                <PlanoTiras base={base} index={index} x0={t.xc0} x1={t.xc1} claro={claro} />
+                <PlanoTiras base={base} index={index} x0={t.xc0} x1={t.xc1} claro={claro} fuente={fuente} />
               </g>
             </g>
           );

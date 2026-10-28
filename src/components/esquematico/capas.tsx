@@ -1,5 +1,5 @@
 // Capas SVG del esquemático (coordenadas del lienzo = puntos PDF de la hoja 1/25 del plano de señalización).
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { Anden, Aguja, Armario, Baliza, Cartel, ElementoRef, Equipo, Esquematico, Junta, Pendiente, Rotulo, Senal,
   Subestacion, TramoObra, VelocidadAguja, Zona, ZonaVelocidad } from './types';
 import { LAMP, LAZO_COLORS, Y_ARM, Y_TOP, colorVelocidad } from './constantes';
@@ -16,14 +16,27 @@ export interface PlanoIndex {
   tiras: { x0: number; x1: number; archivo: string }[];
 }
 
-export const PlanoTiras: React.FC<{ base: string; index: PlanoIndex; x0: number; x1: number; claro?: boolean }> = ({ base, index, x0, x1, claro }) => (
-  <g className={`esq-plano${claro ? ' claro' : ''}`}>
-    {index.tiras.filter(t => t.x1 >= x0 - 50 && t.x0 <= x1 + 50).map(t => (
-      <image key={t.archivo} href={`${base}/${t.archivo}`} x={t.x0} y={0} width={t.x1 - t.x0} height={index.alto}
-        preserveAspectRatio="none" />
-    ))}
-  </g>
-);
+/** URLs locales de las tiras ya descifradas y función para pedir las que faltan. */
+export interface FuenteTiras {
+  urls: ReadonlyMap<string, string>;
+  pedir: (ruta: string) => void;
+}
+
+export const PlanoTiras: React.FC<{ base: string; index: PlanoIndex; x0: number; x1: number; claro?: boolean; fuente: FuenteTiras }> = ({ base, index, x0, x1, claro, fuente }) => {
+  const vis = index.tiras.filter(t => t.x1 >= x0 - 50 && t.x0 <= x1 + 50);
+  const faltan = vis.map(t => `${base}/${t.archivo}`).filter(r => !fuente.urls.has(r)).join('|');
+  useEffect(() => {
+    if (faltan) for (const r of faltan.split('|')) fuente.pedir(r);
+  }, [faltan, fuente]);
+  return (
+    <g className={`esq-plano${claro ? ' claro' : ''}`}>
+      {vis.map(t => {
+        const u = fuente.urls.get(`${base}/${t.archivo}`);
+        return u ? <image key={t.archivo} href={u} x={t.x0} y={0} width={t.x1 - t.x0} height={index.alto} preserveAspectRatio="none" /> : null;
+      })}
+    </g>
+  );
+};
 
 // ───────────────────────── señales, agujas, andenes ─────────────────────────
 

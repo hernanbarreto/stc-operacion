@@ -154,18 +154,25 @@ Vista general (línea completa en filas) y de detalle (zoom/arrastre), modos de 
 búsqueda por cualquier identificador de los planos o del log (p. ej. `BALC22BAL`, `S12BBADLRTB`, `117`, `OBS-03.0`, `4+535`),
 inspector de PK (clic en un punto vacío), plano de señalización original superpuesto y plano de CDV sincronizado por PK.
 
-Generación de datos (los PDF no se versionan):
+Los datos derivan de planos C2-Confidencial y el repositorio es público: en git y en el hosting sólo están
+**cifrados** (`public/data/l1`, AES-256-GCM con clave derivada por PBKDF2-SHA256). La web pide la clave de datos
+una vez (opción "recordar en este navegador") o la toma de Firestore, documento `config/esquematico`, campo `clave`,
+si existe y las reglas permiten leerlo a usuarios autenticados. La clave no se versiona.
+
+Generación (los PDF y los datos en claro no se versionan; `datos_planos/` está en `.gitignore`):
 
 ```bash
 cd tools/esquematico
 pip install pymupdf openpyxl
-python3 extract.py --senal SEN.pdf --cdv CDV.pdf --fuentes fuentes.json --eventos eventos.xlsx --out ../../public/data/esquematico_l1.json
-python3 planos_svg.py --pdf SEN.pdf --pagina 1 --salida ../../public/data/planos/sen_h1 --xmax 9380 --titulo "Plano de señalización rev 09 — hoja 1/25"
-python3 planos_svg.py --pdf CDV.pdf --pagina 1 --salida ../../public/data/planos/cdv --xmax 7555 --titulo "Plano de circuitos de vía rev J"
-python3 validar_log.py --esquematico ../../public/data/esquematico_l1.json --eventos eventos.xlsx   # cobertura de ids del log
+python3 extract.py --senal SEN.pdf --cdv CDV.pdf --fuentes fuentes.json --eventos eventos.xlsx --out ../../datos_planos/esquematico_l1.json
+python3 planos_svg.py --pdf SEN.pdf --pagina 1 --salida ../../datos_planos/planos/sen_h1 --xmax 9380 --titulo "Plano de señalización rev 09 — hoja 1/25"
+python3 planos_svg.py --pdf CDV.pdf --pagina 1 --salida ../../datos_planos/planos/cdv --xmax 7555 --titulo "Plano de circuitos de vía rev J"
+python3 validar_log.py --esquematico ../../datos_planos/esquematico_l1.json --eventos eventos.xlsx   # cobertura de ids del log
+cd ../..
+STC_CLAVE_DATOS='…' node tools/esquematico/cifrado.mjs --entrada datos_planos --salida public/data/l1
 ```
 
-Pruebas: `npm test`.
+Pruebas: `npm test` (las de integridad usan `datos_planos/` o, si no está, descifran `public/data/l1` con `STC_CLAVE_DATOS`).
 
 ## 🚢 Despliegue
 

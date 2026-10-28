@@ -437,3 +437,38 @@
 .esq-capas-extra { grid-column: 1 / -1; border-top: 1px solid var(--border); padding-top: 0.4rem; }
 .esq-obs p .esq-link,
 .esq-obs-local p .esq-link { margin-left: 0.4rem; }
+
+/* clave de datos */
+.esq-clave {
+  margin: 4rem auto;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.6rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+.esq-clave h3 { margin: 0; color: var(--text-primary); font-size: 1rem; }
+.esq-clave p { margin: 0; line-height: 1.45; }
+.esq-clave input[type='password'] {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.esq-clave label { display: flex; align-items: center; gap: 0.4rem; }
+.esq-clave button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.esq-clave button:disabled { opacity: 0.5; cursor: default; }

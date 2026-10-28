@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Search, ZoomIn, ZoomOut, Rows3, Layers, FileText, AlertTriangle, Info, FileImage, SplitSquareVertical } from 'lucide-react';
+import { Search, ZoomIn, ZoomOut, Rows3, Layers, FileText, AlertTriangle, Info, FileImage, SplitSquareVertical, Lock } from 'lucide-react';
 import type { ElementoRef, Esquematico, Fuente, Seccion, Tramo } from './types';
 import {
   cajaDe, construirEjePk, construirIndice, fmtPk, perfilEn, rangoX, resolver, type Indice,
@@ -10,8 +10,10 @@ import {
 } from './constantes';
 import {
   AgujaSvg, AndenSvg, ArmariosSvg, BalizasSvg, CartelesSvg, EquiposSvg, JuntasSvg, PendientesSvg, PlanoTiras,
-  RotulosSvg, SenalSvg, SubestacionesSvg, TramosSvg, VelAgujasSvg, VelocidadSvg, ZonasSvg, type PlanoIndex,
+  RotulosSvg, SenalSvg, SubestacionesSvg, TramosSvg, VelAgujasSvg, VelocidadSvg, ZonasSvg, type FuenteTiras, type PlanoIndex,
 } from './capas';
+import { AlmacenCifrado, aB64, deB64 } from './datos';
+import { claveRemota } from './claveRemota';
 import { Detalle, Fuentes, Leyenda, Observaciones, Tooltip } from './paneles';
 import { PlanoCdv } from './PlanoCdv';
 import './EsquematicoL1.css';
@@ -50,8 +52,24 @@ function calcularFilas(area: [number, number, number, number], aspect: number): 
   return { n, rowW, x0s, vw: rowW, vh: n * G_ROW + (n - 1) * G_GAP };
 }
 
-const PLANO_SEN = '/data/planos/sen_h1';
-const PLANO_CDV = '/data/planos/cdv';
+// Rutas lógicas dentro de los datos cifrados (public/data/l1)
+const PLANO_SEN = 'planos/sen_h1';
+const PLANO_CDV = 'planos/cdv';
+const almacen = new AlmacenCifrado('/data/l1');
+const CLAVE_GUARDADA = 'stc-esquematico-clave';
+
+function leerGuardada(): string | null {
+  try { return sessionStorage.getItem(CLAVE_GUARDADA) ?? localStorage.getItem(CLAVE_GUARDADA); } catch { return null; }
+}
+function guardarClave(raw: Uint8Array, recordar: boolean) {
+  try {
+    sessionStorage.setItem(CLAVE_GUARDADA, aB64(raw));
+    if (recordar) localStorage.setItem(CLAVE_GUARDADA, aB64(raw));
+  } catch { /* almacenamiento no disponible */ }
+}
+function olvidarClave() {
+  try { sessionStorage.removeItem(CLAVE_GUARDADA); localStorage.removeItem(CLAVE_GUARDADA); } catch { /* idem */ }
+}
 
 // ───────────────────────── componente ─────────────────────────
 
@@ -79,15 +97,60 @@ export const EsquematicoL1: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const drag = useRef<{ x: number; y: number; v: View; moved: boolean } | null>(null);
 
-  useEffect(() => {
-    const bust = Date.now();
-    fetch(`/data/esquematico_l1.json?v=${bust}`)
-      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then((d: Esquematico) => setData(d))
-      .catch(e => setError(`No se pudo cargar el esquemático: ${e.message}`));
-    fetch(`${PLANO_SEN}/index.json?v=${bust}`).then(r => (r.ok ? r.json() : null)).then(setIdxSen).catch(() => setIdxSen(null));
-    fetch(`${PLANO_CDV}/index.json?v=${bust}`).then(r => (r.ok ? r.json() : null)).then(setIdxCdv).catch(() => setIdxCdv(null));
+  const [estado, setEstado] = useState<'iniciando' | 'clave' | 'cargando' | 'listo'>('iniciando');
+  const [claveTxt, setClaveTxt] = useState('');
+  const [recordar, setRecordar] = useState(false);
+  const [claveError, setClaveError] = useState('');
+  const [urls, setUrls] = useState<Map<string, string>>(new Map());
+
+  const pedirTira = useCallback((ruta: string) => {
+    almacen.urlSvg(ruta).then(u => setUrls(m => (m.has(ruta) ? m : new Map(m).set(ruta, u)))).catch(() => undefined);
   }, []);
+  const fuenteTiras: FuenteTiras = useMemo(() => ({ urls, pedir: pedirTira }), [urls, pedirTira]);
+
+  const cargarDatos = useCallback(async () => {
+    setEstado('cargando');
+    const d = await almacen.leerJson<Esquematico>('esquematico_l1.json');
+    setData(d);
+    almacen.leerJson<PlanoIndex>(`${PLANO_SEN}/index.json`).then(setIdxSen).catch(() => setIdxSen(null));
+    almacen.leerJson<PlanoIndex>(`${PLANO_CDV}/index.json`).then(setIdxCdv).catch(() => setIdxCdv(null));
+    setEstado('listo');
+  }, []);
+
+  // Datos cifrados: clave recordada → clave en Firestore (usuarios autenticados) → pedirla
+  useEffect(() => {
+    let vivo = true;
+    (async () => {
+      try {
+        await almacen.iniciar();
+      } catch {
+        if (vivo) setError('No se encontraron los datos cifrados del esquemático (public/data/l1).');
+        return;
+      }
+      if (almacen.desbloqueado) { await cargarDatos(); return; }
+      const g = leerGuardada();
+      if (g && await almacen.desbloquearCruda(deB64(g))) { if (vivo) await cargarDatos(); return; }
+      if (g) olvidarClave();
+      const remota = await claveRemota();
+      if (remota) {
+        const raw = await almacen.desbloquear(remota);
+        if (raw) { guardarClave(raw, false); if (vivo) await cargarDatos(); return; }
+      }
+      if (vivo) setEstado('clave');
+    })().catch(e => vivo && setError(`No se pudo cargar el esquemático: ${e instanceof Error ? e.message : e}`));
+    return () => { vivo = false; };
+  }, [cargarDatos]);
+
+  const desbloquear = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setClaveError('');
+    setEstado('cargando');
+    const raw = await almacen.desbloquear(claveTxt).catch(() => null);
+    if (!raw) { setEstado('clave'); setClaveError('Clave incorrecta'); return; }
+    guardarClave(raw, recordar);
+    setClaveTxt('');
+    await cargarDatos().catch(err => setError(`No se pudo cargar el esquemático: ${err instanceof Error ? err.message : err}`));
+  };
 
   const ix: Indice | null = useMemo(() => (data ? construirIndice(data) : null), [data]);
   const eje = useMemo(() => (data ? construirEjePk(data) : null), [data]);
@@ -357,7 +420,22 @@ export const EsquematicoL1: React.FC = () => {
   }, [data, colorSeccion]);
 
   if (error) return <div className="esq-page"><div className="esq-error">{error}</div></div>;
-  if (!data || !ix || !eje || !filas) return <div className="esq-page"><div className="esq-loading">Cargando esquemático…</div></div>;
+  if (estado === 'clave') {
+    return (
+      <div className="esq-page">
+        <form className="esq-clave" onSubmit={desbloquear}>
+          <Lock size={22} />
+          <h3>Datos del esquemático cifrados</h3>
+          <p>Derivan de planos C2-Confidencial: en el repositorio y en el hosting sólo están cifrados. Ingresá la clave de datos.</p>
+          <input type="password" autoFocus value={claveTxt} onChange={e => setClaveTxt(e.target.value)} placeholder="Clave de datos" />
+          <label><input type="checkbox" checked={recordar} onChange={e => setRecordar(e.target.checked)} /> Recordar en este navegador</label>
+          {claveError && <span className="esq-search-err">{claveError}</span>}
+          <button type="submit" disabled={claveTxt.trim().length < 16}>Desbloquear</button>
+        </form>
+      </div>
+    );
+  }
+  if (!data || !ix || !eje || !filas) return <div className="esq-page"><div className="esq-loading">{estado === 'cargando' ? 'Descifrando datos…' : 'Cargando esquemático…'}</div></div>;
 
   const sen = fuentes.get('SEN');
   const cdvF = fuentes.get('CDV');
@@ -401,7 +479,7 @@ export const EsquematicoL1: React.FC = () => {
 
   const contenido = (
     <>
-      {on('plano_sen') && idxSen && <PlanoTiras base={PLANO_SEN} index={idxSen} x0={visX0} x1={visX1} claro={planoClaro} />}
+      {on('plano_sen') && idxSen && <PlanoTiras base={PLANO_SEN} index={idxSen} x0={visX0} x1={visX1} claro={planoClaro} fuente={fuenteTiras} />}
 
       {on('zonas_asr') && data.zonas && <ZonasSvg zonas={data.zonas.filter(z => z.tipo === 'ASR')} etiquetas={lod.zonasTxt} selId={selId('zona')} hov={hov} />}
       {on('zonas_rauz') && data.zonas && <ZonasSvg zonas={data.zonas.filter(z => z.tipo === 'RAUZ')} etiquetas={lod.zonasTxt} selId={selId('zona')} hov={hov} />}
@@ -650,7 +728,7 @@ export const EsquematicoL1: React.FC = () => {
           </div>
           {showCdv && !general && idxCdv && data.regla_cdv?.length && (
             <PlanoCdv index={idxCdv} base={PLANO_CDV} reglaSen={data.regla_sen ?? []} reglaCdv={data.regla_cdv ?? []}
-              ejeSen={eje} vx={view.x} vw={view.w} cursorPk={cursorPk} onCursorPk={setCursorPk} claro={planoClaro} />
+              ejeSen={eje} vx={view.x} vw={view.w} cursorPk={cursorPk} onCursorPk={setCursorPk} claro={planoClaro} fuente={fuenteTiras} />
           )}
         </div>
 
