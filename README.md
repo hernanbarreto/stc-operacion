@@ -164,8 +164,8 @@ sobre los elementos, enclavamientos desconectados, IHM (usuario, servidor, área
 esquemático (clic: tren y momento; rueda: escala de tiempo; arrastre: desplazarse; el divisor ajusta su alto) y
 marcha tipo NM16/NM22 por vía o la del tren seleccionado. Itinerarios de señal a señal y deslizamientos con la
 posición de agujas (recorrido inferido del plano), DBO (cuadrado rojo en andén o señal), RTV, alarmas sobre los CDV
-con su nombre (y pendientes de reconocer) y trenes detenidos en el CDV de la alarma. El botón «Clasificar eventos
-(CSV)» recorre los Excel de Storage (o archivos locales) y descarga qué tipos de evento hay y cuáles se muestran.
+con su nombre (y pendientes de reconocer) y trenes detenidos en el CDV de la alarma. El botón «CSV de eventos»
+(barra superior) recorre los Excel de Storage (o archivos locales) y descarga qué tipos de evento hay y cuáles se muestran.
 Detalle de cada tipo de evento y de lo que falta en [`docs/eventos-esquematico.md`](docs/eventos-esquematico.md).
 
 Los datos derivan de planos C2-Confidencial y el repositorio es público: **no van al repositorio ni a `/public`**

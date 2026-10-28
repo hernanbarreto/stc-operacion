@@ -38,13 +38,10 @@ interface Props {
   setSeguir: (v: boolean) => void;
   hayTrenSel: boolean;
   onPaso: (dir: -1 | 1) => void;
-  onClasificarStorage: () => void;
-  onClasificarLocal: (fs: File[]) => void;
 }
 
 export const BarraReproduccion: React.FC<Props> = p => {
   const archivo = useRef<HTMLInputElement>(null);
-  const variosArchivos = useRef<HTMLInputElement>(null);
   const t0 = p.mod?.t0 ?? p.t - 3600e3;
   const t1 = p.mod?.t1 ?? p.t + 3600e3;
   return (
@@ -69,14 +66,6 @@ export const BarraReproduccion: React.FC<Props> = p => {
       </select>
       <button title="Abrir un Excel de eventos de esta computadora" onClick={() => archivo.current?.click()} disabled={!!p.cargando}><FolderOpen size={14} /></button>
       <input ref={archivo} type="file" accept=".xlsx,.xls,.csv" hidden onChange={e => { const f = e.target.files?.[0]; if (f) p.onArchivo(f); e.target.value = ''; }} />
-      <select value="" disabled={!!p.cargando} title="Clasificar los tipos de evento y descargar un CSV"
-        onChange={e => { if (e.target.value === 'storage') p.onClasificarStorage(); else if (e.target.value === 'local') variosArchivos.current?.click(); }}>
-        <option value="">Clasificar eventos (CSV)…</option>
-        <option value="storage">Todos los Excel de Storage</option>
-        <option value="local">Elegir archivos de esta computadora</option>
-      </select>
-      <input ref={variosArchivos} type="file" accept=".xlsx,.xls,.csv" multiple hidden
-        onChange={e => { const fs = [...(e.target.files ?? [])]; if (fs.length) p.onClasificarLocal(fs); e.target.value = ''; }} />
       {p.cargando && <span className="esq-replay-cargando">{p.cargando}</span>}
 
       <span className="esq-replay-sep" />

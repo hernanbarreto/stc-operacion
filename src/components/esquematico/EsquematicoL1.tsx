@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Search, ZoomIn, ZoomOut, Rows3, Maximize2, Layers, FileText, AlertTriangle, Info, PanelRightOpen, PanelRightClose, ListTree, Activity, Upload, FolderOpen, ChartNoAxesGantt } from 'lucide-react';
+import { Search, ZoomIn, ZoomOut, Rows3, Maximize2, Layers, Download, FileText, AlertTriangle, Info, PanelRightOpen, PanelRightClose, ListTree, Activity, Upload, FolderOpen, ChartNoAxesGantt } from 'lucide-react';
 import type { ElementoRef, Esquematico, Seccion, Tramo } from './types';
 import {
   cajaDe, construirEjePk, construirIndice, fmtPk, perfilEn, rangoX, resolver, type Indice,
@@ -87,6 +87,8 @@ export const EsquematicoL1: React.FC = () => {
   const [busqueda, setBusqueda] = useState('');
   const [busquedaError, setBusquedaError] = useState('');
   const [showCapas, setShowCapas] = useState(false);
+  const [showCsv, setShowCsv] = useState(false);
+  const archivosCsv = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<View>({ x: 40, y: 63, w: 600, h: DET_H });
   const [vista, setVista] = useState<Vista>('general');
   const [aspect, setAspect] = useState(0.5);
@@ -579,7 +581,8 @@ export const EsquematicoL1: React.FC = () => {
   // nivel de detalle según el ancho visible (unidades de lienzo)
   const general = vista === 'general';
   const effW = general && filas ? filas.rowW : view.w;
-  const px = effW / anchoPx;                    // unidades de lienzo por píxel de pantalla
+  // unidades de lienzo por píxel de pantalla (en la vista general las filas se ajustan al ancho o al alto)
+  const px = general && filas ? Math.max(filas.vw / anchoPx, filas.vh / Math.max(1, anchoPx * aspect)) : effW / anchoPx;
   const lod = {
     nombresSenal: effW < 1300, nombresAguja: effW < 1300, balizas: effW < 1600, idsBaliza: effW < 650,
     psp: effW < 600, detalle: effW < 400, lazosTxt: effW < 700, velEtiquetas: effW < 1600, velNombres: effW < 420,
@@ -753,15 +756,15 @@ export const EsquematicoL1: React.FC = () => {
       <g className="esq-est-names">
         {data.estaciones.map(e => e.x != null && (
           <text key={e.codigo} x={e.x} y={(yEstacion.get(e.codigo) ?? Y_EST) + (general ? 2 : 0)}
-            fontSize={Math.max(4.2, (general ? 15 : 13) * px)}
+            fontSize={12 * px}
             className={(e.enclavamiento && ixlCaidos.has(e.enclavamiento)) || (e.atp && ixlCaidos.has(e.atp)) ? 'caido' : ''}>
             {general || effW > 1500 ? e.nombre : `${e.nombre} (${e.codigo})`}
           </text>
         ))}
       </g>
 
-      {on('andenes') && data.andenes.map((p, i) => <AndenSvg key={`and${i}`} p={p} detalle={lod.detalle} hov={hov} />)}
-      {on('rotulos') && lod.rotulos && data.rotulos && <RotulosSvg items={data.rotulos} />}
+      {on('andenes') && data.andenes.map((p, i) => <AndenSvg key={`and${i}`} p={p} detalle={lod.detalle} hov={hov} px={px} />)}
+      {on('rotulos') && lod.rotulos && data.rotulos && <RotulosSvg items={data.rotulos} px={px} />}
       {on('carteles') && data.carteles && <CartelesSvg items={data.carteles} etiquetas={lod.tramosTxt} />}
 
       {on('vel_zonas') && perf && <VelocidadSvg zonas={perf.zonas_velocidad} etiquetas={lod.velEtiquetas} nombres={lod.velNombres} hov={hov} />}
@@ -867,10 +870,22 @@ export const EsquematicoL1: React.FC = () => {
           <button onClick={() => (general ? undefined : zoomBtn(1.6))} disabled={general} title="Alejar"><ZoomOut size={15} /></button>
           <button className={showCapas ? 'active' : ''} onClick={() => setShowCapas(s => !s)} title="Capas"><Layers size={15} /></button>
           <button className={hiloAbierto ? 'active' : ''} onClick={() => setHiloAbierto(v => !v)} title="Reproducción y diagrama de hilo"><ChartNoAxesGantt size={15} /></button>
+          <button className={`esq-btn-texto${showCsv ? ' active' : ''}`} onClick={() => { setShowCsv(v => !v); setShowCapas(false); }}
+            disabled={!!cargando} title="Clasificar los tipos de evento y descargar un CSV"><Download size={14} /> CSV de eventos</button>
           <button className={panel ? 'active' : ''} onClick={() => setPanel(v => !v)} title={panel ? 'Ocultar panel' : 'Mostrar panel'}>
             {panel ? <PanelRightClose size={15} /> : <PanelRightOpen size={15} />}
           </button>
         </div>
+        {cargando && !hiloAbierto && <span className="esq-replay-cargando">{cargando}</span>}
+        {showCsv && (
+          <div className="esq-menu-csv">
+            <p>Clasifica los tipos de evento (plantilla, tipo, forma del texto, cantidades, si ya se muestran) y descarga un CSV.</p>
+            <button onClick={() => { setShowCsv(false); void onClasificarStorage(); }}>Todos los Excel de Firebase Storage</button>
+            <button onClick={() => { setShowCsv(false); archivosCsv.current?.click(); }}>Elegir archivos de esta computadora…</button>
+            <input ref={archivosCsv} type="file" accept=".xlsx,.xls,.csv" multiple hidden
+              onChange={e => { const fs = [...(e.target.files ?? [])]; if (fs.length) void onClasificarLocal(fs); e.target.value = ''; }} />
+          </div>
+        )}
         {showCapas && (
           <div className="esq-capas">
             {GRUPOS_CAPAS.map(g => (
@@ -978,7 +993,7 @@ export const EsquematicoL1: React.FC = () => {
               onDiaStorage={onDiaStorage} onArchivo={onArchivo} onDiaLocal={onDiaLocal} mod={mod} t={t} setT={setT}
               reproduciendo={reproduciendo} setReproduciendo={setReproduciendo} velocidad={velocidad} setVelocidad={setVelocidad}
               span={span} setSpan={setSpan} marcha={marcha} setMarcha={setMarchaDesdeAhora} seguir={seguir} setSeguir={setSeguir}
-              hayTrenSel={!!trenSel} onPaso={pasoEvento} onClasificarStorage={() => void onClasificarStorage()} onClasificarLocal={fs => void onClasificarLocal(fs)} />
+              hayTrenSel={!!trenSel} onPaso={pasoEvento} />
             <div className="esq-hilo-wrap" style={{ height: mod || marchasHilo.length ? hiloAlto : 44 }}>
               {mod || marchasHilo.length ? (
                 <Hilo mod={mod ?? { eventos: [], trenes: [], intervalos: [], numeros: new Map(), areasIhm: [], sesionesIhm: [], servidoresIhm: [], itinerarios: [], deslizamientos: [], t0: t, t1: t, conteo: new Map() }}

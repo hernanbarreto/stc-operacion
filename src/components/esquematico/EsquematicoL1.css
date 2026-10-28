@@ -637,3 +637,33 @@
 .esq-modes button { gap: 0.3rem; }
 .esq-rtv { fill: none; stroke: #fde047; stroke-linecap: butt; pointer-events: none; }
 .esq-ley-dbo { background: #dc2626; color: #fff; font-size: 0.62rem; padding: 0 3px; border-radius: 2px; font-family: 'JetBrains Mono', ui-monospace, monospace; flex-shrink: 0; }
+.esq-tools .esq-btn-texto { gap: 0.3rem; }
+.esq-menu-csv {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 21;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 0.7rem;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+.esq-menu-csv p { margin: 0 0 0.2rem; line-height: 1.35; }
+.esq-menu-csv button {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  color: var(--text-primary);
+  padding: 0.45rem 0.5rem;
+  font-size: 0.76rem;
+  cursor: pointer;
+  text-align: left;
+}
+.esq-menu-csv button:hover { border-color: var(--accent); }

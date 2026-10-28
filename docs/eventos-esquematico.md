@@ -13,7 +13,7 @@ Línea 1 (vista **Esquemático**, barra de reproducción y diagrama de hilo).
 
 ## Clasificar todos los eventos disponibles
 
-En la barra de reproducción, **«Clasificar eventos (CSV)…»** → *Todos los Excel de Storage* (con la sesión de la
+En la barra superior, botón **«CSV de eventos»** → *Todos los Excel de Storage* (con la sesión de la
 app) o *Elegir archivos de esta computadora*. Descarga `clasificacion_eventos_AAAA-MM-DD.csv` con una fila por
 plantilla, `eventtype` y forma del texto (identificadores reemplazados por `#`): cantidad de filas, eventos sin
 duplicados, primera y última fecha, cantidad de archivos, un ejemplo y si se muestra (`sí`), está reconocida

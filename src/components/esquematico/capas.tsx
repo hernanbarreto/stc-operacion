@@ -80,14 +80,14 @@ export const AgujaSvg: React.FC<{ a: Aguja; data: Esquematico; k: number; etique
   );
 };
 
-export const AndenSvg: React.FC<{ p: Anden; detalle: boolean; hov: HovFn }> = ({ p, detalle, hov }) => {
+export const AndenSvg: React.FC<{ p: Anden; detalle: boolean; hov: HovFn; px?: number }> = ({ p, detalle, hov, px }) => {
   const h = 4.2;
   const y = p.lado === 'arriba' ? p.y_borde - h : p.y_borde;
   const ref: ElementoRef = { tipo: 'anden', id: p.ids[0] ?? `${p.estacion}?` };
   return (
     <g className="esq-anden" {...hov(ref)}>
       <rect x={p.x0} y={y} width={p.x1 - p.x0} height={h} rx={0.6} />
-      <text x={(p.x0 + p.x1) / 2} y={y + h / 2 + 0.9} fontSize={2.4}>
+      <text x={(p.x0 + p.x1) / 2} y={y + h / 2 + 0.9 * Math.min(1, ((px ?? 1) * 10) / 2.4)} fontSize={Math.min(2.4, (px ?? 1) * 10)}>
         {p.estacion} · {p.plataforma?.replace('PLATFORM', 'Andén') ?? ''}{detalle && p.bfu.length ? ` · ${p.bfu.join(' ')}` : ''}
       </text>
     </g>
@@ -325,10 +325,10 @@ export const TramosSvg: React.FC<{ items: TramoObra[]; etiquetas: boolean }> = (
   </g>
 );
 
-export const RotulosSvg: React.FC<{ items: Rotulo[] }> = ({ items }) => (
+export const RotulosSvg: React.FC<{ items: Rotulo[]; px?: number }> = ({ items, px }) => (
   <g className="esq-rotulo">
     {items.map((r, i) => (
-      <text key={i} x={r.x} y={r.y} fontSize={Math.max(2.2, r.size * 0.9)}
+      <text key={i} x={r.x} y={r.y} fontSize={Math.min(Math.max(2.2, r.size * 0.9), (px ?? 1) * 11)}
         transform={Math.abs(r.ang) > 0.5 ? `rotate(${r.ang} ${r.x} ${r.y})` : undefined}>{r.texto}</text>
     ))}
   </g>
