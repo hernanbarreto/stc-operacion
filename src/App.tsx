@@ -10,10 +10,11 @@ import { CalendarView } from './components/Calendar';
 import { UploadModal } from './components/UploadModal';
 import { FilesModal } from './components/FilesModal';
 import { MarchasViewer } from './components/MarchasViewer';
+import { EsquematicoL1 } from './components/esquematico/EsquematicoL1';
 import type { ExcelUploadData } from './types';
 import {
   LogOut, Upload, ChevronDown, FileDown, Loader, FolderOpen,
-  Calendar as CalendarIcon, ChevronLeft, ChevronRight, Activity,
+  Calendar as CalendarIcon, ChevronLeft, ChevronRight, Activity, Network,
 } from 'lucide-react';
 import { useAnalytics } from './hooks/useAnalytics';
 import { useInsights } from './hooks/useInsights';
@@ -31,7 +32,7 @@ const DAY_TYPE_LABELS: Record<string, string> = {
   domingo: 'Domingo / Festivo',
 };
 
-type View = 'calendar' | 'diagram' | 'simulador';
+type View = 'calendar' | 'diagram' | 'simulador' | 'esquematico';
 
 export const App: React.FC = () => {
   const { user, loading, logout } = useAuth();
@@ -209,6 +210,15 @@ export const App: React.FC = () => {
               ? (<><CalendarIcon size={15} /><span>Calendario</span></>)
               : (<><Activity size={15} /><span>Marcha Tipo</span></>)}
           </button>
+          <button
+            className={`nav-btn ${view === 'esquematico' ? 'nav-btn-active' : ''}`}
+            onClick={() => setView(view === 'esquematico' ? 'calendar' : 'esquematico')}
+            title={view === 'esquematico' ? 'Volver al calendario' : 'Esquemático de la Línea 1'}
+          >
+            {view === 'esquematico'
+              ? (<><CalendarIcon size={15} /><span>Calendario</span></>)
+              : (<><Network size={15} /><span>Esquemático</span></>)}
+          </button>
           <button className="nav-btn" onClick={() => setShowUploadModal(true)}>
             <Upload size={15} /><span>Subir</span>
           </button>
@@ -227,6 +237,9 @@ export const App: React.FC = () => {
       <div className="main-content">
         {/* ─── Marcha Tipo view ─── */}
         {view === 'simulador' && <MarchasViewer />}
+
+        {/* ─── Esquemático Línea 1 ─── */}
+        {view === 'esquematico' && <EsquematicoL1 />}
 
         {/* ─── Calendar view ─── */}
         {view === 'calendar' && (

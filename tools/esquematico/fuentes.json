@@ -1,0 +1,147 @@
+[
+  {
+    "id": "SEN",
+    "codigo": "2022-SIE-CB.IXL-L1MO-000-II-41252-P",
+    "titulo": "Plano de distribución de señalización — Plano de Línea 1 (planos tipo o generales)",
+    "revision": "09",
+    "fecha_revision": "21/10/2025",
+    "descripcion_revision": "Atención de FR=2021-SIE-CB.IXL-L1MO-000-II-41251-P=08 Plano de distribución de señalización",
+    "hoja": "1/25 (tira unifilar completa: geometría y todos los elementos), 24/25 (zonas RAUZ_BFU) y 25/25 (zonas ASR); hojas 2 a 23 = ampliaciones por tramo de la hoja 1",
+    "ot": "OT-21322_00021",
+    "emisor": "Siemens / NERTUS — elaboró José García Carrión (NERTUS), revisó Juan José Sánchez Pozo (NERTUS), aprobó Manuel Ignacio Hernández Lara (M.H.L., Siemens); firmas digitales del 30/10/2025; director de proyecto Gao Feng (CRRC)",
+    "contrato": "STC-CNCS-195/2020",
+    "uso": "Geometría de la tira de vías, secciones (CDV virtuales y de aguja) con longitudes, juntas, señales, agujas, andenes, BFU, balizas, PSP, FP, AVC, topes, cabecera de PK, regla de PK, perfil de velocidades (zonas de estación, curvas con radio, agujas), pendientes, salas MX y equipos OC/ZC/WCU, zonas RAUZ y ASR",
+    "historial": [
+      [
+        "01",
+        "10/12/2021",
+        "Edición inicial"
+      ],
+      [
+        "02",
+        "11/04/2022",
+        "Nuevos levantamientos por SENER y Siemens"
+      ],
+      [
+        "03",
+        "15/09/2022",
+        "Atención de FR=2021-SIE-CB.IXL-L1MO-000-II-41251-P=02"
+      ],
+      [
+        "04",
+        "02/12/2022",
+        "Actualización de la tira de vías unifilar basada en comentarios del WS"
+      ],
+      [
+        "05",
+        "24/03/2023",
+        "Atención de FR=2021-SIE-CB.IXL-L1MO-000-II-41251-P=04"
+      ],
+      [
+        "06",
+        "04/09/2023",
+        "Atención de FR=2021-SIE-CB.IXL-L1MO-000-II-41251-P=05"
+      ],
+      [
+        "07",
+        "09/07/2024",
+        "Atención de FR=2021-SIE-CB.IXL-L1MO-000-II-41251-P=06"
+      ],
+      [
+        "08",
+        "07/04/2025",
+        "Atención de FR=2021-SIE-CB.IXL-L1MO-000-II-41251-P=07"
+      ],
+      [
+        "09",
+        "21/10/2025",
+        "Atención de FR=2021-SIE-CB.IXL-L1MO-000-II-41251-P=08"
+      ]
+    ]
+  },
+  {
+    "id": "CDV",
+    "codigo": "2022-MRRC-CB.IXL-L1MO-000-III-47802987-P",
+    "titulo": "Plano de distribución de circuitos de vía — Plano de Línea 1 (tira bifilar)",
+    "revision": "J",
+    "fecha_revision": "24/07/2026",
+    "descripcion_revision": "Actualización de la tira de vías bifilar (rechazo de flujo)",
+    "hoja": "única",
+    "ot": "OT-21322_00010",
+    "emisor": "CRRC — elaboró Gerardo Jaqueti Moreno, revisó Luis Ángel Jiménez Marcos, aprobó Iván Muñoz López (I.M.L.); director de proyecto Gao Feng",
+    "contrato": "STC-CNCS-195/2020",
+    "uso": "Tipo (ST/MI/PO) y frecuencia de cada CDV, tipo de lazo/junta (LS/LC/LT/AC/JAR/J), unidades D10-Bn, R1/R2 y lazos de compensación (*) por junta, ubicaciones de equipos de CDV (cajas XXX-nn.n 50T/100T), subestaciones, cartelones de aviso/ejecución, tramos subterráneo/techado/superficie, RESET, RST-PML, sala técnica, notas; cotejo de nombres de CDV. Se lleva al lienzo por PK con su regla",
+    "historial": [
+      [
+        "A",
+        "11/04/2022",
+        "Edición inicial — nuevos levantamientos por SENER y Siemens"
+      ],
+      [
+        "B",
+        "10/08/2022",
+        "Actualización del plano y respuesta a FR=2022-MRRC-CB.IXL-L1MO-000-III-47702986-P=A"
+      ],
+      [
+        "C",
+        "28/10/2022",
+        "Actualización de la tira de vías bifilar basada en comentarios de varios WS (CFX00683082)"
+      ],
+      [
+        "D",
+        "05/05/2023",
+        "Actualización de la tira de vías bifilar basada en comentarios de varios WS (CFX00719230)"
+      ],
+      [
+        "E",
+        "22/09/2023",
+        "Actualización de la tira de vías bifilar (CFX00747502, CFX00750580, CFX00752883, CFX00759464)"
+      ],
+      [
+        "F",
+        "02/09/2024",
+        "Actualización de la tira de vías bifilar basada en comentarios de varios WS (CFX00815697 y otros)"
+      ],
+      [
+        "G",
+        "14/02/2025",
+        "Actualización de la tira de vía (CFX00841999 y otros)"
+      ],
+      [
+        "H",
+        "13/05/2026",
+        "Actualización de la tira de vías bifilar (CFX00884969 y otros)"
+      ],
+      [
+        "I",
+        "26/06/2026",
+        "Actualización de la tira de vías bifilar (CFX00884969 y otros)"
+      ],
+      [
+        "J",
+        "24/07/2026",
+        "Actualización de la tira de vías bifilar (rechazo de flujo)"
+      ]
+    ],
+    "documentacion_de_referencia": [
+      "Track_Layout_Mexico_City_Line1_v3",
+      "Plano de perfil, señalización y alimentación – tracción línea 1",
+      "2021-SNER-VI.001-L1MO-000-II-02204-P=01 Esquemas de vía en línea principal",
+      "2021-SNER-VI.001-L1MO-000-II-02205-P=01 Esquema de vía en talleres",
+      "XREF-P0M10159-TOPOGRAFIA NUEVA.dwg",
+      "XREF-P0M10159-VIAS-APARATOSDE VIA.dwg",
+      "XREF-P0M10159-VIA-ADV.dwg",
+      "2021-SIE-CB.IXL-L1MO-000-I-41250-E Especificación de diseño de señalización",
+      "L1 Metro Distribución de Durmientes 30-09-2022_ELEC. TRACCIÓN.dwg"
+    ]
+  },
+  {
+    "id": "LOG",
+    "codigo": "eventos_2010-2610.xlsx",
+    "titulo": "Registro de eventos del ATS (eventtype, sourcetime, description)",
+    "revision": "—",
+    "fecha_revision": "datos del 18/10/2026 11:15 al 28/10/2026 03:03",
+    "descripcion_revision": "838 311 eventos. El nombre del archivo indica 20/10–26/10 pero el contenido abarca del 18/10 al 28/10",
+    "uso": "Sólo como dato derivado: asignación estación → enclavamiento (PANIXL/OBSIXL) y ATP (PANATP/OBSATP) según el ejecutor de los comandos, y validación de que todo identificador del log existe en el esquemático"
+  }
+]

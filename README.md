@@ -140,6 +140,33 @@ python3 stitch.py curvas_procesadas/JSONS
 cp curvas_procesadas/STITCHED/*.json public/marchas/
 ```
 
+## 🗺️ Esquemático Línea 1 (vista "Esquemático")
+
+Tira de vías tipo IHM de ATS construida a partir de los planos, con todo su contenido volcado y trazable a la fuente:
+
+| Fuente | Código | Rev. | Uso |
+|---|---|---|---|
+| Plano de distribución de señalización (hojas 1, 24 y 25) | 2022-SIE-CB.IXL-L1MO-000-II-41252-P | 09 (21/10/2025) | geometría, secciones, juntas, señales, agujas, andenes, BFU, balizas, PSP, FP, AVC, topes, regla y cabecera de PK, perfil (velocidades, curvas, pendientes), MX/OC/ZC/WCU, zonas RAUZ y ASR |
+| Plano de distribución de circuitos de vía | 2022-MRRC-CB.IXL-L1MO-000-III-47802987-P | J (24/07/2026) | tipo y frecuencia de CDV, tipo de lazo/junta, unidades D10-Bn, R1/R2, lazos de compensación, ubicaciones de equipos (50T/100T), S/E, cartelones, tramos, RESET, RST-PML |
+| Log de eventos del ATS (opcional) | eventos_*.xlsx | — | enclavamiento/ATP por estación y validación de identificadores |
+
+Vista general (línea completa en filas) y de detalle (zoom/arrastre), modos de color (CDV, frecuencia, tipo, enclavamiento, velocidad),
+búsqueda por cualquier identificador de los planos o del log (p. ej. `BALC22BAL`, `S12BBADLRTB`, `117`, `OBS-03.0`, `4+535`),
+inspector de PK (clic en un punto vacío), plano de señalización original superpuesto y plano de CDV sincronizado por PK.
+
+Generación de datos (los PDF no se versionan):
+
+```bash
+cd tools/esquematico
+pip install pymupdf openpyxl
+python3 extract.py --senal SEN.pdf --cdv CDV.pdf --fuentes fuentes.json --eventos eventos.xlsx --out ../../public/data/esquematico_l1.json
+python3 planos_svg.py --pdf SEN.pdf --pagina 1 --salida ../../public/data/planos/sen_h1 --xmax 9380 --titulo "Plano de señalización rev 09 — hoja 1/25"
+python3 planos_svg.py --pdf CDV.pdf --pagina 1 --salida ../../public/data/planos/cdv --xmax 7555 --titulo "Plano de circuitos de vía rev J"
+python3 validar_log.py --esquematico ../../public/data/esquematico_l1.json --eventos eventos.xlsx   # cobertura de ids del log
+```
+
+Pruebas: `npm test`.
+
 ## 🚢 Despliegue
 
 ```bash
