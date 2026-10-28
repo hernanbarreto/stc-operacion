@@ -12,8 +12,7 @@ import {
   tramosHomologos,
 } from '../src/components/esquematico/resolver';
 import { AlmacenCifrado } from '../src/components/esquematico/datos';
-// @ts-expect-error módulo ESM de Node sin tipos
-import { cifrarDirectorio } from '../tools/esquematico/cifrado.mjs';
+import { execFileSync } from 'node:child_process';
 
 const RAIZ = resolve(__dirname, '..');
 const PLANO = join(RAIZ, 'datos_planos/esquematico_l1.json');
@@ -40,7 +39,9 @@ describe('cifrado de datos', () => {
     writeFileSync(join(ent, 'esquematico_l1.json'), JSON.stringify({ hola: 'línea 1', n: [1, 2, 3] }));
     writeFileSync(join(ent, 'planos/x/t00.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>');
     const clave = 'clave-de-prueba-0123456789';
-    await cifrarDirectorio(ent, join(tmp, 'l1'), clave);
+    // se ejecuta la herramienta real tal como se usa (node tools/esquematico/cifrado.mjs)
+    execFileSync(process.execPath, [join(RAIZ, 'tools/esquematico/cifrado.mjs'), '--entrada', ent, '--salida', join(tmp, 'l1')],
+      { env: { ...process.env, STC_CLAVE_DATOS: clave }, stdio: 'pipe' });
     const a = new AlmacenCifrado('', lectorFs(join(tmp, 'l1')));
     expect(await a.desbloquear('otra-clave-0123456789')).toBeNull();
     const raw = await a.desbloquear(clave);

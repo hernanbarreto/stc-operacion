@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Cifra los datos del esquemático (derivados de planos C2-Confidencial) para que el repo y el hosting
 // sólo contengan texto cifrado. La web los descifra en el navegador con la clave de datos.
 //

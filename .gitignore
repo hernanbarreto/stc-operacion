@@ -45,3 +45,5 @@ __pycache__/
 datos_planos/
 public/data/esquematico_l1.json
 public/data/planos/
+# Clave de datos del esquemático: nunca al repositorio
+clave_datos*.txt
