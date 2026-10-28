@@ -8,7 +8,7 @@
     "descripcion_revision": "Atención de FR=2021-SIE-CB.IXL-L1MO-000-II-41251-P=08 Plano de distribución de señalización",
     "hoja": "1/25 (tira unifilar completa: geometría y todos los elementos), 24/25 (zonas RAUZ_BFU) y 25/25 (zonas ASR); hojas 2 a 23 = ampliaciones por tramo de la hoja 1",
     "ot": "OT-21322_00021",
-    "emisor": "Siemens / NERTUS — elaboró José García Carrión (NERTUS), revisó Juan José Sánchez Pozo (NERTUS), aprobó Manuel Ignacio Hernández Lara (M.H.L., Siemens); firmas digitales del 30/10/2025; director de proyecto Gao Feng (CRRC)",
+    "emisor": "Siemens / NERTUS — aprobó M.H.L.; firmas digitales del 30/10/2025; CRRC como contratista",
     "contrato": "STC-CNCS-195/2020",
     "uso": "Geometría de la tira de vías, secciones (CDV virtuales y de aguja) con longitudes, juntas, señales, agujas, andenes, BFU, balizas, PSP, FP, AVC, topes, cabecera de PK, regla de PK, perfil de velocidades (zonas de estación, curvas con radio, agujas), pendientes, salas MX y equipos OC/ZC/WCU, zonas RAUZ y ASR",
     "historial": [
@@ -68,7 +68,7 @@
     "descripcion_revision": "Actualización de la tira de vías bifilar (rechazo de flujo)",
     "hoja": "única",
     "ot": "OT-21322_00010",
-    "emisor": "CRRC — elaboró Gerardo Jaqueti Moreno, revisó Luis Ángel Jiménez Marcos, aprobó Iván Muñoz López (I.M.L.); director de proyecto Gao Feng",
+    "emisor": "CRRC — aprobó I.M.L.",
     "contrato": "STC-CNCS-195/2020",
     "uso": "Tipo (ST/MI/PO) y frecuencia de cada CDV, tipo de lazo/junta (LS/LC/LT/AC/JAR/J), unidades D10-Bn, R1/R2 y lazos de compensación (*) por junta, ubicaciones de equipos de CDV (cajas XXX-nn.n 50T/100T), subestaciones, cartelones de aviso/ejecución, tramos subterráneo/techado/superficie, RESET, RST-PML, sala técnica, notas; cotejo de nombres de CDV. Se lleva al lienzo por PK con su regla",
     "historial": [
