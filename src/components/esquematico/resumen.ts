@@ -70,5 +70,7 @@ export function resumen(ix: Indice, r: ElementoRef): string[] {
     }
     case 'pk':
       return [`PK ${fmtPk(Number(r.id))}`];
+    case 'tren':
+      return [`Tren ${r.id}`];
   }
 }

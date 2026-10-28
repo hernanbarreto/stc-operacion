@@ -1,63 +1,45 @@
-// Pruebas del esquemático de la Línea 1: cifrado de los datos, resolución de identificadores (planos y log del
-// ATS), ejes de PK, correspondencia entre las reglas de los dos planos e integridad del JSON generado por
-// tools/esquematico. Los datos en claro están en datos_planos/ (no versionado); si no están, se descifran los de
-// public/data/l1 con STC_CLAVE_DATOS; sin ninguno de los dos se omiten las pruebas de integridad.
+// Pruebas del esquemático de la Línea 1: ejes de PK, resolución de identificadores (planos y log del ATS),
+// integridad del JSON generado por tools/esquematico, rótulos de vía, marcha tipo y reproducción de eventos.
+// Los datos derivados de los planos están en datos_planos/ (no versionado; en la web se leen de Firebase Storage):
+// sin ellos se omiten las pruebas que los necesitan.
 import { beforeAll, describe, expect, it } from 'vitest';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Esquematico } from '../src/components/esquematico/types';
 import {
   cajaDe, construirEjePk, construirIndice, ejeDesdeRegla, fmtPk, interpolar, parsePk, perfilEn, rangoX, resolver,
-  tramosHomologos,
 } from '../src/components/esquematico/resolver';
-import { AlmacenCifrado } from '../src/components/esquematico/datos';
-import { execFileSync } from 'node:child_process';
+import { calcularRotulos } from '../src/components/esquematico/rotulos';
+import { validarEsquematico } from '../src/components/esquematico/esquema';
+import { type CurvaMarcha, ARCHIVOS_MARCHA, curvaDesdeJson, pkEnTramo, trayectoriaTipo } from '../src/components/esquematico/marcha';
+import { PLANTILLAS, type FilaLog, interpretar, numeroEn, numeroServicio, nombreTren } from '../src/components/esquematico/eventos';
+import { crearContexto, estadoEn, mapaPkMarcha, recorridoReal } from '../src/components/esquematico/replay';
+import { parseFecha, horaTxt, fechaDia } from '../src/components/esquematico/fecha';
 
 const RAIZ = resolve(__dirname, '..');
 const PLANO = join(RAIZ, 'datos_planos/esquematico_l1.json');
-const CIFRADO = join(RAIZ, 'public/data/l1');
-const CLAVE = process.env.STC_CLAVE_DATOS;
-const lectorFs = (dir: string) => async (f: string) => new Uint8Array(readFileSync(join(dir, f)));
-const hayDatos = existsSync(PLANO) || (!!CLAVE && existsSync(join(CIFRADO, 'manifest.json')));
+const hayDatos = existsSync(PLANO);
 let data = {} as Esquematico;
+beforeAll(() => { if (hayDatos) data = JSON.parse(readFileSync(PLANO, 'utf-8')); });
 
-beforeAll(async () => {
-  if (existsSync(PLANO)) data = JSON.parse(readFileSync(PLANO, 'utf-8'));
-  else if (hayDatos) {
-    const a = new AlmacenCifrado('', lectorFs(CIFRADO));
-    if (!(await a.desbloquear(CLAVE as string))) throw new Error('STC_CLAVE_DATOS no corresponde a public/data/l1');
-    data = await a.leerJson<Esquematico>('esquematico_l1.json');
-  }
-});
+const curvas: CurvaMarcha[] = ARCHIVOS_MARCHA.map(a =>
+  curvaDesdeJson(a.material, a.via, JSON.parse(readFileSync(join(RAIZ, 'public', a.archivo), 'utf-8'))));
 
-describe('cifrado de datos', () => {
-  it('lo cifrado con tools/esquematico/cifrado.mjs se descifra en la web sólo con la clave correcta', async () => {
-    const tmp = mkdtempSync(join(tmpdir(), 'esq-'));
-    const ent = join(tmp, 'plano');
-    mkdirSync(join(ent, 'planos/x'), { recursive: true });
-    writeFileSync(join(ent, 'esquematico_l1.json'), JSON.stringify({ hola: 'línea 1', n: [1, 2, 3] }));
-    writeFileSync(join(ent, 'planos/x/t00.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>');
-    const clave = 'clave-de-prueba-0123456789';
-    // se ejecuta la herramienta real tal como se usa (node tools/esquematico/cifrado.mjs)
-    execFileSync(process.execPath, [join(RAIZ, 'tools/esquematico/cifrado.mjs'), '--entrada', ent, '--salida', join(tmp, 'l1')],
-      { env: { ...process.env, STC_CLAVE_DATOS: clave }, stdio: 'pipe' });
-    const a = new AlmacenCifrado('', lectorFs(join(tmp, 'l1')));
-    expect(await a.desbloquear('otra-clave-0123456789')).toBeNull();
-    const raw = await a.desbloquear(clave);
-    expect(raw?.length).toBe(32);
-    expect(await a.leerJson('esquematico_l1.json')).toEqual({ hola: 'línea 1', n: [1, 2, 3] });
-    expect(new TextDecoder().decode(await a.leer('planos/x/t00.svg'))).toContain('<svg');
-    const b = new AlmacenCifrado('', lectorFs(join(tmp, 'l1')));
-    expect(await b.desbloquearCruda(raw as Uint8Array<ArrayBuffer>)).toBe(true);
-    await expect(new AlmacenCifrado('', lectorFs(join(tmp, 'l1'))).leer('esquematico_l1.json')).rejects.toThrow();
-  }, 30000);
-
-  it('el repo no contiene los datos en claro', () => {
-    for (const f of ['public/data/esquematico_l1.json', 'public/data/planos']) expect(existsSync(join(RAIZ, f))).toBe(false);
-    const m = JSON.parse(readFileSync(join(CIFRADO, 'manifest.json'), 'utf-8'));
-    expect(m.kdf.iteraciones).toBeGreaterThanOrEqual(600000);
-    expect(Object.keys(m.archivos)).toContain('esquematico_l1.json');
+describe('datos de los planos fuera del repositorio y del hosting', () => {
+  it('no hay datos de planos en public/ (Hosting los serviría sin login)', () => {
+    for (const f of ['public/data/esquematico_l1.json', 'public/data/planos', 'public/data/l1']) {
+      expect(existsSync(join(RAIZ, f)), f).toBe(false);
+    }
+  });
+  it('datos_planos/ está ignorado por git', () => {
+    const gi = readFileSync(join(RAIZ, '.gitignore'), 'utf-8').split(/\r?\n/).map(l => l.trim());
+    expect(gi).toContain('datos_planos/');
+    expect(gi).toContain('public/data/esquematico_l1.json');
+  });
+  it('sólo acepta un JSON del esquemático con el esquema esperado', () => {
+    expect(validarEsquematico({ hola: 1 })).toBe(false);
+    expect(validarEsquematico(null)).toBe(false);
+    if (hayDatos) expect(validarEsquematico(data)).toBe(true);
   });
 });
 
@@ -87,20 +69,72 @@ describe('PK', () => {
       expect(eje.xAt(pk)).toBeCloseTo(x, 6);
     }
   });
+});
 
-  it('tramos homólogos llevan cada PK a la misma x en ambos planos', () => {
-    const sen: [number, number][] = [[0, 300], [70, 200], [84, 100], [154, 0]];
-    const cdv: [number, number][] = [[0, 300], [14, 200], [84, 100], [98, 0]];
-    const ts = tramosHomologos(sen, cdv);
-    expect(ts.length).toBe(5);
-    const warp = (xc: number) => {
-      const t = ts.find(t => t.xc0 <= xc && xc <= t.xc1);
-      if (!t) return null;
-      return t.xs0 + ((xc - t.xc0) * (t.xs1 - t.xs0)) / (t.xc1 - t.xc0);
-    };
-    expect(warp(14)).toBeCloseTo(70, 6);
-    expect(warp(84)).toBeCloseTo(84, 6);
-    expect(warp(91)).toBeCloseTo(119, 6);
+describe('fechas del log', () => {
+  it('texto del ATS, número de serie de Excel y Date', () => {
+    const t = parseFecha('2026-10-21 08:05:03.060000') as number;
+    expect(fechaDia(t)).toBe('2026-10-21');
+    expect(horaTxt(t, true)).toBe('08:05:03.060');
+    expect(parseFecha(new Date(t))).toBe(t);
+    const serie = 46316 + (8 * 3600 + 5 * 60 + 3) / 86400;   // 2026-10-21 08:05:03
+    expect(horaTxt(parseFecha(serie) as number)).toBe('08:05:03');
+    expect(parseFecha('ayer')).toBeNull();
+  });
+});
+
+describe('plantillas de eventos', () => {
+  it('ids únicos y descripción de cómo se muestra cada una (vacía = pendiente)', () => {
+    const ids = PLANTILLAS.map(p => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const p of PLANTILLAS) expect(typeof p.muestra).toBe('string');
+    // la documentación de lo pendiente lista todas las plantillas
+    const doc = readFileSync(join(RAIZ, 'docs/eventos-esquematico.md'), 'utf-8');
+    for (const p of PLANTILLAS) expect(doc, p.id).toContain(`\`${p.id}\``);
+  });
+  it('número de servicio y nombre de tren', () => {
+    expect(numeroServicio('1600')).toBe('16');
+    expect(numeroServicio('*7600')).toBe('*76');
+    expect(numeroServicio('05')).toBe('05');
+    expect(nombreTren('32840')).toBe('27 (nm22)');
+    expect(nombreTren('99999')).toBe('T99999');
+  });
+});
+
+describe('marcha tipo', () => {
+  it('las cuatro curvas (NM16/NM22 × V1/V2) cubren la línea con PK creciente', () => {
+    expect(curvas).toHaveLength(4);
+    for (const c of curvas) {
+      expect(c.pk.length).toBeGreaterThan(100);
+      for (let i = 1; i < c.pk.length; i++) expect(c.pk[i]).toBeGreaterThanOrEqual(c.pk[i - 1]);
+      expect(c.pk[0]).toBeLessThan(1000);
+      expect(c.pk[c.pk.length - 1]).toBeGreaterThan(16500);
+    }
+  });
+  it('dentro de un tramo el PK avanza en el sentido de marcha y llega a los extremos', () => {
+    const c = curvas.find(x => x.material === 'NM22' && x.via === 'V2') as CurvaMarcha;
+    const a = 9902, b = 9309;  // SAL → ISA (PK decreciente)
+    expect(pkEnTramo(c, a, b, 0)).toBeCloseTo(a, 3);
+    expect(pkEnTramo(c, a, b, 1)).toBeCloseTo(b, 3);
+    let ant = a;
+    for (let k = 1; k <= 20; k++) {
+      const p = pkEnTramo(c, a, b, k / 20);
+      expect(p).toBeLessThanOrEqual(ant + 1e-6);
+      ant = p;
+    }
+    expect(pkEnTramo(null, 0, 100, 0.25)).toBe(25);
+  });
+  it('trayectoria completa: V1 de PAN a OBS, V2 de OBS a PAN, tiempo creciente', () => {
+    for (const via of ['V1', 'V2'] as const) {
+      const c = curvas.find(x => x.material === 'NM16' && x.via === via) as CurvaMarcha;
+      const pts = trayectoriaTipo(c, 'NM16', via, 'valle');
+      expect(pts[0].estacion).toBe(via === 'V1' ? 'PAN' : 'OBS');
+      expect(pts[pts.length - 1].estacion).toBe(via === 'V1' ? 'OBS' : 'PAN');
+      for (let i = 1; i < pts.length; i++) expect(pts[i].t).toBeGreaterThanOrEqual(pts[i - 1].t);
+      const total = pts[pts.length - 1].t / 60;
+      expect(total).toBeGreaterThan(25);
+      expect(total).toBeLessThan(45);
+    }
   });
 });
 
@@ -183,6 +217,25 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
     expect(f.filter(j => j.compensacion).length).toBeGreaterThan(10);
   });
 
+  it('subestaciones ubicadas en el lienzo, ordenadas por PK', () => {
+    const se = (data.subestaciones ?? []).filter(s => s.x != null);
+    expect(se.length).toBe(data.subestaciones?.length);
+    const porX = [...se].sort((a, b) => (a.x as number) - (b.x as number));
+    for (let i = 1; i < porX.length; i++) expect(porX[i].pk as number).toBeLessThan(porX[i - 1].pk as number);
+  });
+
+  it('nombres de CDV de un lado de la vía y de sus secciones del otro', () => {
+    const rs = calcularRotulos(data);
+    const cdv = new Map(rs.filter(r => r.tipo === 'cdv').map(r => [r.id, r]));
+    expect(cdv.size).toBe(data.cdvs.filter(c => c.tramos.length).length);
+    for (const s of data.secciones) {
+      const r = rs.find(x => x.tipo === 'seccion' && x.id === s.id);
+      expect(r, s.id).toBeTruthy();
+      const c = s.cdv ? cdv.get(s.cdv) : undefined;
+      if (c) expect(r!.lado, s.id).toBe(-c.lado);
+    }
+  });
+
   it('perfil: la zona de andén de Balbuena V1 es de 60 km/h', () => {
     const c = ix?.cdv.get('C22BAL');
     expect(c).toBeTruthy();
@@ -219,6 +272,7 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
       ...data.balizas.slice(0, 30).map(b => ({ tipo: 'baliza' as const, id: b.id })),
       ...(data.zonas ?? []).map(z => ({ tipo: 'zona' as const, id: z.id })),
       ...(data.armarios ?? []).map(a => ({ tipo: 'armario' as const, id: a.clave })),
+      ...(data.subestaciones ?? []).map(s => ({ tipo: 'subestacion' as const, id: s.nombre as string })),
       ...data.estaciones.map(e => ({ tipo: 'estacion' as const, id: e.codigo })),
       { tipo: 'pk' as const, id: '8000' },
     ];
@@ -227,5 +281,80 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
       expect(b, `${ref.tipo}:${ref.id}`).not.toBeNull();
       expect(b![2]).toBeGreaterThanOrEqual(b![0]);
     }
+  });
+
+  describe('reproducción de eventos', () => {
+    const T0 = parseFecha('2026-10-21 08:00:00.000') as number;
+    const s = (seg: number) => T0 + seg * 1000;
+    const filas: FilaLog[] = [
+      { t: s(0), tipo: 'COMMAND_ACK', desc: 'Comando ATS_I_Train_Number#32840#0#2700 ejecutado por PANTTS' },
+      { t: s(5), tipo: 'IHM_LOGIN', desc: 'Usuario Regulador1 ingresa en el IHM 2' },
+      { t: s(6), tipo: 'IHM_ZONE_CONTROL', desc: 'IHM 2 toma control del área PIN' },
+      { t: s(7), tipo: 'CONTROL_IHM', desc: 'Servidor 1 controla el IHM 2' },
+      { t: s(10), tipo: 'TGMT_DEPARTURE_AT_PLATFORM', desc: 'El tren 32840 en la vía 1 ha salido a la estación 101' },
+      { t: s(130), tipo: 'TGMT_ARRIVAL_AT_PLATFORM', desc: 'El tren 32840 en la vía 1 ha llegado a la estación 102' },
+      { t: s(130.5), tipo: 'TGMT_ARRIVAL_AT_PLATFORM', desc: 'El tren 32840 en la vía 1 ha llegado a la estación 102' },
+      { t: s(160), tipo: 'TGMT_DEPARTURE_AT_PLATFORM', desc: 'El tren 32840 en la vía 1 ha salido a la estación 102' },
+      { t: s(200), tipo: 'ALARM_OPENED', desc: 'Tren número 27 está detenido en el circuito de vía BALC22BAL . Abierta' },
+      { t: s(260), tipo: 'ALARM_NORMALIZED', desc: 'Tren número 27 está detenido en el circuito de vía BALC22BAL . Normalizada' },
+      { t: s(300), tipo: 'COMMAND_ACK', desc: 'Comando ActivarDBOCBTC TCY TCY1 ejecutado por OBSATP' },
+      { t: s(400), tipo: 'COMMAND_ACK', desc: 'Comando DesactivarDBOCBTC TCY TCY1 ejecutado por OBSATP' },
+      { t: s(500), tipo: 'COMM_IXL_DISCONNECT', desc: 'El ATS ha perdido la conexión con el enclavamiento PANIXL' },
+      { t: s(530), tipo: 'COMM_IXL_CONNECT', desc: 'Enclavamiento conectado: PANIXL' },
+      { t: s(600), tipo: 'TRAIN_CHANGED', desc: 'Tren numerado 27 cambió a *27' },
+    ];
+
+    it('interpreta el log: tren, paradas, número de servicio e intervalos', () => {
+      const mod = interpretar(filas, ix!);
+      expect(mod.eventos).toHaveLength(filas.length - 1);   // el duplicado < 2 s se descarta
+      expect(mod.trenes.map(t => t.clave)).toEqual(['27 (nm22)']);
+      const tr = mod.trenes[0];
+      expect(tr.material).toBe('NM22');
+      expect(tr.paradas.map(p => `${p.tipo}${p.est}`)).toEqual(['dep101', 'arr102', 'dep102']);
+      expect(numeroEn(mod, tr, s(20))).toBe('27');
+      expect(numeroEn(mod, tr, s(700))).toBe('*27');
+      const det = mod.intervalos.find(i => i.tipo === 'detenido');
+      expect(det).toMatchObject({ t0: s(200), t1: s(260) });
+      expect(det!.refs[0]?.id).toMatch(/^C22BAL/);
+      expect(mod.intervalos.find(i => i.tipo === 'dbo')).toMatchObject({ t0: s(300), t1: s(400) });
+      expect(mod.intervalos.find(i => i.tipo === 'ixl')).toMatchObject({ t0: s(500), t1: s(530) });
+    });
+
+    it('estado en un instante: posición del tren, elementos con alarma, enclavamiento caído e IHM', () => {
+      const mod = interpretar(filas, ix!);
+      const eje = construirEjePk(data);
+      const ctx = crearContexto(data, eje, curvas);
+      const xPan = data.estaciones.find(e => e.codigo === 'PAN')!.x as number;
+      const xZar = data.estaciones.find(e => e.codigo === 'ZAR')!.x as number;
+
+      const enMarcha = estadoEn(ctx, mod, s(70)).trenes[0];
+      expect(enMarcha.enAnden).toBe(false);
+      expect(enMarcha.via).toBe(1);
+      expect(enMarcha.sentido).toBe('OBS');
+      expect(enMarcha.numero).toBe('27');
+      expect(enMarcha.x).toBeLessThan(xPan);
+      expect(enMarcha.x).toBeGreaterThan(xZar - 60);
+
+      const enAnden = estadoEn(ctx, mod, s(145)).trenes[0];
+      expect(enAnden).toMatchObject({ enAnden: true, estCodigo: 'ZAR' });
+
+      const e230 = estadoEn(ctx, mod, s(230));
+      const det = mod.intervalos.find(i => i.tipo === 'detenido')!;
+      expect(e230.porElemento.get(`${det.refs[0].tipo}:${det.refs[0].id}`)).toContain('detenido');
+      expect(estadoEn(ctx, mod, s(515)).ixlCaidos.has('PANIXL')).toBe(true);
+      expect(estadoEn(ctx, mod, s(540)).ixlCaidos.size).toBe(0);
+      expect(e230.ihm).toContainEqual({ ihm: '2', usuario: 'Regulador1', servidor: '1', areas: ['PIN'] });
+    });
+
+    it('recorrido para el diagrama de hilo y PK de la marcha tipo llevado al plano', () => {
+      const mod = interpretar(filas, ix!);
+      const ctx = crearContexto(data, construirEjePk(data), curvas);
+      const rec = recorridoReal(ctx, mod.trenes[0]);
+      expect(rec).toHaveLength(1);
+      for (let i = 1; i < rec[0].length; i++) expect(rec[0][i].t).toBeGreaterThanOrEqual(rec[0][i - 1].t);
+      const m = mapaPkMarcha(ctx, 1);
+      expect(m(2117.798)).toBeCloseTo(ctx.pkEst(102, 1) as number, 3);   // ZAR
+      expect(m(17300.6)).toBeCloseTo(ctx.pkEst(123, 1) as number, 3);    // OBS
+    });
   });
 });

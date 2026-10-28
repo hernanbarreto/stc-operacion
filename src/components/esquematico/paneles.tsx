@@ -4,7 +4,8 @@ import { X } from 'lucide-react';
 import type { ElementoRef, Esquematico, Fuente, Junta } from './types';
 import { type EjePk, type Indice, fmtPk, juntasDe, perfilEn, rangoX, resolver } from './resolver';
 import { resumen } from './resumen';
-import { FREQ_COLORS, IXL_COLORS, LAZO_COLORS, SIN_DATO, TIPO_COLORS, VIA_IHM, colorVelocidad, type Modo } from './constantes';
+import { COLOR_CATEGORIA, COLOR_ESTADO, COLOR_MATERIAL, FREQ_COLORS, IXL_COLORS, LAZO_COLORS, SIN_DATO, TIPO_COLORS, VIA_IHM, colorVelocidad, type Modo } from './constantes';
+import { glifoJunta } from './glifos';
 
 
 // ───────────────────────── tooltip ─────────────────────────
@@ -518,27 +519,56 @@ export const Observaciones: React.FC<{ data: Esquematico; ix: Indice; onGo: (x: 
   );
 };
 
+const NOMBRE_LAZO: Record<string, string> = {
+  LS: 'Lazo en S', LC: 'Lazo cerrado', LT: 'Lazo terminal', AC: 'Acoplador', JAR: 'Junta aislada de riel', J: 'Junta (sin tipo en el plano)',
+};
+const NOMBRE_ESTADO: Record<string, string> = {
+  detenido: 'Tren detenido en CDV', arb: 'ARB', alarma: 'Otra alarma activa', rebase: 'Rebase de punto de parada', dbo: 'DBO activo',
+  degradado: 'Tren degradado', tarjeta: 'Tarjeta de enclavamiento', ihm: 'IHM sin conexión', ixl: 'Enclavamiento / ATP desconectado',
+};
+
+const Glifo: React.FC<{ tipo: string; color: string }> = ({ tipo, color }) => (
+  <svg width="22" height="16" viewBox="-6 -8 12 16" className="esq-ley-glifo">
+    <line x1={-6} x2={6} y1={0} y2={0} stroke="#475569" strokeWidth={1.6} />
+    <path d={glifoJunta(tipo === 'J' ? null : tipo, 0, 0, 5)} stroke={color} strokeWidth={1.1} fill="none" />
+  </svg>
+);
+
 export const Leyenda: React.FC<{ modo: Modo }> = ({ modo }) => (
   <div className="esq-leyenda">
+    <h4>Color de las vías</h4>
     {modo === 'frecuencia' && Object.entries(FREQ_COLORS).map(([k, c]) => <div key={k}><i style={{ background: c }} />{k}</div>)}
     {modo === 'tipo' && Object.entries(TIPO_COLORS).map(([k, c]) => <div key={k}><i style={{ background: c }} />{k} (según plano de CDV)</div>)}
     {modo === 'enclavamiento' && Object.entries(IXL_COLORS).map(([k, c]) => <div key={k}><i style={{ background: c }} />{k} (derivado del log)</div>)}
     {modo === 'velocidad' && [25, 35, 60, 68, 74, 80].map(v => <div key={v}><i style={{ background: colorVelocidad(v) }} />{v} km/h</div>)}
     {modo === 'cdv' && <div>Colores alternados para distinguir la extensión de cada circuito de vía físico.</div>}
-    {modo === 'ihm' && <div><i style={{ background: VIA_IHM }} />Sin estado (la reproducción de eventos colorea ocupación y alarmas)</div>}
+    {modo === 'ihm' && <div><i style={{ background: VIA_IHM }} />Vía (la reproducción resalta encima ocupación y alarmas)</div>}
     <div><i style={{ background: SIN_DATO }} />Sin dato en el plano</div>
+    <div><b className="esq-ley-cdv">C110</b> nombre del CDV físico (un lado de la vía) · <span className="esq-ley-sec">S1102</span> sección / CDV virtual (lado opuesto)</div>
     <hr />
-    <h4>Juntas (color = tipo de lazo, plano de CDV)</h4>
-    {Object.entries(LAZO_COLORS).map(([k, c]) => <div key={k}><span className="esq-ley-junta" style={{ background: c }} />{k}</div>)}
+    <h4>Juntas (símbolo y color = tipo de lazo del plano de CDV)</h4>
+    {Object.entries(LAZO_COLORS).map(([k, c]) => <div key={k}><Glifo tipo={k} color={c} />{k} — {NOMBRE_LAZO[k] ?? k}</div>)}
     <div>* = lazo de 300 mm² para compensar la corriente de tracción</div>
-    <hr />
     <div><span className="esq-ley-junta-v" />Límite de sección (virtual)</div>
+    <hr />
+    <h4>Energía</h4>
+    <div><svg width="22" height="16" viewBox="-6 -8 12 16"><circle cx={0} cy={-2.2} r={3} fill="#1f0a0a" stroke="#f87171" /><circle cx={0} cy={2.2} r={3} fill="#1f0a0a" stroke="#f87171" /></svg>Subestación (S/E) con su alimentación a las vías principales</div>
+    <div><i style={{ background: 'rgba(239,68,68,0.45)' }} /><i style={{ background: 'rgba(249,115,22,0.45)' }} />Tramos entre subestaciones consecutivas</div>
+    <hr />
+    <h4>Reproducción de eventos</h4>
+    {Object.entries(COLOR_MATERIAL).map(([k, c]) => <div key={k}><i style={{ background: c }} />Tren {k} (número de servicio · tren físico)</div>)}
+    <div><i style={{ background: '#fbbf24' }} />Tren seleccionado · <span style={{ opacity: 0.45 }}>atenuado = dato sin actualizar</span></div>
+    <div><i style={{ background: 'transparent', border: '1px dashed #fbbf24' }} />Tren de marcha tipo (comparación)</div>
+    {Object.entries(NOMBRE_ESTADO).map(([k, n]) => <div key={k}><i style={{ background: COLOR_ESTADO[k] }} />{n}</div>)}
+    <div><i style={{ background: '#fde047' }} />Destello: elemento nombrado en un evento de los últimos 20 s</div>
+    <h4>Categorías de evento (lista y diagrama de hilo)</h4>
+    {Object.entries(COLOR_CATEGORIA).map(([k, c]) => <div key={k}><i style={{ background: c, width: 8, height: 8, borderRadius: '50%' }} />{k}</div>)}
+    <hr />
     <div><span className="esq-ley-normal" />Rama recta de aguja (normal asumida)</div>
     <div>Señal: el brazo apunta al sentido de circulación que gobierna; focos según plano</div>
     <div>Círculo punteado: señal sin sentido determinado</div>
     <div>Barras de color sobre/bajo la tira: velocidad máxima por zona (estación / curva)</div>
     <div>Banda inferior: ubicaciones de equipos de CDV (cajas del plano de CDV)</div>
-    <div>Línea roja vertical: subestación (S/E)</div>
     <div>Clic en un punto vacío de la vista de detalle: todo lo que hay en ese PK</div>
   </div>
 );

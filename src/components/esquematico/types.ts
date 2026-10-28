@@ -403,4 +403,5 @@ export type ElementoRef =
   | { tipo: 'subestacion'; id: string }   // nombre
   | { tipo: 'equipo'; id: string }        // índice en data.equipos
   | { tipo: 'zona_velocidad'; id: string } // índice en data.perfil.zonas_velocidad
-  | { tipo: 'pk'; id: string };           // PK en metros (texto)
+  | { tipo: 'pk'; id: string }            // PK en metros (texto)
+  | { tipo: 'tren'; id: string };         // tren físico (nombre de flota) en la reproducción de eventos

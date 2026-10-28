@@ -40,10 +40,10 @@ curvas_procesadas/
 validacion_curvas/
 __pycache__/
 
-# Esquemático L1: datos derivados de planos C2-Confidencial en claro (sólo locales).
-# En el repo y en el hosting van únicamente cifrados en public/data/l1 (ver tools/esquematico/cifrado.mjs).
+# Esquemático L1: datos derivados de planos C2-Confidencial. No van al repositorio (público) ni a /public
+# (Hosting los serviría sin login): se cargan en Firebase Storage (esquematico/esquematico_l1.json).
 datos_planos/
 public/data/esquematico_l1.json
 public/data/planos/
-# Clave de datos del esquemático: nunca al repositorio
+# clave del cifrado anterior (ya no se usa): nunca al repositorio
 clave_datos*.txt

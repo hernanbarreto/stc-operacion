@@ -3,7 +3,7 @@
 export type Modo = 'ihm' | 'cdv' | 'frecuencia' | 'tipo' | 'enclavamiento' | 'velocidad';
 
 export type Capa =
-  | 'plano_sen' | 'senales' | 'agujas' | 'juntas_fisicas' | 'juntas_virtuales' | 'lazos' | 'cdv_nombres'
+  | 'trenes' | 'estados' | 'fantasmas' | 'energia_zonas' | 'senales' | 'agujas' | 'juntas_fisicas' | 'juntas_virtuales' | 'lazos' | 'cdv_nombres'
   | 'secciones_nombres' | 'andenes' | 'avc' | 'topes' | 'limites' | 'pk' | 'balizas' | 'psp' | 'fp'
   | 'marcadores_al' | 'vel_zonas' | 'vel_agujas' | 'pendientes' | 'equipos' | 'reset' | 'zonas_rauz'
   | 'zonas_asr' | 'armarios' | 'subestaciones' | 'carteles' | 'tramos' | 'rotulos';
@@ -47,22 +47,30 @@ export const GRUPOS_CAPAS: { grupo: string; capas: { key: Capa; label: string }[
       { key: 'andenes', label: 'Andenes / BFU' },
       { key: 'limites', label: 'Límites de estación / WCU' },
       { key: 'armarios', label: 'Ubicaciones de equipos de CDV' },
-      { key: 'subestaciones', label: 'Subestaciones (S/E)' },
       { key: 'tramos', label: 'Tramos subterráneo / techado / superficie' },
       { key: 'rotulos', label: 'Rótulos del plano' },
       { key: 'pk', label: 'Escala de PK' },
     ],
   },
   {
-    grupo: 'Plano original', capas: [
-      { key: 'plano_sen', label: 'Plano de señalización (hoja 1/25) superpuesto' },
+    grupo: 'Energía', capas: [
+      { key: 'subestaciones', label: 'Subestaciones (S/E) y alimentación' },
+      { key: 'energia_zonas', label: 'Tramos entre subestaciones' },
+    ],
+  },
+  {
+    grupo: 'Reproducción de eventos', capas: [
+      { key: 'trenes', label: 'Trenes (número y posición)' },
+      { key: 'estados', label: 'Estados y alarmas sobre los elementos' },
+      { key: 'fantasmas', label: 'Tren de marcha tipo' },
     ],
   },
 ];
 
 export const CAPAS_INICIALES: Capa[] = ['senales', 'agujas', 'juntas_fisicas', 'juntas_virtuales', 'lazos',
   'cdv_nombres', 'secciones_nombres', 'andenes', 'avc', 'topes', 'limites', 'pk', 'balizas', 'vel_zonas',
-  'vel_agujas', 'equipos', 'armarios', 'subestaciones', 'carteles', 'tramos', 'rotulos', 'fp'];
+  'vel_agujas', 'equipos', 'armarios', 'subestaciones', 'energia_zonas', 'carteles', 'tramos', 'rotulos', 'fp',
+  'trenes', 'estados', 'fantasmas'];
 
 export const MODOS: { key: Modo; label: string }[] = [
   { key: 'ihm', label: 'IHM' },
@@ -100,7 +108,9 @@ export function colorVelocidad(v: number | null | undefined): string {
 export const Y_PK = 74;
 export const Y_EST = 146;
 export const Y_ARM = 380;     // banda de ubicaciones de equipos de CDV (debajo de la tira)
-export const Y_TOP = 132;     // banda superior para S/E, cartelones y tramos
+export const Y_TOP = 132;     // banda superior para cartelones y tramos
+export const Y_SE = 318;      // símbolo de la subestación (debajo de la tira)
+export const Y_ENER = 346;    // banda de tramos entre subestaciones
 
 // Vista general: la línea completa partida en filas (como la vista general de una IHM de ATS)
 export const G_Y0 = 86;
@@ -110,3 +120,15 @@ export const G_ROW = G_Y1 - G_Y0;
 export const G_GAP = 10;
 export const G_SOLAPE = 14;
 export const DET_H = 350;     // alto visible en la vista de detalle al entrar desde la general
+
+export const COLOR_MATERIAL: Record<string, string> = { NM16: '#38bdf8', NM22: '#a78bfa' };
+export const COLOR_CATEGORIA: Record<string, string> = {
+  movimiento: '#22c55e', alarma: '#f97316', comando: '#38bdf8', tren: '#22d3ee', ihm: '#a78bfa',
+  enclavamiento: '#ef4444', otro: '#94a3b8',
+};
+
+/** Color de resaltado por tipo de intervalo activo en la reproducción. */
+export const COLOR_ESTADO: Record<string, string> = {
+  detenido: '#f97316', arb: '#e879f9', alarma: '#facc15', rebase: '#ef4444', dbo: '#22c55e', degradado: '#ef4444',
+  tarjeta: '#ef4444', ihm: '#a78bfa', ixl: '#ef4444',
+};

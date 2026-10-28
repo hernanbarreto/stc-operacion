@@ -157,6 +157,8 @@ export function cajaDe(ix: Indice, ref: ElementoRef): Caja | null {
       const x = construirEjePk(ix.data).xAt(Number(ref.id));
       return x == null ? null : [x - 30, 190, x + 30, 260];
     }
+    case 'tren':
+      return null;   // la posición depende del instante de la reproducción
     case 'estacion': {
       const ps = ix.data.andenes.filter(p => p.estacion === ref.id);
       if (!ps.length) return null;
@@ -250,28 +252,4 @@ export function juntasDe(data: Esquematico, c: Cdv): { j: Junta; i: number }[] {
     .filter(({ j }) => j.tipo === 'fisica' && (Math.abs(j.x - a) < 0.8 || Math.abs(j.x - b) < 0.8)
       && c.tramos.some(t => Math.min(t[0], t[2]) - 0.8 <= j.x && j.x <= Math.max(t[0], t[2]) + 0.8
         && Math.abs((t[1] + t[3]) / 2 - j.y) < 3));
-}
-
-// ───────────────────────── correspondencia entre las reglas de los dos planos ─────────────────────────
-
-export interface TramoHomologo { xs0: number; xs1: number; xc0: number; xc1: number }
-
-/** Tramos homólogos entre las dos reglas (mismo PK en ambas), ordenados por x creciente. */
-export function tramosHomologos(reglaSen: [number, number][], reglaCdv: [number, number][]): TramoHomologo[] {
-  const xc = new Map(reglaCdv.map(([x, pk]) => [pk, x]));
-  const pares = reglaSen.filter(([, pk]) => xc.has(pk)).map(([x, pk]) => [x, xc.get(pk) as number] as [number, number])
-    .sort((a, b) => a[0] - b[0]);
-  const out: TramoHomologo[] = [];
-  for (let i = 1; i < pares.length; i++) {
-    const [s0, c0] = pares[i - 1];
-    const [s1, c1] = pares[i];
-    if (s1 > s0 && c1 > c0) out.push({ xs0: s0, xs1: s1, xc0: c0, xc1: c1 });
-  }
-  if (out.length) {
-    const f = out[0];
-    out.unshift({ xs0: f.xs0 - 2000, xs1: f.xs0, xc0: f.xc0 - 2000, xc1: f.xc0 });
-    const l = out[out.length - 1];
-    out.push({ xs0: l.xs1, xs1: l.xs1 + 2000, xc0: l.xc1, xc1: l.xc1 + 2000 });
-  }
-  return out;
 }
