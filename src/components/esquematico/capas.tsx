@@ -401,7 +401,7 @@ export const EstadosSvg: React.FC<{
               stroke={col} style={{ strokeDasharray: dash, strokeWidth: 1.5 * px }} className="esq-estado-area" />}
             {!g.d && !g.rect && g.c && <circle cx={g.c[0]} cy={g.c[1]} r={6 * px} fill="none" stroke={col} style={{ strokeWidth: 2 * px, strokeDasharray: dash }} />}
             {etiquetas && p && txt && (
-              <text x={p[0]} y={arriba ? p[1] - 30 * px : p[1] + 30 * px + fs} fontSize={fs} className="esq-estado-txt" style={{ fill: col }}>{txt}</text>
+              <text x={p[0]} y={arriba ? p[1] - 40 * px : p[1] + 40 * px + fs} fontSize={fs} className="esq-estado-txt" style={{ fill: col }}>{txt}</text>
             )}
           </g>
         );
@@ -419,16 +419,16 @@ export const EstadosSvg: React.FC<{
   );
 };
 
-/** DBO activo: cuadrado rojo con «DBO» sobre el andén (DBO CBTC) o junto a la señal (DBO no CBTC). */
-export const DboSvg: React.FC<{ items: { k: string; texto: string }[]; geo: (k: string) => Geo; px: number }> = ({ items, geo, px }) => {
+/** DBO activo: cuadrado rojo con «DBO» en la punta del andén (DBO CBTC) o junto a la señal (DBO no CBTC). */
+export const DboSvg: React.FC<{ items: { k: string; texto: string; x?: number; y?: number }[]; geo: (k: string) => Geo; px: number }> = ({ items, geo, px }) => {
   const w = 30 * px, h = 15 * px, fs = 10 * px;
   return (
     <g className="esq-dbo">
-      {items.map(({ k, texto }) => {
-        const g = geo(k);
+      {items.map(({ k, texto, x: xf, y: yf }) => {
+        const g = xf == null ? geo(k) : null;
         const p = g ? puntoDe(g) : null;
-        if (!g || !p) return null;
-        const [x, y] = g.rect ? [Math.min(g.rect[0] + w / 2 + 3 * px, p[0]), p[1]] : [p[0], p[1] + (p[1] < 228 ? -14 * px : 14 * px)];
+        if (xf == null && (!g || !p)) return null;
+        const [x, y] = xf != null && yf != null ? [xf, yf] : [p![0], p![1] + (p![1] < 228 ? -14 * px : 14 * px)];
         return (
           <g key={k}>
             <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={1.5 * px} style={{ strokeWidth: 1.2 * px }} />
@@ -464,7 +464,7 @@ export const RutasSvg: React.FC<{ rutas: RutaDibujo[]; px: number; etiquetas: bo
 
 export interface TrenDibujo {
   clave: string; numero: string | null; x: number; y: number; sentido: 'OBS' | 'PAN'; material: string | null;
-  enAnden: boolean; vigente: boolean; degradado: boolean;
+  enAnden: boolean; vigente: boolean; degradado: boolean; ang: number;
 }
 
 /** Trenes: cuerpo sobre la vía con el número de servicio adentro, flecha de sentido y nombre del tren físico
@@ -483,8 +483,10 @@ export const TrenesSvg: React.FC<{ trenes: TrenDibujo[]; px: number; sel: string
         return (
           <g key={t.clave} className={cls} {...hov({ tipo: 'tren', id: t.clave })}>
             <line x1={t.x} x2={t.x} y1={arriba ? t.y - H / 2 : t.y + H / 2} y2={arriba ? yl + 2 * px : yl - fsN * 0.9} className="esq-tren-guia" style={{ strokeWidth: 0.8 * px }} />
-            <rect x={x0} y={t.y - H / 2} width={L} height={H} rx={H * 0.3} style={{ strokeWidth: 1.2 * px }} />
-            <path d={punta} />
+            <g transform={Math.abs(t.ang) > 0.5 ? `rotate(${t.ang} ${t.x} ${t.y})` : undefined}>
+              <rect x={x0} y={t.y - H / 2} width={L} height={H} rx={H * 0.3} style={{ strokeWidth: 1.2 * px }} />
+              <path d={punta} />
+            </g>
             <text x={t.x} y={t.y + fs * 0.36} fontSize={fs} className="num">{t.numero ?? '—'}</text>
             <text x={t.x} y={yl} fontSize={fsN} className="nom">{t.clave.replace(/ \((nm\d+)\)/, '·$1')}</text>
           </g>

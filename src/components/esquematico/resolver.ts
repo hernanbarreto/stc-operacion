@@ -253,3 +253,28 @@ export function juntasDe(data: Esquematico, c: Cdv): { j: Junta; i: number }[] {
       && c.tramos.some(t => Math.min(t[0], t[2]) - 0.8 <= j.x && j.x <= Math.max(t[0], t[2]) + 0.8
         && Math.abs((t[1] + t[3]) / 2 - j.y) < 3));
 }
+
+/**
+ * Sentido de salida de los trenes de un andén: vía 1 hacia Observatorio, vía 2 hacia Pantitlán; en las terminales
+ * los trenes salen hacia la otra punta; en otras vías, el de la señal de salida en la punta del andén.
+ */
+export function sentidoSalida(data: Esquematico, a: Anden): 'OBS' | 'PAN' {
+  const vias = (a.via ?? '').split('/');
+  if (vias.includes('V1') && !vias.includes('V2')) return 'OBS';
+  if (vias.includes('V2') && !vias.includes('V1')) return 'PAN';
+  if (a.estacion === 'PAN') return 'OBS';
+  if (a.estacion === 'OBS') return 'PAN';
+  const ss = data.senales.filter(s => s.sentido && Math.abs(s.y - a.y_via) < 3 && s.x >= a.x0 - 15 && s.x <= a.x1 + 15);
+  const obs = ss.some(s => s.sentido === 'OBS' && s.x <= a.x0 + 10), pan = ss.some(s => s.sentido === 'PAN' && s.x >= a.x1 - 10);
+  return pan && !obs ? 'PAN' : 'OBS';
+}
+
+/** Lugar del cuadrado DBO: en la punta del andén por donde sale el tren (según el sentido de avance de su vía),
+ *  sobre el borde del andén que da a esa vía. */
+export function lugarDbo(a: Anden, sentido: 'OBS' | 'PAN', px: number): [number, number] {
+  const w = 30 * px;
+  const largo = a.x1 - a.x0;
+  const x = largo < w * 1.2 ? (a.x0 + a.x1) / 2 : sentido === 'OBS' ? a.x0 + w / 2 + 2 * px : a.x1 - w / 2 - 2 * px;
+  const yAnden = a.lado === 'arriba' ? a.y_borde - 2.1 : a.y_borde + 2.1;
+  return [x, (yAnden + a.y_via) / 2];
+}

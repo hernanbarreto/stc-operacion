@@ -410,6 +410,31 @@ export interface PosTren {
   cdv: ElementoRef | null;    // detenido en un CDV intermedio
   sentido: 'OBS' | 'PAN';
   vigente: boolean;           // false: dato viejo (hueco o fin de datos)
+  ang: number;                // inclinación de la vía donde está (grados, para dibujar el tren sobre la vía)
+}
+
+/** Inclinación (grados) de la vía más cercana a (x, y). */
+function anguloVia(ctx: Contexto, x: number, y: number): number {
+  let mejor: { d: number; a: number } | null = null;
+  for (const v of ctx.data.vias) {
+    const [x0, y0, x1, y1] = v.pts;
+    if (x < x0 - 0.5 || x > x1 + 0.5 || x1 === x0) continue;
+    const yy = y0 + ((x - x0) * (y1 - y0)) / (x1 - x0);
+    const d = Math.abs(yy - y);
+    if (!mejor || d < mejor.d) mejor = { d, a: (Math.atan2(y1 - y0, x1 - x0) * 180) / Math.PI };
+  }
+  return mejor && mejor.d < 2 ? mejor.a : 0;
+}
+
+/** Sentido de avance en el punto i: el del próximo movimiento (si lo hay sin hueco) o el del anterior. */
+function sentidoEn(ps: PuntoTrayecto[], i: number): 'OBS' | 'PAN' | null {
+  for (let k = i + 1; k < ps.length && ps[k].t - ps[i].t < HUECO_MAX_MS; k++) {
+    if (Math.abs(ps[k].pk - ps[i].pk) > 1) return ps[k].pk > ps[i].pk ? 'OBS' : 'PAN';
+  }
+  for (let k = i - 1; k >= 0 && ps[i].t - ps[k].t < HUECO_MAX_MS; k--) {
+    if (Math.abs(ps[k].pk - ps[i].pk) > 1) return ps[i].pk > ps[k].pk ? 'OBS' : 'PAN';
+  }
+  return null;
 }
 
 function ubicar(ctx: Contexto, pk: number, via: number, estCodigo: string | null, enAnden: boolean): { x: number; y: number } | null {
@@ -437,14 +462,15 @@ export function posicionTren(rep: Replay, tren: Tren, t: number): PosTren | null
   const p = ps[i];
   if (t - p.t > VIGENCIA_MS && i === ps.length - 1) return null;
   const numero = numeroEn(mod, tren, t);
-  const sentido: 'OBS' | 'PAN' = p.via === 1 ? 'OBS' : 'PAN';
+  // sentido de avance: PK creciente = hacia OBS; detenido, el de su próximo movimiento (rotación en terminales)
+  const sentido: 'OBS' | 'PAN' = sentidoEn(ps, i) ?? (p.via === 1 ? 'OBS' : 'PAN');
   if (p.tipo === 'arr') {
     const sig = ps[i + 1];
     const vigente = !sig || sig.t - p.t < HUECO_MAX_MS;
-    if (p.cdv) return { tren, numero, pk: p.pk, via: p.via, x: p.cdv.x, y: p.cdv.y, enAnden: false, estCodigo: null, cdv: p.cdv.ref, sentido, vigente: true };
+    if (p.cdv) return { tren, numero, pk: p.pk, via: p.via, x: p.cdv.x, y: p.cdv.y, enAnden: false, estCodigo: null, cdv: p.cdv.ref, sentido, vigente: true, ang: anguloVia(ctx, p.cdv.x, p.cdv.y) };
     const cod = p.est != null ? ctx.codigoEst(p.est) : null;
     const u = p.pos ?? ubicar(ctx, p.pk, p.via, cod, true);
-    return u ? { tren, numero, pk: p.pk, via: p.via, x: u.x, y: u.y, enAnden: true, estCodigo: cod, cdv: null, sentido, vigente } : null;
+    return u ? { tren, numero, pk: p.pk, via: p.via, x: u.x, y: u.y, enAnden: true, estCodigo: cod, cdv: null, sentido, vigente, ang: anguloVia(ctx, u.x, u.y) } : null;
   }
   let k = i + 1;
   while (k < ps.length && ps[k].pk === p.pk && ps[k].tipo !== 'arr') k++;
@@ -452,7 +478,7 @@ export function posicionTren(rep: Replay, tren: Tren, t: number): PosTren | null
   if (!q || q.t - p.t > HUECO_MAX_MS) {
     const cod = p.est != null ? ctx.codigoEst(p.est) : null;
     const u = p.pos ?? ubicar(ctx, p.pk, p.via, cod, false);
-    return u ? { tren, numero, pk: p.pk, via: p.via, x: u.x, y: u.y, enAnden: false, estCodigo: cod, cdv: null, sentido, vigente: false } : null;
+    return u ? { tren, numero, pk: p.pk, via: p.via, x: u.x, y: u.y, enAnden: false, estCodigo: cod, cdv: null, sentido, vigente: false, ang: anguloVia(ctx, u.x, u.y) } : null;
   }
   const c = curvaDe(ctx.curvas, tren.material, p.via === 1 ? 'V1' : 'V2');
   const fr = (t - p.t) / Math.max(1, q.t - p.t);
@@ -463,6 +489,8 @@ export function posicionTren(rep: Replay, tren: Tren, t: number): PosTren | null
   // terminal, CDV), pasa de una a otra a lo largo del tramo
   const ruta = rep.rutas.find(r => r.tren === tren.clave && r.rec && r.t0 <= t && (r.t1 == null || r.t1 > t) && yEnRecorrido(r.rec, x) != null);
   let y = ruta?.rec ? yEnRecorrido(ruta.rec, x) : null;
+  let ang: number | null = null;
+  const mov: 'OBS' | 'PAN' = q.pk > p.pk ? 'OBS' : 'PAN';
   if (y == null) {
     const yVia = (xx: number) => yDeVia(ctx.data, `V${p.via}`, xx) ?? yDeVia(ctx.data, p.via === 1 ? 'V2' : 'V1', xx);
     const pa = p.cdv ?? p.pos, pb = q.cdv ?? q.pos;
@@ -472,9 +500,10 @@ export function posicionTren(rep: Replay, tren: Tren, t: number): PosTren | null
     if ((fuera(pa) || fuera(pb)) && ya != null && yb != null) {
       const f = xb === xa ? fr : Math.min(1, Math.max(0, (x - xa) / (xb - xa)));
       y = ya + f * (yb - ya);
+      if (xb !== xa && Math.abs(yb - ya) > 0.5) ang = (Math.atan2(yb - ya, xb - xa) * 180) / Math.PI;
     } else y = yVia(x) ?? (p.via === 1 ? 208 : 248);
   }
-  return { tren, numero, pk, via: p.via, x, y, enAnden: false, estCodigo: null, cdv: null, sentido, vigente: true };
+  return { tren, numero, pk, via: p.via, x, y, enAnden: false, estCodigo: null, cdv: null, sentido: mov, vigente: true, ang: ang ?? anguloVia(ctx, x, y) };
 }
 
 export function posicionesEn(rep: Replay, t: number): PosTren[] {

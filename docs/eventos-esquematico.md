@@ -40,7 +40,7 @@ Cantidades = eventos sin duplicados en el log analizado (todas las variantes OPE
 | `degradado` | ALARM_* | 1 989 | Tren con borde rojo (si su número está asignado a una cabina) |
 | `tarjeta` | ALARM_* | 2 229 | Panel *Estado* |
 | `ihm_conexion` | ALARM_* | 943 | Panel *Estado* |
-| `dbo` | COMMAND_* | 76 384 | Cuadrado rojo «DBO» en el andén desde el ACK de *Activar* hasta el de *Desactivar* |
+| `dbo` | COMMAND_* | 76 384 | Cuadrado rojo «DBO» en la punta de salida del andén (vía 1 → hacia OBS, vía 2 → hacia PAN; terminales hacia la otra punta), entre el andén y su vía, desde el ACK de *Activar* hasta el de *Desactivar* |
 | `dbo_nocbtc` | COMMAND_* | 19 934 | Cuadrado rojo «DBO» junto a la señal (DBONoCBTC → CancelarDBONoCBTC ejecutado; 9 787 cancelaciones fueron rechazadas) |
 | `itinerario` | COMMAND_* | 6 438 | Ruta en verde de la señal origen a la destino, con la posición de cada aguja (N/I) y el tren que la usa |
 | `deslizamiento` | COMMAND_* | 3 668 | Deslizamiento en ámbar discontinuo a continuación de la señal, con las agujas en la posición del comando |
@@ -75,7 +75,8 @@ detiene antes de la señal (45 s) o la pasa (estimado). Todos los deslizamientos
 
 **Posición de los trenes.** Andén/AVC por TGMT; entre paradas, marcha tipo del material y vía con arranque y
 frenado; detenido en CDV por la alarma; sobre la ruta establecida para ese tren (terminales y cambios de vía) o, si
-sale o llega a otra vía, pasa de una a otra a lo largo del tramo.
+sale o llega a otra vía, pasa de una a otra a lo largo del tramo. El tren se dibuja con la inclinación de la vía
+donde está y la flecha en su sentido de avance; detenido, el de su próximo movimiento (rotación en terminales).
 
 ## Qué no se puede saber con el log actual
 

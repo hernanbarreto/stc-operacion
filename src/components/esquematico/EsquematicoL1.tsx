@@ -13,6 +13,7 @@ import {
   PendientesSvg, RotulosSvg, RotulosViaSvg, SenalSvg, TramosSvg, TrenesSvg, VelAgujasSvg, VelocidadSvg, ZonasSvg,
   type Geo, type IntervaloDibujo, type RutaDibujo, type TrenDibujo,
 } from './capas';
+import { lugarDbo, sentidoSalida } from './resolver';
 import { Detalle, Fuentes, Leyenda, Observaciones, Tooltip } from './paneles';
 import { EventosPanel, EstadoPanel, TrenPanel } from './panelesReplay';
 import { leerArchivoLocal, leerEsquematico, subirEsquematico } from './almacen';
@@ -617,7 +618,7 @@ export const EsquematicoL1: React.FC = () => {
 
   const trenesDibujo: TrenDibujo[] = useMemo(() => (estado?.trenes ?? []).map(p => ({
     clave: p.tren.clave, numero: p.numero, x: p.x, y: p.y, sentido: p.sentido, material: p.tren.material,
-    enAnden: p.enAnden || !!p.cdv, vigente: p.vigente, degradado: !!p.numero && (estado?.degradados.has(p.numero) ?? false),
+    enAnden: p.enAnden || !!p.cdv, vigente: p.vigente, degradado: !!p.numero && (estado?.degradados.has(p.numero) ?? false), ang: p.ang,
   })), [estado]);
 
   // alarmas y marcas por elemento (sin DBO, que va en su propia capa)
@@ -630,8 +631,12 @@ export const EsquematicoL1: React.FC = () => {
     }
     return m;
   }, [estado, t]);
-  const dboItems = useMemo(() => (estado?.activos ?? []).filter(iv => iv.tipo === 'dbo')
-    .flatMap(iv => iv.refs.map(r => ({ k: refKey(r), texto: iv.texto }))), [estado]);
+  const dboItems = useMemo(() => (estado?.activos ?? []).filter(iv => iv.tipo === 'dbo').flatMap(iv => iv.refs.map(r => {
+    const a = r.tipo === 'anden' && ix ? ix.anden.get(r.id) : undefined;
+    if (!a || !data) return { k: refKey(r), texto: iv.texto };
+    const [x, y] = lugarDbo(a, sentidoSalida(data, a), px);
+    return { k: refKey(r), texto: `${iv.texto} · salida hacia ${sentidoSalida(data, a) === 'OBS' ? 'Observatorio' : 'Pantitlán'}`, x, y };
+  })), [estado, ix, data, px]);
   const rutasDibujo: RutaDibujo[] = useMemo(() => {
     if (!estado) return [];
     const num = new Map(estado.trenes.map(p => [p.tren.clave, p.numero]));

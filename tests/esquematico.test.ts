@@ -7,7 +7,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Esquematico } from '../src/components/esquematico/types';
 import {
-  cajaDe, construirEjePk, construirIndice, ejeDesdeRegla, fmtPk, interpolar, parsePk, perfilEn, rangoX, resolver,
+  cajaDe, construirEjePk, construirIndice, ejeDesdeRegla, fmtPk, interpolar, lugarDbo, parsePk, perfilEn, rangoX, resolver,
+  sentidoSalida,
 } from '../src/components/esquematico/resolver';
 import { calcularRotulos } from '../src/components/esquematico/rotulos';
 import { validarEsquematico } from '../src/components/esquematico/esquema';
@@ -341,8 +342,9 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
       expect(enMarcha.x).toBeLessThan(xPan);
       expect(enMarcha.x).toBeGreaterThan(xZar - 60);
 
+      expect(enMarcha.ang).toBeCloseTo(0, 3);
       const enAnden = estadoEn(rep, s(145)).trenes[0];
-      expect(enAnden).toMatchObject({ enAnden: true, estCodigo: 'ZAR' });
+      expect(enAnden).toMatchObject({ enAnden: true, estCodigo: 'ZAR', sentido: 'OBS' });
 
       const e230 = estadoEn(rep, s(230));
       const det = mod.intervalos.find(i => i.tipo === 'detenido')!;
@@ -397,6 +399,22 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
       const p = estadoEn(rep, s(250)).trenes[0];
       expect(p.cdv).toEqual({ tipo: 'seccion', id: secc.id });
       expect(estadoEn(rep, s(450)).trenes[0].cdv).toBeNull();
+    });
+  });
+
+  describe('DBO en la punta del andén según el sentido de salida', () => {
+    it('vía 1 sale hacia OBS, vía 2 hacia PAN, terminales hacia la otra punta', () => {
+      const a = (id: string) => ix!.anden.get(id)!;
+      expect(sentidoSalida(data, a('BOU1'))).toBe('OBS');
+      expect(sentidoSalida(data, a('BOU2'))).toBe('PAN');
+      expect(sentidoSalida(data, a('OBS1'))).toBe('PAN');
+      expect(sentidoSalida(data, a('PAN42'))).toBe('OBS');
+      const b1 = a('BOU1'), [x1, y1] = lugarDbo(b1, 'OBS', 0.2);
+      expect(x1 - b1.x0).toBeLessThan(5);                       // punta de salida hacia OBS (x menor)
+      expect(y1).toBeGreaterThan(b1.y_borde - 2.1);             // entre el andén y su vía
+      expect(y1).toBeLessThan(b1.y_via);
+      const b2 = a('BOU2'), [x2] = lugarDbo(b2, 'PAN', 0.2);
+      expect(b2.x1 - x2).toBeLessThan(5);
     });
   });
 
