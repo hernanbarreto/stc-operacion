@@ -6,10 +6,12 @@ Línea 1 (vista **Esquemático**, barra de reproducción y diagrama de hilo).
 - Código: `src/components/esquematico/eventos.ts` (plantillas `PLANTILLAS`, modelo `interpretar`),
   `replay.ts` (trayectos, itinerarios, deslizamientos y estado en un instante), `rutas.ts` (recorridos inferidos
   del plano), `capas.tsx` (dibujo), `Hilo.tsx` (diagrama de hilo), `clasificacion.ts` (clasificación a CSV).
-- Log analizado: `eventos_2010-2610.xlsx` — 838 311 filas, del 18/10/2026 11:15 al 28/10/2026 03:03 (hora del log).
-  Tras quitar los duplicados (mismo tipo y texto en menos de 2 s; el ATS registra cada evento 2–3 veces) quedan
-  **408 016 eventos**. 35 trenes; todas las cabinas TGMT están en la flota y todos los ids de estación/AVC del TGMT
-  tienen PK en el plano.
+- Clasificación de todos los Excel de Storage (botón «CSV de eventos», 28/10/2026): **60 archivos, del 22/02/2026 al
+  28/10/2026, 23 137 504 filas y 15 358 777 eventos** sin duplicados (mismo tipo y texto en menos de 2 s; el ATS
+  registra cada evento 2–3 veces). Todos los `eventtype` y todas las formas de texto quedan cubiertos por una
+  plantilla; sólo `comando_tren` conserva 1 evento sin representación.
+- Detalle por día validado con `eventos_2010-2610.xlsx` (838 311 filas, 18/10 11:15 – 28/10 03:03): 35 trenes; todas
+  las cabinas TGMT están en la flota y todos los ids de estación/AVC del TGMT tienen PK en el plano.
 
 ## Clasificar todos los eventos disponibles
 
@@ -25,39 +27,45 @@ plantilla reconocida sin representación; la prueba `tests/esquematico.test.ts` 
 
 ## Qué se muestra hoy
 
-Cantidades = eventos sin duplicados en el log analizado (todas las variantes OPERATOR / ACK / NACK de un comando).
+Cantidades = eventos sin duplicados en los 60 archivos de Storage (todas las variantes OPERATOR / ACK / NACK de un
+comando).
 
 | Plantilla | `eventtype` | Eventos | Cómo se muestra |
 |---|---|---:|---|
-| `llegada` | TGMT_ARRIVAL_AT_PLATFORM | 117 247 | Tren detenido en el andén o AVC, con su número; en terminales, sobre la vía de la ruta por la que llegó |
-| `salida` | TGMT_DEPARTURE_AT_PLATFORM | 115 496 | Tren en marcha hacia la próxima parada con la curva de marcha tipo de su material y vía (arranque y frenado hasta el punto de parada) |
-| `salto` | TGMT_SKIP_PLATFORM | 774 | Paso sin parada |
-| `detenido` | ALARM_* | 42 599 | CDV pintado con «DET n°»; el tren (por número o, sin número, el más cercano) queda detenido en el extremo de salida de ese CDV |
-| `arb` | ALARM_* | 6 717 | CDV pintado con «ARB» |
-| `nrb` | ALARM_* | 834 | CDV pintado con «NRB» |
-| `alarma` | ALARM_* (resto) | 2 968 | Elemento nombrado (CDV, aguja, señal, BFU) pintado con el nombre corto: OCUP. INTEMP, OCUP. TREN, RUTA BLOQ, SIN COMPROB, MOTOR AG, CONTROL AG, TALONADA, FOCO R/A/V, P. EMERG, COMUNIC |
-| `rebase` | ALARM_* | 300 | Andén con «REBASE» 5 min (casi nunca se normaliza en el log) |
-| `degradado` | ALARM_* | 1 989 | Tren con borde rojo (si su número está asignado a una cabina) |
-| `tarjeta` | ALARM_* | 2 229 | Panel *Estado* |
-| `ihm_conexion` | ALARM_* | 943 | Panel *Estado* |
-| `dbo` | COMMAND_* | 76 384 | Cuadrado rojo «DBO» en la punta de salida del andén (vía 1 → hacia OBS, vía 2 → hacia PAN; terminales hacia la otra punta), entre el andén y su vía, desde el ACK de *Activar* hasta el de *Desactivar* |
-| `dbo_nocbtc` | COMMAND_* | 19 934 | Cuadrado rojo «DBO» junto a la señal (DBONoCBTC → CancelarDBONoCBTC ejecutado; 9 787 cancelaciones fueron rechazadas) |
-| `itinerario` | COMMAND_* | 6 438 | Ruta en verde de la señal origen a la destino, con la posición de cada aguja (N/I) y el tren que la usa |
-| `deslizamiento` | COMMAND_* | 3 668 | Deslizamiento en ámbar discontinuo a continuación de la señal, con las agujas en la posición del comando |
-| `marca_comando` | COMMAND_* | 2 112 | Etiqueta sobre el elemento mientras está activo: FLOTA, ITI AUTO, DESL AUTO, SALTO, PROH. PUERTAS, BLOQ. MOV, BLOQUEO, BLOQ. SEÑAL, BLOQ. DESTINO; **RTV** (TSR_SPEED → CancelarTSR) pinta la sección rayada en amarillo |
-| `numero_tren` | COMMAND_ACK | 1 131 | Número de servicio dentro del tren (`1600` → `16`, `*7600` → `*76`) |
-| `comando` | COMMAND_* (resto) | 3 275 | Destello de los elementos del comando (rojo si fue rechazado, con el motivo en la lista); MoverAguja: «MOV → N/I» 1 min sobre la aguja |
-| `cambio_numero` | TRAIN_CHANGED | 713 | Número de servicio actualizado |
-| `nuevo_tren` | NEW_TRAIN | 335 | Destello de la sección donde se numera |
-| `borrado` | TRAIN_DELETED | 321 | Se quita el número de servicio |
-| `ihm_area` | IHM_ZONE_CONTROL | 483 | Panel *Estado*: IHM que controla cada área |
-| `ihm_servidor` | CONTROL_IHM | 482 | Panel *Estado*: servidor de cada IHM |
-| `ihm_login` | IHM_LOGIN | 52 | Panel *Estado*: usuario en cada IHM |
-| `ihm_logoff` | IHM_LOGOFF | 4 | Panel *Estado*: fin de la sesión |
-| `ixl_desconexion` | COMM_IXL_DISCONNECT | 90 | Estaciones del enclavamiento / ATP en rojo hasta reconectar |
-| `ixl_conexion` | COMM_IXL_CONNECT | 94 | Fin de la desconexión |
-| `ixl_carga` | COMM_IXL_START/END_LOADING | 183 | Lista de eventos |
-| `comando_tren` | COMMAND_ACK | 221 | **Pendiente**: sólo lista de eventos |
+| `llegada` | TGMT_ARRIVAL_AT_PLATFORM | 3 615 299 | Tren detenido en el andén o AVC, con su número (en terminales el número de vía del TGMT es el andén) |
+| `salida` | TGMT_DEPARTURE_AT_PLATFORM | 3 552 632 | Tren en marcha hacia la próxima parada, por las vías, con la curva de marcha tipo de su material y vía |
+| `salto` | TGMT_SKIP_PLATFORM | 29 432 | Paso sin parada |
+| `dbo` | COMMAND_* | 2 314 352 | Cuadrado rojo «DBO» en la punta de salida del andén (vía 1 → hacia OBS, vía 2 → hacia PAN; terminales hacia la otra punta), entre el andén y su vía, desde el ACK de *Activar* hasta el de *Desactivar* |
+| `dbo_nocbtc` | COMMAND_* | 591 107 | Cuadrado rojo «DBO» junto a la señal (DBONoCBTC → CancelarDBONoCBTC ejecutado) |
+| `comunicacion` | ALARM_* | 2 251 913 | Panel *Estado › Comunicaciones* y aviso «Comunicaciones: n caídas» en la barra: enlaces RMI de PCC/PML (RMI_PCC_OBS ≈ 965 mil aperturas, RMI_PCC_PAN ≈ 159 mil, SRV_PCC, SRV_OBS, SRV_PAN), canales con OCC1, MOVIOLA, MOV, PML, PCC, PCCR, ATP, WCU_ATP, estaciones…, WCU_TTS, módulos del servidor, IxlManager; el PML o la sala MX del plano se pintan con «COMUNIC» |
+| `detenido` | ALARM_* | 1 268 766 | CDV pintado con «DET n°»; el tren (por número o, sin número, el más cercano en su vía) queda detenido en el extremo de salida de ese CDV |
+| `numero_tren` | COMMAND_ACK | 951 937 | Número de servicio dentro del tren (`1600` → `16`, `*7600` → `*76`) |
+| `itinerario` | COMMAND_* | 127 921 | Ruta en verde de la señal origen a la destino, con la posición de cada aguja (N/I) y el tren que la usa |
+| `arb` | ALARM_* | 126 247 | CDV pintado con «ARB» |
+| `deslizamiento` | COMMAND_* | 120 559 | Deslizamiento en ámbar discontinuo a continuación de la señal, con las agujas en la posición del comando |
+| `comando` | COMMAND_* (resto) | 67 981 | Destello de los elementos del comando (rojo si fue rechazado, con el motivo en la lista); MoverAguja: «MOV → N/I» 1 min sobre la aguja |
+| `alarma` | ALARM_* (resto) | 65 583 | Elemento nombrado (CDV, aguja, señal, BFU) pintado con el nombre corto: OCUP. TREN, OCUP. INTEMP, RUTA BLOQ, SIN COMPROB, MOTOR AG, CONTROL AG, TALONADA, FOCO R/A/V, P. EMERG, SALTO SEC… |
+| `tarjeta` | ALARM_* | 60 504 | Panel *Estado* |
+| `degradado` | ALARM_* | 58 569 | Tren con borde rojo (si su número está asignado a una cabina) |
+| `marca_comando` | COMMAND_* | 43 103 | Etiqueta sobre el elemento mientras está activo: FLOTA, ITI AUTO, DESL AUTO, SALTO, PROH. PUERTAS, BLOQ. MOV, BLOQUEO, BLOQ. SEÑAL, BLOQ. DESTINO; **RTV** (TSR_SPEED → CancelarTSR) pinta la sección rayada en amarillo |
+| `ihm_conexion` | ALARM_* | 23 267 | Panel *Estado › Comunicaciones* |
+| `cambio_numero` | TRAIN_CHANGED | 19 520 | Número de servicio actualizado |
+| `ihm_area` | IHM_ZONE_CONTROL | 16 523 | Panel *Estado*: IHM que controla cada área |
+| `ihm_servidor` | CONTROL_IHM | 11 655 | Panel *Estado*: servidor de cada IHM |
+| `rebase` | ALARM_* | 10 680 | Andén con «REBASE» 5 min (casi nunca se normaliza en el log) |
+| `nuevo_tren` | NEW_TRAIN | 9 042 | Destello de la sección donde se numera |
+| `borrado` | TRAIN_DELETED | 8 444 | Se quita el número de servicio |
+| `tren_hold` | COMMAND_ACK | 5 072 | «HOLD/SKIP n» junto al tren mientras el código no es 0 (falta la tabla de códigos) |
+| `nrb` | ALARM_* | 1 946 | CDV pintado con «NRB» |
+| `ixl_carga` | COMM_IXL_START/END_LOADING | 1 885 | Lista de eventos |
+| `ihm_login` | IHM_LOGIN | 1 424 | Panel *Estado*: usuario en cada IHM |
+| `tren_orden` | COMMAND_* | 1 422 | Etiqueta 1 min junto al tren: PUERTAS a/b (Remote_Door_Open_Close), CONTINUAR, LIB. FRENO EMERG |
+| `ixl_conexion` | COMM_IXL_CONNECT | 880 | Fin de la desconexión |
+| `ixl_desconexion` | COMM_IXL_DISCONNECT | 872 | Estaciones del enclavamiento / ATP en rojo hasta reconectar |
+| `tren_stop` | COMMAND_* | 159 | «STOP REMOTO» junto al tren hasta *Release_Remote_Stop_Now* |
+| `ihm_logoff` | IHM_LOGOFF | 73 | Panel *Estado*: fin de la sesión |
+| `salio_control` | TRAIN_LEFT_CONTROL_CENTER | 7 | Lista de eventos (el número deja la zona de control) |
+| `comando_tren` | COMMAND_ACK | 1 | **Pendiente**: otros ATS_I_* sólo en la lista de eventos |
 
 **Ciclo de las alarmas.** Abierta → se pinta con trazo lleno. Normalizada → si después el operador la reconoce o
 la cierra, queda con trazo discontinuo y «*» (pendiente de reconocer) hasta ese momento; si no hay reconocimiento
@@ -94,7 +102,8 @@ donde está y la flecha en su sentido de avance; detenido, el de su próximo mov
 - **Áreas sin elemento en el plano**: «PAN ESTE» (ReinicioOcupacionLogicaGlobal, TomarMando), vueltas automáticas
   VA1PAN / VA2OBS…: se listan en el panel *Estado*, no se dibujan.
 - **Tarjeta PM1 / PM2**: no dice de qué enclavamiento es.
-- **Skip/Hold y puertas remotas al tren** (`comando_tren`: ATS_I_Train_Skip_Hold_Cmd #0/#3,
-  ATS_I_Remote_Door_Open_Close): falta la tabla de códigos.
-- **Fallas de comunicación con OCC1, PML, MOV, PCCR, RMI, IxlManager, WCU_TTS**: se pintan si el texto nombra un
-  elemento del plano; ubicarlas en la red y los puestos requiere los planos de red e IHM (fase PCC/PML).
+- **Códigos de Skip/Hold y de puertas remotas** (ATS_I_Train_Skip_Hold_Cmd #0/#3, ATS_I_Remote_Door_Open_Close #a#b):
+  se muestran tal cual; falta la tabla de códigos.
+- **Ubicación en la red de los enlaces de comunicación** (RMI_PCC_OBS / RMI_PCC_PAN, OCC1, MOVIOLA, MOV, PCC, PCCR,
+  IxlManager, WCU_TTS): hoy se listan y se cuentan; para dibujarlos sobre los puestos (PCC, PML Pantitlán,
+  PML Observatorio) hacen falta los planos de red e IHM (fase PCC/PML).

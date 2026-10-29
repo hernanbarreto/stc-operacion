@@ -9,7 +9,7 @@ import { fmtPk } from './resolver';
 
 const CATS: { k: Categoria; label: string }[] = [
   { k: 'movimiento', label: 'Movimiento' }, { k: 'alarma', label: 'Alarmas' }, { k: 'comando', label: 'Comandos' },
-  { k: 'tren', label: 'Trenes' }, { k: 'ihm', label: 'IHM' }, { k: 'enclavamiento', label: 'Enclav.' }, { k: 'otro', label: 'Otros' },
+  { k: 'tren', label: 'Trenes' }, { k: 'ihm', label: 'IHM / comunic.' }, { k: 'enclavamiento', label: 'Enclav.' }, { k: 'otro', label: 'Otros' },
 ];
 
 const refTxt = (r: ElementoRef) => r.id;
@@ -78,12 +78,16 @@ export const EventosPanel: React.FC<{
 const NOMBRE_IV: Record<string, string> = {
   detenido: 'Tren detenido en CDV', arb: 'ARB activo', nrb: 'NRB activo', alarma: 'Otras alarmas', rebase: 'Rebase de punto de parada',
   dbo: 'DBO activo', degradado: 'Tren degradado', tarjeta: 'Tarjeta de enclavamiento en fallo', ihm: 'IHM sin conexión',
-  ixl: 'Enclavamiento/ATP desconectado', marca: 'Marcas de comandos (flota, automáticos, salto, bloqueos, TSR…)',
+  ixl: 'Enclavamiento/ATP desconectado', marca: 'Marcas de comandos (flota, automáticos, salto, bloqueos, RTV…)',
+  comunicacion: 'Enlaces de comunicación caídos', tren: 'Órdenes a trenes',
 };
 
 export const EstadoPanel: React.FC<{ estado: EstadoInstante; onSel: (r: ElementoRef) => void }> = ({ estado, onSel }) => {
   const grupos = new Map<string, typeof estado.activos>();
-  for (const a of estado.activos) grupos.set(a.tipo, [...(grupos.get(a.tipo) ?? []), a]);
+  for (const a of estado.activos) {
+    if (a.tipo === 'comunicacion' || a.tipo === 'ihm' || a.tipo === 'tren') continue;   // tienen su propia sección
+    grupos.set(a.tipo, [...(grupos.get(a.tipo) ?? []), a]);
+  }
   return (
     <div className="esq-estado">
       <h3>Estado a las {horaTxt(estado.t)}</h3>
@@ -97,6 +101,18 @@ export const EstadoPanel: React.FC<{ estado: EstadoInstante; onSel: (r: Elemento
         ))}
       </div>
       {estado.ixlCaidos.size > 0 && <p className="esq-estado-alerta">Desconectados del ATS: {[...estado.ixlCaidos].join(', ')}</p>}
+      <h4>Comunicaciones ({estado.comunicaciones.length} caídas)</h4>
+      {estado.comunicaciones.length ? estado.comunicaciones.map((c, i) => (
+        <div key={i} className={`esq-estado-item${c.tN != null && c.tN <= estado.t ? ' pendiente' : ''}`}>
+          <span className="h">{horaTxt(c.t0)}</span> {c.tipo === 'ihm' ? c.texto : `Enlace caído: ${c.texto}`}
+          {c.tN != null && c.tN <= estado.t && <em> — normalizada {horaTxt(c.tN)}, pendiente de reconocer</em>}
+          {c.refs.map(r => <button key={rk(r)} className="esq-link" onClick={() => onSel(r)}> ver en el esquemático</button>)}
+        </div>
+      )) : <p className="esq-muted">Sin enlaces caídos en este momento.</p>}
+      {estado.marcasTren.size > 0 && <h4>Órdenes a trenes</h4>}
+      {[...estado.marcasTren.entries()].map(([tr, ms]) => (
+        <div key={tr} className="esq-estado-item"><button className="esq-link" onClick={() => onSel({ tipo: 'tren', id: tr })}>{tr}</button> {ms.join(' · ')}</div>
+      ))}
       <h4>IHM</h4>
       {estado.ihm.length ? (
         <table className="esq-ihm"><tbody>

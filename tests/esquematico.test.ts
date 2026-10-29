@@ -495,6 +495,26 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
       expect(dbo).toMatchObject({ t0: s(600), t1: null, refs: [{ tipo: 'senal', id: 'S17ASAL' }] });   // el NACK no lo cancela
       expect(mod.eventos.at(-1)!.rechazo).toBe('Comando rechazado por el enclavamiento');
     });
+    it('comunicaciones caídas y órdenes a trenes', () => {
+      const mod = interpretar([
+        { t: s(0), tipo: 'ALARM_OPENED', desc: 'PCC AIA ha perdido la conexión RMI: RMI_PCC_OBS . Abierta' },
+        { t: s(5), tipo: 'ALARM_OPENED', desc: 'Fallo en el canal de comunicaciones con PML (PAN) . Abierta' },
+        { t: s(30), tipo: 'ALARM_NORMALIZED', desc: 'PCC AIA ha perdido la conexión RMI: RMI_PCC_OBS . Normalizada' },
+        { t: s(40), tipo: 'COMMAND_ACK', desc: 'Comando ATS_I_Remote_Stop_Now#32824#1 ejecutado por PANTTS' },
+        { t: s(50), tipo: 'COMMAND_ACK', desc: 'Comando ATS_I_Train_Skip_Hold_Cmd#32830#3 ejecutado por PANTTS' },
+        { t: s(90), tipo: 'COMMAND_ACK', desc: 'Comando ATS_I_Release_Remote_Stop_Now#32824#1 ejecutado por PANTTS' },
+        { t: s(95), tipo: 'COMMAND_ACK', desc: 'Comando ATS_I_Train_Skip_Hold_Cmd#32830#0 ejecutado por PANTTS' },
+        { t: s(99), tipo: 'TRAIN_LEFT_CONTROL_CENTER', desc: 'Tren *45 ha dejado la zona de control' },
+      ], ix!);
+      const [rmi, pml] = mod.intervalos.filter(i => i.tipo === 'comunicacion');
+      expect(rmi).toMatchObject({ texto: 'RMI RMI_PCC_OBS (PCC AIA)', t1: s(30) });
+      expect(pml.texto).toBe('PML (PAN)');
+      expect(pml.refs).toHaveLength(1);                         // equipo RST-PML de Pantitlán
+      const ordenes = mod.intervalos.filter(i => i.tipo === 'tren');
+      expect(ordenes.map(o => [o.etiqueta, o.t0, o.t1])).toEqual([['STOP REMOTO', s(40), s(90)], ['HOLD/SKIP 3', s(50), s(95)]]);
+      expect(mod.eventos.at(-1)!.plantilla).toBe('salio_control');
+    });
+
     it('etiquetas cortas de alarmas', () => {
       expect(etiquetaAlarma('Tren número 16 está detenido en el circuito de vía OBSC14OBS')).toBe('DET 16');
       expect(etiquetaAlarma('Señal S24OBS (OBS) foco rojo en fallo')).toBe('FOCO R');

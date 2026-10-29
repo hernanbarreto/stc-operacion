@@ -670,6 +670,8 @@ export interface EstadoInstante {
   ihm: { ihm: string; areas: string[]; usuario: string | null; servidor: string | null }[];
   rutas: RutaActiva[];
   desl: DeslActivo[];
+  comunicaciones: Intervalo[];                     // enlaces de comunicación caídos (RMI, canales, WCU_TTS, módulos…)
+  marcasTren: Map<string, string[]>;               // tren → órdenes activas (STOP REMOTO, HOLD/SKIP, PUERTAS…)
 }
 
 export function estadoEn(rep: Replay, t: number): EstadoInstante {
@@ -678,6 +680,7 @@ export function estadoEn(rep: Replay, t: number): EstadoInstante {
   const porElemento = new Map<string, Intervalo[]>();
   const ixlCaidos = new Set<string>();
   const degradados = new Set<string>();
+  const marcasTren = new Map<string, string[]>();
   for (const iv of activos) {
     for (const r of iv.refs) {
       const k = refKey(r);
@@ -685,6 +688,7 @@ export function estadoEn(rep: Replay, t: number): EstadoInstante {
     }
     if (iv.tipo === 'ixl') ixlCaidos.add(iv.clave.replace(/^IXL /, ''));
     if (iv.tipo === 'degradado' && iv.numero && faseEn(iv, t) === 'activa') degradados.add(iv.numero);
+    if (iv.tipo === 'tren' && iv.tren) marcasTren.set(iv.tren, [...(marcasTren.get(iv.tren) ?? []), iv.etiqueta]);
   }
   const recientes = new Map<string, Reciente>();
   for (let i = indiceEvento(mod.eventos, t - DESTELLO_MS); i < mod.eventos.length && mod.eventos[i].t <= t; i++) {
@@ -709,6 +713,8 @@ export function estadoEn(rep: Replay, t: number): EstadoInstante {
       .sort((a, b) => a.ihm.localeCompare(b.ihm, undefined, { numeric: true })),
     rutas: rep.rutas.filter(vigente),
     desl: rep.desl.filter(vigente),
+    comunicaciones: activos.filter(iv => iv.tipo === 'comunicacion' || iv.tipo === 'ihm'),
+    marcasTren,
   };
 }
 

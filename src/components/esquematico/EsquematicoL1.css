@@ -667,3 +667,9 @@
   text-align: left;
 }
 .esq-menu-csv button:hover { border-color: var(--accent); }
+.esq-tren-marca { fill: #fbbf24; font-weight: 700; text-anchor: middle; font-family: 'JetBrains Mono', ui-monospace, monospace; paint-order: stroke; stroke: #05080f; stroke-width: 0.3em; pointer-events: none; }
+.esq-chip-comunic {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5;
+  border-radius: 999px; padding: 0.15rem 0.55rem; font-size: 0.72rem; cursor: pointer;
+}

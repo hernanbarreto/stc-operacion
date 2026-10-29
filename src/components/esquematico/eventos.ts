@@ -35,7 +35,7 @@ export interface Tren {
 }
 
 export type TipoIntervalo = 'detenido' | 'arb' | 'nrb' | 'degradado' | 'rebase' | 'tarjeta' | 'ihm' | 'alarma'
-  | 'dbo' | 'ixl' | 'marca';
+  | 'dbo' | 'ixl' | 'marca' | 'comunicacion' | 'tren';
 
 export interface Intervalo {
   tipo: TipoIntervalo;
@@ -94,6 +94,7 @@ export const PLANTILLAS: Plantilla[] = [
   { id: 'rebase', tipos: ALARMA, re: /^El tren (\d+) se ha pasado el punto de parada de la plataforma (\d+) en la estación (\d+)/, cat: 'alarma', muestra: 'andén con «REBASE» 5 min (o hasta el cierre)' },
   { id: 'tarjeta', tipos: ALARMA, re: /^Tarjeta (PM\d+) del enclavamiento en fallo/, cat: 'enclavamiento', muestra: 'panel de estado (el texto no indica qué enclavamiento)' },
   { id: 'ihm_conexion', tipos: ALARMA, re: /^El Servidor ATS perdió la conexión con el IHM (\d+)/, cat: 'ihm', muestra: 'panel de estado (IHM sin conexión)' },
+  { id: 'comunicacion', tipos: ALARMA, re: /^(?:(\w+) AIA ha perdido la conexión RMI: (\w+)|Fallo en el canal de comunicaciones con ([\w-]+) \((\w+)\)|El ATS ha perdido la comunicación con el (\w+): (\w+)|El Servidor ATS(?: (\w+))? perdió la conexión con el (módulo \d+|gestor de enclavamiento \w+ \d+))/, cat: 'ihm', muestra: 'panel Estado › Comunicaciones (enlaces caídos: RMI de PCC/PML, canales con PML, PCC, MOV, OCC…, WCU_TTS, módulos, IxlManager); el equipo del plano, si lo hay, pintado con «COMUNIC»' },
   { id: 'alarma', tipos: ALARMA, re: /^/, cat: 'alarma', muestra: 'elemento nombrado (CDV, aguja, señal, BFU) pintado con el nombre corto de la alarma' },
   { id: 'dbo', tipos: COMANDO, re: /[Cc]omando (Activar|Desactivar)DBOCBTC (\w{3}) (\w+)/, cat: 'comando', muestra: 'cuadrado rojo «DBO» en el andén mientras está activo' },
   { id: 'dbo_nocbtc', tipos: COMANDO, re: /[Cc]omando (DBONoCBTC|CancelarDBONoCBTC) (\w{3}) (\w+)/, cat: 'comando', muestra: 'cuadrado rojo «DBO» en la señal mientras está activo' },
@@ -101,11 +102,15 @@ export const PLANTILLAS: Plantilla[] = [
   { id: 'deslizamiento', tipos: COMANDO, re: /[Cc]omando (EstablecerDeslizamiento\w+|CancelarDeslizamiento) (\w{3}) (\w+)/, cat: 'comando', muestra: 'deslizamiento a continuación de la señal con la posición de agujas del comando' },
   { id: 'marca_comando', tipos: COMANDO, re: MARCA_RE, cat: 'comando', muestra: 'etiqueta sobre el elemento mientras está activo (FLOTA, ITI AUTO, DESL AUTO, SALTO, PROH. PUERTAS, BLOQ…); RTV (TSR_SPEED) pinta la sección rayada' },
   { id: 'numero_tren', tipos: COMANDO, re: /ATS_I_Train_Number#(\d+)#(\d+)#(\*?\d+)/, cat: 'tren', muestra: 'número de servicio sobre el tren (cabina → número)' },
+  { id: 'tren_stop', tipos: COMANDO, re: /[Cc]omando ATS_I_(Remote_Stop_Now|Release_Remote_Stop_Now)#(\d+)/, cat: 'tren', muestra: '«STOP REMOTO» junto al tren hasta la liberación' },
+  { id: 'tren_hold', tipos: COMANDO, re: /[Cc]omando ATS_I_Train_Skip_Hold_Cmd#(\d+)#(\d+)/, cat: 'tren', muestra: '«HOLD/SKIP n» junto al tren mientras el código no es 0 (falta la tabla de códigos)' },
+  { id: 'tren_orden', tipos: COMANDO, re: /[Cc]omando ATS_I_(Remote_Door_Open_Close|Continue_To_Next_Station|Remote_EB_Release)#(\d+)((?:#\d+)*)/, cat: 'tren', muestra: 'etiqueta 1 min junto al tren: PUERTAS a/b, CONTINUAR, LIB. FRENO EMERG' },
   { id: 'comando_tren', tipos: COMANDO, re: /[Cc]omando (ATS_I_\w+)#/, cat: 'comando', muestra: '' },
   { id: 'comando', tipos: COMANDO, re: /[Cc]omando (\S+) (\w{3}) (\S+)(?: (\S+))?/, cat: 'comando', muestra: 'destello de los elementos del comando (rojo si fue rechazado)' },
   { id: 'cambio_numero', tipos: ['TRAIN_CHANGED'], re: /^Tren numerado (\S+) cambió a (\S+)/, cat: 'tren', muestra: 'número de servicio actualizado sobre el tren' },
   { id: 'nuevo_tren', tipos: ['NEW_TRAIN'], re: /^Tren numerado como (\S+) en el (\w+)/, cat: 'tren', muestra: 'destello de la sección donde se numera' },
   { id: 'borrado', tipos: ['TRAIN_DELETED'], re: /^Número de tren (\S+) fue borrado/, cat: 'tren', muestra: 'se quita el número de servicio del tren' },
+  { id: 'salio_control', tipos: ['TRAIN_LEFT_CONTROL_CENTER'], re: /^Tren (\S+) ha dejado la zona de control/, cat: 'tren', muestra: 'lista de eventos (el número deja la zona de control)' },
   { id: 'ihm_area', tipos: ['IHM_ZONE_CONTROL'], re: /^IHM (\d+) toma control del área (\w+)/, cat: 'ihm', muestra: 'panel de estado (área → IHM que la controla)' },
   { id: 'ihm_servidor', tipos: ['CONTROL_IHM'], re: /^Servidor (\d+) controla el IHM (\d+)/, cat: 'ihm', muestra: 'panel de estado' },
   { id: 'ihm_login', tipos: ['IHM_LOGIN'], re: /^Usuario (\S+) ingresa en el IHM (\d+)/, cat: 'ihm', muestra: 'panel de estado (usuario en cada IHM)' },
@@ -150,7 +155,8 @@ export function etiquetaAlarma(texto: string): string {
     [/foco (rojo|amarillo|verde) en fallo/, m => `FOCO ${m[1][0].toUpperCase()}`],
     [/[Pp]ulsador de parada de emergencia/, 'P. EMERG'],
     [/se ha pasado el punto de parada/, 'REBASE'],
-    [/Fallo en el canal de comunicaciones/, 'COMUNIC'],
+    [/Fallo en el canal de comunicaciones|perdido la conexión RMI|perdido la comunicación|perdió la conexión con el (módulo|gestor)/, 'COMUNIC'],
+    [/Salto de secuencia en el enclavamiento/, 'SALTO SEC'],
   ];
   for (const [re, f] of reglas) {
     const m = re.exec(texto);
@@ -185,6 +191,14 @@ function refAnden(ix: Indice, codigoEst: string | null, plataforma: string): Ele
   if (!codigoEst) return [];
   const r = resolver(ix, `${codigoEst}${plataforma}`);
   return r ? [r] : [];
+}
+
+/** Equipo del plano nombrado en una alarma de comunicaciones: PML de la terminal, o la sala MX de una estación. */
+function refsEquipo(ix: Indice, destino: string, area: string | undefined): ElementoRef[] {
+  const eqs = ix.data.equipos ?? [];
+  const i = destino === 'PML' ? eqs.findIndex(e => e.tipo === 'PML' && e.estacion === area)
+    : /^[A-Z]{3}$/.test(destino) ? eqs.findIndex(e => e.tipo === 'MX' && e.estacion === destino) : -1;
+  return i >= 0 ? [{ tipo: 'equipo', id: String(i) }] : [];
 }
 
 function refElemento(ix: Indice, id: string): ElementoRef[] {
@@ -320,6 +334,14 @@ export function interpretar(filas: FilaLog[], ix: Indice): ModeloEventos {
         ev.refs = refAnden(ix, codigoEst(+m![3]), m![2]);
         alarma(f, 'rebase', claveAlarma, ev.refs, { tren: ev.tren });
         break;
+      case 'comunicacion': {
+        // enlace caído: puesto/servidor → destino; si el destino es un equipo o una sala del plano, se pinta
+        const enlace = m![2] ? `RMI ${m![2]}${m![1] ? ` (${m![1]} AIA)` : ''}` : m![3] ? `${m![3]} (${m![4]})` : m![5] ? `${m![5]} ${m![6]}` : `${m![8]}${m![7] ? ` (servidor ${m![7]})` : ''}`;
+        const destino = m![3] ?? null;
+        ev.refs = destino ? refsEquipo(ix, destino, m![4]) : [];
+        alarma(f, 'comunicacion', claveAlarma, ev.refs, { texto: enlace, etiqueta: 'COMUNIC' } as Partial<Intervalo>);
+        break;
+      }
       case 'tarjeta':
       case 'ihm_conexion':
       case 'alarma':
@@ -357,6 +379,30 @@ export function interpretar(filas: FilaLog[], ix: Indice): ModeloEventos {
         }
         break;
       }
+      case 'tren_stop':
+        ev.tren = nombreTren(m![2]);
+        if (ack) {
+          const clave = `stop ${m![2]}`;
+          if (m![1] === 'Remote_Stop_Now') abrir({ tipo: 'tren', clave, texto: 'Stop remoto', etiqueta: 'STOP REMOTO', t0: f.t, t1: null, refs: [], tren: ev.tren });
+          else cerrar(clave, f.t);
+        }
+        break;
+      case 'tren_hold':
+        ev.tren = nombreTren(m![1]);
+        if (ack) {
+          const clave = `hold ${m![1]}`;
+          cerrar(clave, f.t);
+          if (m![2] !== '0') abrir({ tipo: 'tren', clave, texto: `Skip/Hold código ${m![2]}`, etiqueta: `HOLD/SKIP ${m![2]}`, t0: f.t, t1: null, refs: [], tren: ev.tren });
+        }
+        break;
+      case 'tren_orden':
+        ev.tren = nombreTren(m![2]);
+        if (ack) {
+          const args = m![3] ? m![3].slice(1).split('#').join('/') : '';
+          const etiqueta = m![1] === 'Remote_Door_Open_Close' ? `PUERTAS ${args}` : m![1] === 'Continue_To_Next_Station' ? 'CONTINUAR' : 'LIB. FRENO EMERG';
+          intervalos.push({ tipo: 'tren', clave: `orden ${m![2]} ${f.t}`, texto: `${m![1]}${args ? ` ${args}` : ''}`, etiqueta, t0: f.t, t1: f.t + MOVER_AGUJA_MS, refs: [], tren: ev.tren });
+        }
+        break;
       case 'numero_tren':
         ev.tren = nombreTren(m![1]);
         ev.numero = numeroServicio(m![3]);

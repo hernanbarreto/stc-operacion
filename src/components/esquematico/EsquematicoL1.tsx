@@ -622,6 +622,7 @@ export const EsquematicoL1: React.FC = () => {
   const trenesDibujo: TrenDibujo[] = useMemo(() => (estado?.trenes ?? []).map(p => ({
     clave: p.tren.clave, numero: p.numero, x: p.x, y: p.y, sentido: p.sentido, material: p.tren.material,
     enAnden: p.enAnden || !!p.cdv, vigente: p.vigente, degradado: !!p.numero && (estado?.degradados.has(p.numero) ?? false), ang: p.ang,
+    marcas: estado?.marcasTren.get(p.tren.clave) ?? [],
   })), [estado]);
 
   // alarmas y marcas por elemento (sin DBO, que va en su propia capa)
@@ -877,6 +878,12 @@ export const EsquematicoL1: React.FC = () => {
           </button>
         </div>
         {cargando && !hiloAbierto && <span className="esq-replay-cargando">{cargando}</span>}
+        {estado && estado.comunicaciones.length > 0 && (
+          <button className="esq-chip-comunic" onClick={() => { setPanel(true); setTab('estado'); }}
+            title={estado.comunicaciones.map(c => c.texto).join('\n')}>
+            <AlertTriangle size={13} /> Comunicaciones: {estado.comunicaciones.length} caída{estado.comunicaciones.length > 1 ? 's' : ''}
+          </button>
+        )}
         {showCsv && (
           <div className="esq-menu-csv">
             <p>Clasifica los tipos de evento (plantilla, tipo, forma del texto, cantidades, si ya se muestran) y descarga un CSV.</p>

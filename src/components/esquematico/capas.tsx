@@ -464,7 +464,7 @@ export const RutasSvg: React.FC<{ rutas: RutaDibujo[]; px: number; etiquetas: bo
 
 export interface TrenDibujo {
   clave: string; numero: string | null; x: number; y: number; sentido: 'OBS' | 'PAN'; material: string | null;
-  enAnden: boolean; vigente: boolean; degradado: boolean; ang: number;
+  enAnden: boolean; vigente: boolean; degradado: boolean; ang: number; marcas: string[];
 }
 
 /** Trenes: cuerpo sobre la vía con el número de servicio adentro, flecha de sentido y nombre del tren físico
@@ -489,6 +489,9 @@ export const TrenesSvg: React.FC<{ trenes: TrenDibujo[]; px: number; sel: string
             </g>
             <text x={t.x} y={t.y + fs * 0.36} fontSize={fs} className="num">{t.numero ?? '—'}</text>
             <text x={t.x} y={yl} fontSize={fsN} className="nom">{t.clave.replace(/ \((nm\d+)\)/, '·$1')}</text>
+            {t.marcas.length > 0 && (
+              <text x={t.x} y={arriba ? yl - fsN * 1.15 : yl + fsN * 1.15} fontSize={fsN} className="esq-tren-marca">{t.marcas.join(' · ')}</text>
+            )}
           </g>
         );
       })}
