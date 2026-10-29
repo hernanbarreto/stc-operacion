@@ -15,7 +15,7 @@ import { validarEsquematico } from '../src/components/esquematico/esquema';
 import { type CurvaMarcha, ARCHIVOS_MARCHA, curvaDesdeJson, pkEnTramo, trayectoriaTipo } from '../src/components/esquematico/marcha';
 import { PLANTILLAS, type FilaLog, etiquetaAlarma, interpretar, numeroEn, numeroServicio, nombreTren } from '../src/components/esquematico/eventos';
 import { crearContexto, estadoEn, faseEn, lugarDeVia, mapaPkMarcha, prepararReplay, recorridoReal } from '../src/components/esquematico/replay';
-import { deslizamiento, itinerario, posicionesDeslizamiento } from '../src/components/esquematico/rutas';
+import { aristaEn, caminoEntre, deslizamiento, itinerario, posicionesDeslizamiento } from '../src/components/esquematico/rutas';
 import { parseFecha, horaTxt, fechaDia } from '../src/components/esquematico/fecha';
 
 const RAIZ = resolve(__dirname, '..');
@@ -307,7 +307,7 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
     ];
     const conRuta: FilaLog[] = [
       ...filas.slice(0, 4),
-      { t: s(8), tipo: 'COMMAND_ACK', desc: 'Comando EstablecerItinerario PAN S42APAN S24ZAR ejecutado por PANIXL' },
+      { t: s(8), tipo: 'COMMAND_ACK', desc: 'Comando EstablecerItinerario PAN S22APAN S24ZAR ejecutado por PANIXL' },
       ...filas.slice(4),
     ];
 
@@ -368,13 +368,36 @@ describe.runIf(hayDatos)('esquematico_l1.json', () => {
 
     it('itinerario: se dibuja mientras el tren lo usa y se libera al pasar', () => {
       const mod = interpretar(conRuta, ix!);
-      expect(mod.itinerarios).toEqual([{ t: s(8), accion: 'establecer', est: 'PAN', origen: 'S42APAN', destino: 'S24ZAR' }]);
+      expect(mod.itinerarios).toEqual([{ t: s(8), accion: 'establecer', est: 'PAN', origen: 'S22APAN', destino: 'S24ZAR' }]);
       const rep = prepararReplay(crearContexto(data, construirEjePk(data), curvas), mod);
       const r = rep.rutas[0];
       expect(r.rec).not.toBeNull();
       expect(r.tren).toBe('27 (nm22)');
       expect(estadoEn(rep, s(60)).rutas.map(x => x.id)).toEqual([r.id]);
       expect(estadoEn(rep, s(400)).rutas).toHaveLength(0);
+      // la misma salida con una ruta desde otro andén (andén 3, vía 42) no se le asigna a este tren
+      const otra = interpretar(conRuta.map(f => ({ ...f, desc: f.desc.replace('S22APAN', 'S42APAN') })), ix!);
+      expect(prepararReplay(crearContexto(data, construirEjePk(data), curvas), otra).rutas[0].tren).toBeNull();
+    });
+
+    it('el tren siempre se dibuja sobre una vía (también al salir de la terminal por la ruta)', () => {
+      const mod = interpretar(conRuta, ix!);
+      const rep = prepararReplay(crearContexto(data, construirEjePk(data), curvas), mod);
+      let n = 0;
+      for (let k = 0; k <= 170; k += 2) {
+        const p = estadoEn(rep, s(k)).trenes[0];
+        if (!p) continue;
+        n++;
+        expect(aristaEn(data, p.x, p.y, 1.5), `${k}s x${p.x.toFixed(1)} y${p.y.toFixed(1)}`).not.toBeNull();
+      }
+      expect(n).toBeGreaterThan(50);
+    });
+
+    it('camino por las vías entre dos puntos', () => {
+      const a = data.andenes.find(x => x.ids.includes('ZAR1'))!, b = data.andenes.find(x => x.ids.includes('GOM1'))!;
+      const r = caminoEntre(data, { x: (a.x0 + a.x1) / 2, y: a.y_via }, { x: (b.x0 + b.x1) / 2, y: b.y_via });
+      expect(r).not.toBeNull();
+      expect(r!.agujas.every(g => g.pos === 'normal')).toBe(true);    // por la vía 1, sin cruzar
     });
 
     it('tren detenido entre estaciones: queda en el CDV de la alarma', () => {

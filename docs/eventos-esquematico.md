@@ -65,17 +65,20 @@ en el log, termina al normalizarse (así se comporta la gran mayoría: ciclo abi
 
 **Itinerarios.** El log da señal origen y destino; el recorrido se busca en el grafo de vías del plano (vías con sus
 nodos, agujas con talón / recta / desviada, señales con su vía y sentido). Las 86 rutas distintas del log se
-resuelven. Vigencia: desde el ACK hasta que se cancela, se establece otra desde la misma señal o una en conflicto
-(comparte secciones), o el tren asociado pasa la señal destino o llega a su próxima parada (estimado). El tren es
-el primero que pasa por la señal origen después del ACK.
+resuelven (entre dos caminos posibles, el de menos agujas invertidas). Vigencia: desde el ACK hasta que se cancela,
+se establece otra desde la misma señal o una en conflicto (comparte secciones), o el tren asociado pasa la señal
+destino o llega a su próxima parada (estimado). El tren es el primero que pasa por la señal origen después del ACK
+y cuya parada anterior está sobre la ruta o conectada con su comienzo, y cuya parada siguiente queda sobre la ruta o
+sobre la vía en la que termina; si ninguno cumple, la ruta se dibuja sin tren.
 
 **Deslizamientos.** Posición de agujas por el nombre del comando (Normal, Invertida, Normal1Normal2, …); largo
 hasta la primera junta pasada la última aguja (máx. ~140 unidades del lienzo). Se liberan cuando el tren se
 detiene antes de la señal (45 s) o la pasa (estimado). Todos los deslizamientos del log se resuelven.
 
-**Posición de los trenes.** Andén/AVC por TGMT; entre paradas, marcha tipo del material y vía con arranque y
-frenado; detenido en CDV por la alarma; sobre la ruta establecida para ese tren (terminales y cambios de vía) o, si
-sale o llega a otra vía, pasa de una a otra a lo largo del tramo. El tren se dibuja con la inclinación de la vía
+**Posición de los trenes.** Andén/AVC por TGMT (en las terminales el número de vía del TGMT es el andén: PAN 1/3/7,
+OBS 1/2; las colas de PAN por el nombre del AVC: AVC1x → VA, 2x → VB, 4x → VC, 6x → VD); entre paradas, marcha tipo
+del material y vía con arranque y frenado, siempre sobre el camino por las vías entre las dos paradas (y por la ruta
+establecida, si es la del tren); detenido en CDV por la alarma (sólo en vía 1 / vía 2). El tren se dibuja con la inclinación de la vía
 donde está y la flecha en su sentido de avance; detenido, el de su próximo movimiento (rotación en terminales).
 
 ## Qué no se puede saber con el log actual

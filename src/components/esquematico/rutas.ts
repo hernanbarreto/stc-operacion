@@ -93,7 +93,8 @@ function tramoEntre(t: Tramo, xa: number, xb: number): Tramo {
 
 function seccionesDe(g: Grafo, e: number, xa: number, xb: number): string[] {
   const a = Math.min(xa, xb), b = Math.max(xa, xb);
-  return (g.seccionesDeArista.get(e) ?? []).filter(s => s.x1 > a + 0.1 && s.x0 < b - 0.1).map(s => s.id);
+  // sólo las secciones que el recorrido atraviesa de verdad (no la que apenas toca junto a la señal)
+  return (g.seccionesDeArista.get(e) ?? []).filter(s => Math.min(s.x1, b) - Math.max(s.x0, a) > 3).map(s => s.id);
 }
 
 /** Recorrido de la señal origen a la destino (la más corta que respeta el sentido de la señal origen). */
@@ -109,47 +110,90 @@ export function itinerario(data: Esquematico, origen: string, destino: string): 
   return null;
 }
 
-/** Busca desde (arista, x) en sentido s hasta que `fin(arista)` dé la x de llegada en esa arista. */
+const PENAL_INVERTIDA = 400;   // costo extra por aguja en posición invertida: entre dos caminos posibles, el que va recto
+
+/**
+ * Busca desde (arista, x) en sentido s hasta que `fin(arista)` dé la x de llegada en esa arista. Dijkstra sobre el
+ * largo recorrido más una penalización por cada aguja invertida (el enclavamiento usa la ruta directa cuando existe).
+ */
 function buscar(g: Grafo, e0: number, x0: number, s: Sentido, fin: (e: number) => number | null): Recorrido | null {
   const adelante = (xa: number, xb: number) => (s === 'PAN' ? xb >= xa - 0.01 : xb <= xa + 0.01);
-  interface Estado { e: number; xEntrada: number; largo: number; prev: Estado | null; aguja?: AgujaEnRuta }
+  interface Estado { e: number; xEntrada: number; costo: number; prev: Estado | null; aguja?: AgujaEnRuta; xFin?: number }
+  const cola: Estado[] = [{ e: e0, xEntrada: x0, costo: 0, prev: null }];
   const xf0 = fin(e0);
-  const cola: Estado[] = [{ e: e0, xEntrada: x0, largo: 0, prev: null }];
+  if (xf0 != null && adelante(x0, xf0)) cola[0].xFin = xf0;
   const mejor = new Map<number, number>();
-  let hallado: { est: Estado; xFin: number } | null = null;
-  if (xf0 != null && adelante(x0, xf0)) hallado = { est: cola[0], xFin: xf0 };
-  while (cola.length && !hallado) {
-    cola.sort((p, q) => p.largo - q.largo);
+  let hallado: Estado | null = null;
+  while (cola.length) {
+    cola.sort((p, q) => p.costo - q.costo);
     const cur = cola.shift() as Estado;
+    if (cur.xFin != null) { hallado = cur; break; }
     const v = g.data.vias[cur.e];
     const nodo = salida(g, cur.e, s);
     const xSal = s === 'PAN' ? v.pts[2] : v.pts[0];
-    const largo = cur.largo + Math.abs(xSal - cur.xEntrada) + Math.abs(yEn(v.pts, xSal) - yEn(v.pts, cur.xEntrada)) * 0.2;
+    const costo = cur.costo + Math.abs(xSal - cur.xEntrada) + Math.abs(yEn(v.pts, xSal) - yEn(v.pts, cur.xEntrada)) * 0.2;
+    if (costo > 6000) continue;
     for (const nx of siguientes(g, cur.e, nodo)) {
       if (!empiezaEn(g, nx.e, nodo, s)) continue;
       const xIn = s === 'PAN' ? g.data.vias[nx.e].pts[0] : g.data.vias[nx.e].pts[2];
-      if ((mejor.get(nx.e) ?? Infinity) <= largo) continue;
-      mejor.set(nx.e, largo);
-      const est: Estado = { e: nx.e, xEntrada: xIn, largo, prev: cur, aguja: nx.aguja };
+      const c = costo + (nx.aguja?.pos === 'invertida' ? PENAL_INVERTIDA : 0);
       const xf = fin(nx.e);
-      if (xf != null) { hallado = { est, xFin: xf }; break; }
-      if (largo < 3000) cola.push(est);
+      if (xf != null) {
+        cola.push({ e: nx.e, xEntrada: xIn, costo: c + Math.abs(xf - xIn), prev: cur, aguja: nx.aguja, xFin: xf });
+        continue;
+      }
+      if ((mejor.get(nx.e) ?? Infinity) <= c) continue;
+      mejor.set(nx.e, c);
+      cola.push({ e: nx.e, xEntrada: xIn, costo: c, prev: cur, aguja: nx.aguja });
     }
   }
   if (!hallado) return null;
   const cadena: Estado[] = [];
-  for (let p: Estado | null = hallado.est; p; p = p.prev) cadena.unshift(p);
+  for (let p: Estado | null = hallado; p; p = p.prev) cadena.unshift(p);
   const tramos: Tramo[] = [], agujas: AgujaEnRuta[] = [], secciones: string[] = [];
   let largo = 0;
   cadena.forEach((st, i) => {
     const v = g.data.vias[st.e];
-    const xEnd = i === cadena.length - 1 ? hallado!.xFin : (s === 'PAN' ? v.pts[2] : v.pts[0]);
+    const xEnd = i === cadena.length - 1 ? (hallado as Estado).xFin as number : (s === 'PAN' ? v.pts[2] : v.pts[0]);
     if (Math.abs(xEnd - st.xEntrada) > 0.01) tramos.push(tramoEntre(v.pts, st.xEntrada, xEnd));
     largo += Math.abs(xEnd - st.xEntrada);
     if (st.aguja) agujas.push(st.aguja);
     for (const id of seccionesDe(g, st.e, st.xEntrada, xEnd)) if (!secciones.includes(id)) secciones.push(id);
   });
   return { tramos, agujas, secciones, largo };
+}
+
+/** Arista que pasa por (x, y) (la más cercana, a menos de `tol` en y). */
+export function aristaEn(data: Esquematico, x: number, y: number, tol = 1.5): number | null {
+  let mejor: { e: number; d: number } | null = null;
+  for (const v of data.vias) {
+    const [x0, , x1] = v.pts;
+    if (x < x0 - 0.3 || x > x1 + 0.3) continue;
+    const d = Math.abs(yEn(v.pts, Math.min(Math.max(x, x0), x1)) - y);
+    if (d < tol && (!mejor || d < mejor.d)) mejor = { e: v.id, d };
+  }
+  return mejor?.e ?? null;
+}
+
+const caminos = new WeakMap<Esquematico, Map<string, Recorrido | null>>();
+
+/**
+ * Camino por las vías entre dos puntos del lienzo (p. ej. dos paradas de un tren), en el sentido de x de a hacia b:
+ * el más corto con menos agujas invertidas. null si los puntos no están sobre una vía o no hay camino.
+ */
+export function caminoEntre(data: Esquematico, a: { x: number; y: number }, b: { x: number; y: number }): Recorrido | null {
+  let m = caminos.get(data);
+  if (!m) { m = new Map(); caminos.set(data, m); }
+  const k = `${a.x.toFixed(1)},${a.y.toFixed(1)}>${b.x.toFixed(1)},${b.y.toFixed(1)}`;
+  if (m.has(k)) return m.get(k) ?? null;
+  let r: Recorrido | null = null;
+  const ea = aristaEn(data, a.x, a.y), eb = aristaEn(data, b.x, b.y);
+  if (ea != null && eb != null && Math.abs(b.x - a.x) > 0.01) {
+    r = buscar(grafoDe(data), ea, a.x, b.x > a.x ? 'PAN' : 'OBS', e => (e === eb ? b.x : null));
+  }
+  if (m.size > 20000) m.clear();
+  m.set(k, r);
+  return r;
 }
 
 /** Posiciones de agujas pedidas por el comando de deslizamiento (EstablecerDeslizamientoNormal1Invertido2 → N, I). */

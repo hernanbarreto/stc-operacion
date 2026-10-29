@@ -3,7 +3,7 @@ import type { Esquematico, ElementoRef } from './types';
 import type { EjePk } from './resolver';
 import { type Intervalo, type ModeloEventos, type Tren, indiceEvento, numeroEn } from './eventos';
 import { type CurvaMarcha, curvaDe, pkEnTramo } from './marcha';
-import { type Recorrido, deslizamiento, itinerario, posicionesDeslizamiento } from './rutas';
+import { type Recorrido, caminoEntre, deslizamiento, itinerario, posicionesDeslizamiento } from './rutas';
 import { STATION_PK } from '../../data/stationPK';
 
 export const HUECO_MAX_MS = 15 * 60 * 1000;     // más de esto entre paradas: sin datos de posición
@@ -218,6 +218,75 @@ function primerPaso(rep: { ctx: Contexto; mod: ModeloEventos; tray: Map<string, 
   return mejor;
 }
 
+/** Primer paso de cada tren por un PK en un sentido entre t0 y t1, ordenados por hora. */
+function pasos(rep: { mod: ModeloEventos; tray: Map<string, PuntoTrayecto[]> }, pk: number, haciaObs: boolean,
+  t0: number, t1: number): { tren: string; t: number; i: number }[] {
+  const out: { tren: string; t: number; i: number }[] = [];
+  for (const tr of rep.mod.trenes) {
+    const ps = rep.tray.get(tr.clave) ?? [];
+    for (let i = Math.max(0, buscarPunto(ps, t0)); i < ps.length - 1 && ps[i].t <= t1; i++) {
+      const p = ps[i], q = ps[i + 1];
+      if (q.t - p.t > HUECO_MAX_MS || q.pk === p.pk || (q.pk > p.pk) !== haciaObs) continue;
+      if ((p.pk - pk) * (q.pk - pk) > 0) continue;
+      const t = p.t + ((pk - p.pk) / (q.pk - p.pk)) * (q.t - p.t);
+      if (t < t0 || t > t1) continue;
+      out.push({ tren: tr.clave, t, i: i + 1 });
+      break;
+    }
+  }
+  return out.sort((a, b) => a.t - b.t);
+}
+
+/** Lugar de una parada de andén o AVC en el lienzo (andén por el número de vía del TGMT, que en las terminales es el andén). */
+function lugarParada(ctx: Contexto, p: PuntoTrayecto): { x: number; y: number } | null {
+  if (p.cdv) return { x: p.cdv.x, y: p.cdv.y };
+  if (p.pos) return p.pos;
+  const cod = p.est != null ? ctx.codigoEst(p.est) : null;
+  const avc = cod ? ctx.data.avc.find(a => a.id === cod) : undefined;
+  if (avc) { const l = lugarAvc(ctx, avc); if (l) return l; }
+  return ubicar(ctx, p.pk, p.via, cod, true);
+}
+
+/**
+ * Lugar de un AVC: su rótulo en el plano y la vía a la que pertenece. En las colas de Pantitlán la vía sale del
+ * nombre (AVC1x → VA, AVC2x → VB, AVC4x → VC, AVC6x → VD); en el resto, la vía más cercana al rótulo.
+ */
+function lugarAvc(ctx: Contexto, avc: Esquematico['avc'][number]): { x: number; y: number } | null {
+  const m = /^AVC([1246])\dPAN$/.exec(avc.id);
+  const letra = m ? ({ 1: 'VA', 2: 'VB', 4: 'VC', 6: 'VD' } as Record<string, string>)[m[1]] : null;
+  const x = avc.x;
+  const y = (letra ? yDeVia(ctx.data, letra, x) : null) ?? yViaCercana(ctx.data, x, avc.y);
+  return y == null ? null : { x, y };
+}
+
+/**
+ * ¿La ruta es la del tren? La próxima parada del tren tiene que quedar sobre el recorrido de la ruta o, si está más
+ * allá de la señal destino, sobre la misma vía en la que termina la ruta (p. ej. el andén de terminal al que entra).
+ */
+function rutaDelTren(ctx: Contexto, rec: Recorrido, ps: PuntoTrayecto[], i: number, haciaObs: boolean): boolean {
+  // la parada anterior tiene que estar sobre la ruta o conectada por las vías con su comienzo
+  const p0 = ps[i - 1];
+  const l0 = p0 ? lugarParada(ctx, p0) : null;
+  if (l0) {
+    const y0 = yEnRecorrido(rec, l0.x);
+    if (y0 != null) { if (Math.abs(y0 - l0.y) >= 3) return false; }
+    else {
+      const ini = haciaObs ? rec.tramos.reduce((m, t) => (t[2] > m[2] ? t : m)) : rec.tramos.reduce((m, t) => (t[0] < m[0] ? t : m));
+      const pIni = haciaObs ? { x: ini[2], y: ini[3] } : { x: ini[0], y: ini[1] };
+      if (Math.abs(pIni.x - l0.x) < 400 && !caminoEntre(ctx.data, l0, pIni)) return false;
+    }
+  }
+  const q = ps.slice(i).find(x => x.tipo === 'arr');
+  if (!q) return true;
+  const l = lugarParada(ctx, q);
+  if (!l) return true;
+  const enRuta = yEnRecorrido(rec, l.x);
+  if (enRuta != null) return Math.abs(enRuta - l.y) < 3;
+  const fin = haciaObs ? rec.tramos.reduce((m, t) => (t[0] < m[0] ? t : m)) : rec.tramos.reduce((m, t) => (t[2] > m[2] ? t : m));
+  const yFin = haciaObs ? fin[1] : fin[3];
+  return Math.abs(yFin - l.y) < 3 || Math.abs(l.x - (haciaObs ? fin[0] : fin[2])) > 400;
+}
+
 /** Primera llegada de un tren a una parada a menos de `radio` m antes de un PK (en el sentido de marcha). */
 function primeraLlegadaAntes(rep: { mod: ModeloEventos; tray: Map<string, PuntoTrayecto[]> }, pk: number, haciaObs: boolean,
   radio: number, t0: number, t1: number): { tren: string; t: number } | null {
@@ -266,7 +335,8 @@ function construirRutas(rep: Omit<Replay, 'rutas' | 'desl'>): RutaActiva[] {
     const r: RutaActiva = { id: `${k}@${c.t}`, origen: c.origen, destino: c.destino, t0: c.t, t1: null, fin: '', rec, tren: null };
     const so = pkSenal(ctx, c.origen), sd = pkSenal(ctx, c.destino);
     if (so) {
-      const paso = primerPaso(rep, so.pk, so.haciaObs, c.t, c.t + RUTA_SIN_TREN_MS);
+      const paso = pasos(rep, so.pk, so.haciaObs, c.t, c.t + RUTA_SIN_TREN_MS)
+        .find(p => !rec || rutaDelTren(ctx, rec, rep.tray.get(p.tren) ?? [], p.i, so.haciaObs)) ?? null;
       if (paso) {
         r.tren = paso.tren;
         const ps = rep.tray.get(paso.tren) ?? [];
@@ -342,6 +412,7 @@ export function prepararReplay(ctx: Contexto, mod: ModeloEventos): Replay {
     const ps = tray.get(tren.clave) ?? [];
     const tFin = iv.tN ?? iv.t1 ?? iv.t0 + 60e3;
     if (base.parado && Math.abs(base.pk - lugar.pk) < 250) continue;            // ya está detenido en el andén
+    if (lugar.via == null) continue;                                           // terminales y patios: mandan las paradas TGMT
     const p = ps[base.i], q = ps.slice(base.i + 1).find(x => x.pk !== p.pk);
     if (!q || q.t <= tFin) continue;                                           // hay otra parada durante la detención
     const enMedio = (lugar.pk - p.pk) * (lugar.pk - q.pk) <= 0 || Math.abs(lugar.pk - p.pk) < 120;
@@ -383,12 +454,7 @@ function fijarParadas(ctx: Contexto, tray: Map<string, PuntoTrayecto[]>, rutas: 
   for (const ps of tray.values()) {
     for (let i = 0; i < ps.length; i++) {
       const p = ps[i];
-      if (!p.pos && p.est != null && p.tipo === 'arr') {
-        const cod = ctx.codigoEst(p.est);
-        const avc = cod ? ctx.data.avc.find(a => a.id === cod) : undefined;
-        const x = ctx.eje.xAt(p.pk);
-        if (avc && x != null) { const y = yViaCercana(ctx.data, x, avc.y); if (y != null) p.pos = { x, y }; }
-      }
+      if (!p.pos && !p.cdv && p.est != null && p.tipo !== 'skip') p.pos = lugarParada(ctx, p) ?? undefined;
       if (p.tipo === 'arr' && p.pos) {
         for (let k = i + 1; k < ps.length && ps[k].pk === p.pk && ps[k].tipo === 'dep'; k++) ps[k].pos ??= p.pos;
       }
@@ -477,31 +543,94 @@ export function posicionTren(rep: Replay, tren: Tren, t: number): PosTren | null
   const q = ps[k];
   if (!q || q.t - p.t > HUECO_MAX_MS) {
     const cod = p.est != null ? ctx.codigoEst(p.est) : null;
-    const u = p.pos ?? ubicar(ctx, p.pk, p.via, cod, false);
+    const u = p.cdv ?? p.pos ?? lugarParada(ctx, p);
     return u ? { tren, numero, pk: p.pk, via: p.via, x: u.x, y: u.y, enAnden: false, estCodigo: cod, cdv: null, sentido, vigente: false, ang: anguloVia(ctx, u.x, u.y) } : null;
   }
   const c = curvaDe(ctx.curvas, tren.material, p.via === 1 ? 'V1' : 'V2');
   const fr = (t - p.t) / Math.max(1, q.t - p.t);
   const pk = pkEnTramo(c, p.pk, q.pk, fr);
-  const x = ctx.eje.xAt(pk);
+  // x: entre los lugares de las dos paradas según el avance en PK (coincide con la regla del plano en la línea y
+  // respeta el lugar de cada parada en terminales y colas)
+  const la = p.cdv ?? p.pos ?? lugarParada(ctx, p), lb = q.cdv ?? q.pos ?? lugarParada(ctx, q);
+  const x = la && lb && q.pk !== p.pk ? la.x + ((pk - p.pk) / (q.pk - p.pk)) * (lb.x - la.x) : ctx.eje.xAt(pk);
   if (x == null) return null;
   // 1) sobre la ruta establecida para este tren; 2) sobre su vía; 3) si sale o llega a otra vía (cola, andén de
   // terminal, CDV), pasa de una a otra a lo largo del tramo
-  const ruta = rep.rutas.find(r => r.tren === tren.clave && r.rec && r.t0 <= t && (r.t1 == null || r.t1 > t) && yEnRecorrido(r.rec, x) != null);
+  const ruta = rep.rutas.find(r => r.tren === tren.clave && r.rec && r.t0 <= t && (r.t1 == null || r.t1 > t));
   let y = ruta?.rec ? yEnRecorrido(ruta.rec, x) : null;
   let ang: number | null = null;
   const mov: 'OBS' | 'PAN' = q.pk > p.pk ? 'OBS' : 'PAN';
+  // camino por las vías entre las dos paradas (y por la ruta establecida, si la hay): el tren nunca sale de la vía
+  if (y == null) {
+    const pa = p.cdv ?? p.pos ?? lugarParada(ctx, p), pb = q.cdv ?? q.pos ?? lugarParada(ctx, q);
+    if (pa && pb && Math.abs(pb.x - pa.x) > 0.5) {
+      const tramos: [number, number, number, number][] = [];
+      const xs = ruta?.rec ? ruta.rec.tramos.flatMap(tt => [tt[0], tt[2]]) : [];
+      const rIni = ruta?.rec ? (Math.abs(pa.x - Math.min(...xs)) < Math.abs(pa.x - Math.max(...xs)) ? Math.min(...xs) : Math.max(...xs)) : null;
+      const rFin = ruta?.rec && rIni != null ? (rIni === Math.min(...xs) ? Math.max(...xs) : Math.min(...xs)) : null;
+      const sobreRuta = ruta?.rec && rIni != null && rFin != null && (pb.x - pa.x) * (rFin - rIni) > 0;
+      const piezas = sobreRuta && ruta?.rec && rIni != null && rFin != null
+        ? [caminoEntre(ctx.data, pa, { x: rIni, y: yEnRecorrido(ruta.rec, rIni) as number }), ruta.rec,
+           caminoEntre(ctx.data, { x: rFin, y: yEnRecorrido(ruta.rec, rFin) as number }, pb)]
+        : [caminoEntre(ctx.data, pa, pb)];
+      for (const pz of piezas) if (pz) tramos.push(...pz.tramos);
+      const yy = tramos.length ? yEnRecorrido({ tramos }, x) : null;
+      if (yy != null) {
+        y = yy;
+        const tt = tramos.find(u => x >= u[0] - 0.3 && x <= u[2] + 0.3);
+        if (tt && tt[2] !== tt[0]) ang = (Math.atan2(tt[3] - tt[1], tt[2] - tt[0]) * 180) / Math.PI;
+      }
+    }
+  }
+  if (y == null && ruta?.rec) {
+    // fuera del tramo de la ruta pero en el mismo viaje: de la parada al comienzo de la ruta y del final de la ruta
+    // a la parada siguiente, en línea recta (sin saltos de vía)
+    const pa = p.cdv ?? p.pos ?? lugarParada(ctx, p), pb = q.cdv ?? q.pos ?? lugarParada(ctx, q);
+    const xs = ruta.rec.tramos.flatMap(tt => [tt[0], tt[2]]);
+    const xMin = Math.min(...xs), xMax = Math.max(...xs);
+    const ext = (xx: number) => ({ x: xx, y: yEnRecorrido(ruta.rec as Recorrido, xx) as number });
+    if (pa && pb) {
+      const ini = Math.abs(pa.x - xMin) < Math.abs(pa.x - xMax) ? ext(xMin) : ext(xMax);
+      const fin = ini.x === xMin ? ext(xMax) : ext(xMin);
+      const entre = (u: number, a: number, b: number) => u >= Math.min(a, b) - 0.5 && u <= Math.max(a, b) + 0.5;
+      const lerp = (a: { x: number; y: number }, b: { x: number; y: number }) => {
+        ang = Math.abs(b.y - a.y) > 0.5 && b.x !== a.x ? (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI : null;
+        return b.x === a.x ? a.y : a.y + ((x - a.x) / (b.x - a.x)) * (b.y - a.y);
+      };
+      if (entre(x, fin.x, pb.x) && Math.abs(pb.x - fin.x) < 150) y = lerp(fin, pb);
+      else if (entre(x, pa.x, ini.x) && Math.abs(pa.x - ini.x) < 150) y = lerp(pa, ini);
+    }
+  }
   if (y == null) {
     const yVia = (xx: number) => yDeVia(ctx.data, `V${p.via}`, xx) ?? yDeVia(ctx.data, p.via === 1 ? 'V2' : 'V1', xx);
     const pa = p.cdv ?? p.pos, pb = q.cdv ?? q.pos;
     const xa = pa?.x ?? ctx.eje.xAt(p.pk) ?? x, xb = pb?.x ?? ctx.eje.xAt(q.pk) ?? x;
     const ya = pa?.y ?? yVia(xa), yb = pb?.y ?? yVia(xb);
-    const fuera = (pt: { x: number; y: number } | undefined) => !!pt && Math.abs((yVia(pt.x) ?? pt.y) - pt.y) > 2;
-    if ((fuera(pa) || fuera(pb)) && ya != null && yb != null) {
-      const f = xb === xa ? fr : Math.min(1, Math.max(0, (x - xa) / (xb - xa)));
-      y = ya + f * (yb - ya);
-      if (xb !== xa && Math.abs(yb - ya) > 0.5) ang = (Math.atan2(yb - ya, xb - xa) * 180) / Math.PI;
-    } else y = yVia(x) ?? (p.via === 1 ? 208 : 248);
+    // una parada está "fuera" de la vía del tren si en su x no pasa esa vía o pasa a otra altura
+    const fuera = (pt: { x: number; y: number } | undefined) => {
+      if (!pt) return false;
+      const yv = yVia(pt.x);
+      return yv == null || Math.abs(yv - pt.y) > 2;
+    };
+    const lineal = () => (ya != null && yb != null ? ya + (Math.abs(xb - xa) < 20 ? fr : Math.min(1, Math.max(0, (x - xa) / (xb - xa)))) * (yb - ya) : null);
+    // sin ruta conocida: si las dos paradas están fuera de la vía (cola → andén de terminal, patio) o en esa x no hay
+    // vía del tren, va derecho de una a otra; si sólo una está fuera, va por su vía y cambia a la de la parada en los
+    // últimos / primeros CRUCE unidades del tramo, como un cruce
+    const CRUCE = 60;
+    const dir = xb >= xa ? 1 : -1;
+    const yLinea = yVia(x);
+    if ((fuera(pa) && fuera(pb)) || yLinea == null) {
+      y = lineal() ?? yLinea ?? ya ?? yb ?? (p.via === 1 ? 208 : 248);
+      if (ya != null && yb != null && xb !== xa && Math.abs(yb - ya) > 0.5) ang = (Math.atan2(yb - ya, xb - xa) * 180) / Math.PI;
+    } else if (fuera(pb) && yb != null && Math.abs(xb - x) < CRUCE) {
+      const x0 = xb - dir * CRUCE, y0 = yVia(x0) ?? ya ?? yb;
+      y = y0 + ((x - x0) / (xb - x0)) * (yb - y0);
+      ang = (Math.atan2(yb - y0, xb - x0) * 180) / Math.PI;
+    } else if (fuera(pa) && ya != null && Math.abs(x - xa) < CRUCE) {
+      const x1 = xa + dir * CRUCE, y1 = yVia(x1) ?? yb ?? ya;
+      y = ya + ((x - xa) / (x1 - xa)) * (y1 - ya);
+      ang = (Math.atan2(y1 - ya, x1 - xa) * 180) / Math.PI;
+    } else y = yLinea;
   }
   return { tren, numero, pk, via: p.via, x, y, enAnden: false, estCodigo: null, cdv: null, sentido: mov, vigente: true, ang: ang ?? anguloVia(ctx, x, y) };
 }
